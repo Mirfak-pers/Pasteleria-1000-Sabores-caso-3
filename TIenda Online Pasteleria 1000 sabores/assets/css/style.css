@@ -1,15 +1,19 @@
 /********** Template CSS **********/
 :root {
-    --primary: #E88F2A;
-    --secondary: #FAF3EB;
-    --light: #FFFFFF;
-    --dark: #2B2825;
+    --primary: #8B4513;      /* Chocolate (color de acento principal) */
+    --secondary: #FFF5E1;    /* Crema Pastel (fondo principal) */
+    --light: #FFFFFF;        /* Blanco */
+    --dark: #5D4037;         /* Marrón Oscuro (texto principal) */
+    --accent-secondary: #FFC0CB; /* Rosa Suave (segundo acento) */
+    --text-secondary: #B0BEC5;   /* Gris Claro (texto secundario) */
 }
 
+/* Tipografía de encabezados */
 .font-secondary {
     font-family: 'Pacifico', cursive;
 }
 
+/* Encabezados y pesos de fuente */
 h1,
 h2,
 .font-weight-bold {
@@ -28,14 +32,21 @@ h6,
     font-weight: 500 !important;
 }
 
+/* Botones */
 .btn {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Lato', sans-serif; /* Tipografía principal */
     font-weight: 600;
     transition: .5s;
 }
 
 .btn-primary {
     color: #FFFFFF;
+    background-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-secondary);
+    color: var(--dark);
 }
 
 .border-inner {
@@ -89,10 +100,18 @@ h6,
     bottom: 0;
     border-radius: 0;
     z-index: 99;
+    background-color: var(--primary);
+    color: var(--light);
 }
 
+.back-to-top:hover {
+    background-color: var(--accent-secondary);
+    color: var(--dark);
+}
+
+/* Navbar */
 .navbar-dark .navbar-nav .nav-link {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Lato', sans-serif; /* Tipografía principal */
     padding: 30px 15px;
     font-size: 18px;
     font-weight: 500;
@@ -117,11 +136,14 @@ h6,
     }
 }
 
+/* Hero Header */
 .hero-header {
-    background: url(../img/hero.jpg) top right no-repeat;
+    background: url(../image/hero.jpg) top right no-repeat;
     background-size: cover;
+    background-color: var(--secondary); /* Fallback crema pastel */
 }
 
+/* Botón Play */
 .btn-play {
     position: relative;
     display: block;
@@ -132,7 +154,7 @@ h6,
     border: none;
     outline: none !important;
     padding: 18px 20px 20px 28px;
-    background: #FFFFFF;
+    background: var(--light);
 }
 
 .btn-play:before {
@@ -145,7 +167,7 @@ h6,
     display: block;
     width: 60px;
     height: 60px;
-    background: #FFFFFF;
+    background: var(--light);
     border-radius: 100%;
     animation: pulse-border 1500ms ease-out infinite;
 }
@@ -160,7 +182,7 @@ h6,
     display: block;
     width: 60px;
     height: 60px;
-    background: #FFFFFF;
+    background: var(--light);
     border-radius: 100%;
     transition: all 200ms;
 }
@@ -172,7 +194,7 @@ h6,
     width: 0;
     height: 0;
     left: -1px;
-    border-left: 16px solid var(--primary);
+    border-left: 16px solid var(--primary); /* Chocolate */
     border-top: 11px solid transparent;
     border-bottom: 11px solid transparent;
 }
@@ -189,6 +211,7 @@ h6,
     }
 }
 
+/* Modal Video */
 #videoModal .modal-dialog {
     position: relative;
     max-width: 800px;
@@ -210,8 +233,14 @@ h6,
     font-size: 30px;
     font-weight: normal;
     color: #FFFFFF;
-    background: #000000;
+    background: var(--primary);
     opacity: 1;
+    border-radius: 50%;
+}
+
+/* Títulos de sección */
+.section-title {
+    color: var(--dark); /* Texto principal marrón oscuro */
 }
 
 .section-title::before {
@@ -222,7 +251,7 @@ h6,
     left: 50%;
     bottom: 0;
     margin-left: -30px;
-    background: var(--primary);
+    background: var(--primary); /* Chocolate */
 }
 
 .section-title::after {
@@ -233,9 +262,10 @@ h6,
     left: 50%;
     bottom: 4px;
     margin-left: -90px;
-    background: var(--primary);
+    background: var(--primary); /* Chocolate */
 }
 
+/* Secciones con fondo */
 .service::after,
 .contact::after {
     position: absolute;
@@ -244,39 +274,42 @@ h6,
     height: calc(100% - 45px);
     top: 135px;
     left: 0;
-    background: linear-gradient(rgba(43, 40, 37, .9), rgba(43, 40, 37, .9)), url(../img/service.jpg) center center no-repeat;
+    background: linear-gradient(rgba(139, 69, 19, .8), rgba(139, 69, 19, .8)), url(../image/service.jpg) center center no-repeat;
     background-size: cover;
     z-index: -1;
 }
 
 .contact::after {
-    background: linear-gradient(rgba(43, 40, 37, .5), rgba(43, 40, 37, .5)), url(../img/bg.jpg) center center no-repeat;
+    background: linear-gradient(rgba(139, 69, 19, .5), rgba(139, 69, 19, .5)), url(../image/bg.jpg) center center no-repeat;
     background-size: cover;
 }
 
 .bg-offer {
-    background: linear-gradient(rgba(43, 40, 37, .9), rgba(43, 40, 37, .9)), url(../img/offer.jpg) center center no-repeat;
+    background: linear-gradient(rgba(139, 69, 19, .9), rgba(139, 69, 19, .9)), url(../image/offer.jpg) center center no-repeat;
     background-size: cover;
 }
 
+/* Equipo */
 .team-item img {
     transition: .5s;
 }
 
 .team-item:hover img {
     transform: scale(1.1);
-    filter: blur(5px)
+    filter: blur(5px);
 }
 
 .team-item .team-overlay {
     transition: .5s;
     opacity: 0;
+    background-color: rgba(139, 69, 19, 0.8); /* Chocolate semi-transparente */
 }
 
 .team-item:hover .team-overlay {
     opacity: 1;
 }
 
+/* Testimonios */
 .testimonial-carousel .owl-dots {
     height: 45px;
     margin-top: 30px;
@@ -291,25 +324,40 @@ h6,
     margin: 0 2px;
     width: 10px;
     height: 25px;
-    background: #DDDDDD;
+    background: var(--text-secondary); /* Gris Claro */
     transition: .5s;
 }
 
 .testimonial-carousel .owl-dot.active {
     height: 45px;
-    background: var(--primary);
+    background: var(--primary); /* Chocolate */
 }
 
 .testimonial-carousel .owl-item .testimonial-item {
     opacity: .1;
     transition: .5s;
+    color: var(--dark); /* Texto principal */
 }
 
 .testimonial-carousel .owl-item.center .testimonial-item {
     opacity: 1;
 }
 
+/* Fondo general con imagen */
 .bg-img {
-    background: linear-gradient(rgba(43, 40, 37, .5), rgba(43, 40, 37, .5)), url(../img/bg.jpg) center center no-repeat;
+    background: linear-gradient(rgba(139, 69, 19, .5), rgba(139, 69, 19, .5)), url(../image/bg.jpg) center center no-repeat;
     background-size: cover;
+    background-color: var(--secondary); /* Fallback crema pastel */
+}
+
+/* Aplicar tipografía principal globalmente */
+body {
+    font-family: 'Lato', sans-serif;
+    color: var(--dark);
+    background-color: var(--secondary);
+}
+
+/* Texto secundario */
+.text-secondary {
+    color: var(--text-secondary) !important;
 }
