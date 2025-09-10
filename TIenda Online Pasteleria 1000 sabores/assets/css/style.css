@@ -8,12 +8,28 @@
     --text-secondary: #B0BEC5;   /* Gris Claro (texto secundario) */
 }
 
-/* Tipografía de encabezados */
-.font-secondary {
+/* --- Tipografía Global --- */
+/* Aplicar tipografía principal (Lato) globalmente */
+body {
+    font-family: 'Lato', sans-serif;
+    color: var(--dark);
+    background-color: var(--secondary);
+}
+
+/* Tipografía de encabezados (Pacifico) */
+.font-secondary,
+h1, h2, h3, h4, h5, h6,
+.logo h1 {
     font-family: 'Pacifico', cursive;
 }
 
-/* Encabezados y pesos de fuente */
+/* Asegurar color de encabezados */
+.logo h1,
+.text-primary {
+    color: var(--primary); /* Chocolate */
+}
+
+/* Pesos de fuente */
 h1,
 h2,
 .font-weight-bold {
@@ -32,32 +48,53 @@ h6,
     font-weight: 500 !important;
 }
 
-/* Botones */
+/* --- Colores de Texto --- */
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+/* --- Colores de Fondo --- */
+.bg-secondary {
+    background-color: var(--text-secondary) !important; /* Gris Claro */
+}
+
+.bg-primary {
+    background-color: var(--primary) !important; /* Chocolate */
+}
+
+.bg-dark.bg-img {
+    background-color: var(--dark); /* Marrón Oscuro */
+}
+
+/* --- Botones --- */
 .btn {
-    font-family: 'Lato', sans-serif; /* Tipografía principal */
+    font-family: 'Lato', sans-serif;
     font-weight: 600;
     transition: .5s;
 }
 
+/* Botón Primario */
 .btn-primary {
-    color: #FFFFFF;
-    background-color: var(--primary);
+    color: var(--light);
+    background-color: var(--accent-secondary); /* Rosa Suave */
+    border-color: var(--accent-secondary);
 }
 
 .btn-primary:hover {
-    background-color: var(--accent-secondary);
     color: var(--dark);
+    background-color: var(--primary); /* Chocolate */
+    border-color: var(--primary);
 }
 
+/* Borde Interior */
 .border-inner {
     position: relative;
+    border-color: var(--primary) !important; /* Chocolate */
 }
-
 .border-inner * {
     position: relative;
     z-index: 1;
 }
-
 .border-inner::before {
     position: absolute;
     content: "";
@@ -70,6 +107,7 @@ h6,
     z-index: 0;
 }
 
+/* Botones Cuadrados */
 .btn-square {
     width: 40px;
     height: 40px;
@@ -93,6 +131,7 @@ h6,
     text-align: center;
 }
 
+/* Botón Volver Arriba */
 .back-to-top {
     position: fixed;
     display: none;
@@ -109,9 +148,9 @@ h6,
     color: var(--dark);
 }
 
-/* Navbar */
+/* --- Navbar --- */
 .navbar-dark .navbar-nav .nav-link {
-    font-family: 'Lato', sans-serif; /* Tipografía principal */
+    font-family: 'Lato', sans-serif;
     padding: 30px 15px;
     font-size: 18px;
     font-weight: 500;
@@ -136,14 +175,16 @@ h6,
     }
 }
 
-/* Hero Header */
+/* --- Hero Header --- */
 .hero-header {
     background: url(../image/hero.jpg) top right no-repeat;
     background-size: cover;
     background-color: var(--secondary); /* Fallback crema pastel */
+    /* Si deseas usar solo el color sólido, comenta la línea de background-image */
+    /* background-color: var(--primary); */ 
 }
 
-/* Botón Play */
+/* --- Botón Play --- */
 .btn-play {
     position: relative;
     display: block;
@@ -211,7 +252,7 @@ h6,
     }
 }
 
-/* Modal Video */
+/* --- Modal Video --- */
 #videoModal .modal-dialog {
     position: relative;
     max-width: 800px;
@@ -238,7 +279,7 @@ h6,
     border-radius: 50%;
 }
 
-/* Títulos de sección */
+/* --- Títulos de sección --- */
 .section-title {
     color: var(--dark); /* Texto principal marrón oscuro */
 }
@@ -265,31 +306,39 @@ h6,
     background: var(--primary); /* Chocolate */
 }
 
-/* Secciones con fondo */
-.service::after,
-.contact::after {
+/* --- Secciones con fondo --- */
+/* Asegurarse de que estas reglas apunten a las clases correctas en tu HTML */
+/* Por ejemplo, si tienes <div class="service position-relative"> */
+.service.position-relative::after,
+.contact.position-relative::after {
     position: absolute;
     content: "";
     width: 100%;
-    height: calc(100% - 45px);
+    /* Ajusta esta altura según tu diseño */
+    height: calc(100% - 45px); 
     top: 135px;
     left: 0;
-    background: linear-gradient(rgba(139, 69, 19, .8), rgba(139, 69, 19, .8)), url(../image/service.jpg) center center no-repeat;
+    /* Usa una imagen de fondo específica o ajusta el gradiente */
+    /* background: linear-gradient(rgba(139, 69, 19, .8), rgba(139, 69, 19, .8)), url(../image/service.jpg) center center no-repeat; */
+    background: var(--primary); /* Fallback sólido */
     background-size: cover;
     z-index: -1;
 }
 
-.contact::after {
-    background: linear-gradient(rgba(139, 69, 19, .5), rgba(139, 69, 19, .5)), url(../image/bg.jpg) center center no-repeat;
+/* Para contacto, si es diferente */
+.contact.position-relative::after {
+    /* background: linear-gradient(rgba(139, 69, 19, .5), rgba(139, 69, 19, .5)), url(../image/bg.jpg) center center no-repeat; */
+    background: var(--dark); /* Fallback sólido */
     background-size: cover;
 }
 
 .bg-offer {
-    background: linear-gradient(rgba(139, 69, 19, .9), rgba(139, 69, 19, .9)), url(../image/offer.jpg) center center no-repeat;
+    /* background: linear-gradient(rgba(139, 69, 19, .9), rgba(139, 69, 19, .9)), url(../image/offer.jpg) center center no-repeat; */
+    background: var(--primary); /* Fallback sólido */
     background-size: cover;
 }
 
-/* Equipo */
+/* --- Equipo --- */
 .team-item img {
     transition: .5s;
 }
@@ -309,7 +358,7 @@ h6,
     opacity: 1;
 }
 
-/* Testimonios */
+/* --- Testimonios --- */
 .testimonial-carousel .owl-dots {
     height: 45px;
     margin-top: 30px;
@@ -343,21 +392,36 @@ h6,
     opacity: 1;
 }
 
-/* Fondo general con imagen */
+/* --- Fondo general con imagen --- */
 .bg-img {
-    background: linear-gradient(rgba(139, 69, 19, .5), rgba(139, 69, 19, .5)), url(../image/bg.jpg) center center no-repeat;
+    /* background: linear-gradient(rgba(139, 69, 19, .5), rgba(139, 69, 19, .5)), url(../image/bg.jpg) center center no-repeat; */
+    background: var(--dark); /* Fallback sólido */
     background-size: cover;
-    background-color: var(--secondary); /* Fallback crema pastel */
+    background-color: var(--secondary); /* Fallback crema pastel adicional */
 }
 
-/* Aplicar tipografía principal globalmente */
-body {
-    font-family: 'Lato', sans-serif;
-    color: var(--dark);
-    background-color: var(--secondary);
+/* --- Carrito (si se usa) --- */
+.product-card {
+    background-color: var(--light);
+    border: 1px solid var(--accent-secondary);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    transition: transform .3s;
 }
+.product-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.product-card img {
+    max-height: 200px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border-radius: 8px;
+} 
+        .text-primary, .btn-primary, .bg-primary, .border-inner {
+            color: #8B4513 !important; /* Chocolate */
+            border-color: #8B4513 !important;
+        }
 
-/* Texto secundario */
-.text-secondary {
-    color: var(--text-secondary) !important;
-}
+
