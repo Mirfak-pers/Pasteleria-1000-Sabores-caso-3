@@ -134,19 +134,22 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col-lg-6">
-                    <form>
+                    <form id="formContacto">
                         <div class="row g-3">
                             <div class="col-sm-6">
-                                <input type="text" class="form-control bg-light border-0 px-4" placeholder="Tu Nombre" style="height: 55px;">
+                                <input type="text" class="form-control bg-light border-0 px-4" id="nombre" placeholder="Tu Nombre" style="height: 55px;">
+                                <div class="invalid-feedback" style="display: none;"></div>
                             </div>
                             <div class="col-sm-6">
-                                <input type="email" class="form-control bg-light border-0 px-4" placeholder="Tu Correo Electrónico" style="height: 55px;">
+                                <input type="email" class="form-control bg-light border-0 px-4" id="correo" placeholder="Tu Correo Electrónico" style="height: 55px;">
+                                <div class="invalid-feedback" style="display: none;"></div>
                             </div>
                             <div class="col-sm-12">
                                 <input type="text" class="form-control bg-light border-0 px-4" placeholder="Asunto" style="height: 55px;">
                             </div>
                             <div class="col-sm-12">
-                                <textarea class="form-control bg-light border-0 px-4 py-3" rows="4" placeholder="Tu Mensaje"></textarea>
+                                <textarea class="form-control bg-light border-0 px-4 py-3" id="comentario" rows="4" placeholder="Tu Mensaje"></textarea>
+                                <div class="invalid-feedback" style="display: none;"></div>
                             </div>
                             <div class="col-sm-12">
                                 <button class="btn btn-primary border-inner w-100 py-3" type="submit">Enviar Mensaje</button>
@@ -245,6 +248,84 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById("formContacto");
+            const nombreInput = document.getElementById("nombre");
+            const correoInput = document.getElementById("correo");
+            const comentarioInput = document.getElementById("comentario");
+
+            // Función para validar el correo
+            function validarCorreo(correo) {
+                const regex = /^[\w.+-]+@(duoc\.cl|profesor\.duoc\.cl|gmail\.com)$/i;
+                return regex.test(correo);
+            }
+
+            // Función auxiliar para mostrar errores
+            function marcarError(input, mensaje) {
+                input.classList.add("is-invalid");
+                const feedback = input.nextElementSibling;
+                if (feedback && feedback.classList.contains("invalid-feedback")) {
+                    feedback.textContent = mensaje;
+                    feedback.style.display = "block";
+                }
+            }
+
+            // Función auxiliar para limpiar errores
+            function limpiarError(input) {
+                input.classList.remove("is-invalid");
+                const feedback = input.nextElementSibling;
+                if (feedback && feedback.classList.contains("invalid-feedback")) {
+                    feedback.style.display = "none";
+                }
+            }
+
+            // Limpiar errores al escribir
+            [nombreInput, correoInput, comentarioInput].forEach(input => {
+                input.addEventListener("input", () => {
+                    limpiarError(input);
+                });
+            });
+
+            // Validar al enviar
+            form.addEventListener("submit", function(e) {
+                e.preventDefault();
+                let isValid = true;
+
+                // Validar Nombre
+                if (nombreInput.value.trim() === "") {
+                    marcarError(nombreInput, "El nombre es requerido.");
+                    isValid = false;
+                } else if (nombreInput.value.length > 100) {
+                    marcarError(nombreInput, "El nombre debe tener máximo 100 caracteres.");
+                    isValid = false;
+                }
+
+                // Validar Correo
+                if (correoInput.value.length > 100) {
+                    marcarError(correoInput, "El correo debe tener máximo 100 caracteres.");
+                    isValid = false;
+                } else if (!validarCorreo(correoInput.value)) {
+                    marcarError(correoInput, "El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com.");
+                    isValid = false;
+                }
+
+                // Validar Comentario
+                if (comentarioInput.value.trim() === "") {
+                    marcarError(comentarioInput, "El comentario es requerido.");
+                    isValid = false;
+                } else if (comentarioInput.value.length > 500) {
+                    marcarError(comentarioInput, "El comentario debe tener máximo 500 caracteres.");
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    alert("¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.");
+                    form.reset();
+                }
+            });
+        });
+</script>
 </body>
 
 </html>
