@@ -25,7 +25,7 @@
     --danger-color: #dc3545;
 }
 
-/* Botones principales */
+
 .btn-primary {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
@@ -67,6 +67,14 @@
     background-color: var(--primary-color);
     border-color: var(--primary-color);
     color: white;
+}.categoria {
+    color: #8B4513; /* Chocolate - Color principal */
+    font-weight: bold; /* Opcional: para hacerlo más llamativo */
+}
+/* O si usas una clase como .badge para las categorías */
+.badge.bg-primary {
+    background-color: #8B4513 !important; /* Asegura el fondo Chocolate */
+    color: #FFFFFF !important; /* Asegura el texto blanco */
 }
 </style>
 </head>
@@ -85,7 +93,7 @@
             </div>
             <div class="col-lg-4 text-center bg-primary border-inner py-3">
                 <div class="d-inline-flex align-items-center justify-content-center">
-                    <a href="index.html" class="navbar-brand">
+                    <a href="../../index.html" class="navbar-brand">
                         <h1 class="m-0 text-uppercase text-white"><i class="fas fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores</h1>
                     </a>
                 </div>
@@ -134,7 +142,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="d-flex flex-wrap justify-content-center gap-2">
-                    <button class="btn btn-outline-primary btn-sm filter-btn active" data-category="all">Todos</button>
+                    <button class="btn btn-outline-primary btn-sm filter-btn active " data-category="all">Todos</button>
                     <button class="btn btn-outline-primary btn-sm filter-btn" data-category="Tortas Cuadradas">Tortas Cuadradas</button>
                     <button class="btn btn-outline-primary btn-sm filter-btn" data-category="Tortas Circulares">Tortas Circulares</button>
                     <button class="btn btn-outline-primary btn-sm filter-btn" data-category="Postres Individuales">Postres Individuales</button>
