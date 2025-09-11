@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras - Pastelería Mil Sabores</title>
+    <!-- Fuentes de Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons (para íconos) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Bootstrap CSS (opcional, para grid y utilidades) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --color-fondo-principal: #FFF5E1;
+            --color-texto-principal: #5D4037;
+            --color-texto-secundario: #B0BEC5;
+            --color-acento-rosa: #FFC0CB;
+            --color-acento-chocolate: #8B4513;
+            --color-fondo-oscuro: #5D4037;
+        }
+
+        body {
+            background-color: var(--color-fondo-principal);
+            color: var(--color-texto-principal);
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2, h3, h4, .logo, .navbar-brand {
+            font-family: 'Pacifico', cursive;
+            color: var(--color-acento-chocolate);
+        }
+
+        .btn-outline {
+            color: var(--color-acento-chocolate);
+            border: 2px solid var(--color-acento-chocolate);
+            background-color: transparent;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--color-acento-chocolate);
+            color: var(--color-fondo-principal);
+        }
+
+        .btn-primary {
+            background-color: var(--color-acento-rosa);
+            color: var(--color-texto-principal);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-acento-chocolate);
+            color: var(--color-fondo-principal);
+        }
+
+        .navbar {
+            background-color: var(--color-fondo-principal);
+            box-shadow: 0 2px 5px rgba(93, 64, 55, 0.1);
+        }
+
+        .nav-link {
+            color: var(--color-texto-principal) !important;
+            font-weight: 500;
+            margin: 0 10px;
+        }
+
+        .nav-link.active {
+            color: var(--color-acento-chocolate) !important;
+            font-weight: 700;
+            border-bottom: 2px solid var(--color-acento-rosa);
+        }
+
+        .topbar {
+            background-color: var(--color-acento-chocolate);
+            color: var(--color-fondo-principal);
+        }
+
+        .topbar .col-lg-4 {
+            background-color: var(--color-fondo-oscuro);
+        }
+
+        .topbar .col-lg-4:nth-child(2) {
+            background-color: var(--color-acento-chocolate);
+            border-left: 2px solid var(--color-acento-rosa);
+            border-right: 2px solid var(--color-acento-rosa);
+        }
+
+        .topbar i {
+            color: var(--color-acento-rosa);
+        }
+
+        .topbar h6, .topbar span {
+            color: var(--color-fondo-principal);
+        }
+
+        .dropdown-menu {
+            background-color: var(--color-fondo-principal);
+            border: 1px solid var(--color-acento-rosa);
+            border-radius: 5px;
+        }
+
+        .dropdown-item {
+            color: var(--color-texto-principal);
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--color-acento-rosa);
+            color: var(--color-texto-principal);
+        }
+
+        /* Estilos específicos para el carrito */
+        .cart-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .cart-total {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .discount-tag {
+            background-color: var(--color-acento-rosa);
+            color: var(--color-texto-principal);
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .text-muted {
+            color: var(--color-texto-secundario) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Topbar -->
+    <div class="container-fluid px-0 d-none d-lg-block topbar">
+        <div class="row gx-0">
+            <div class="col-lg-4 text-center py-3">
+                <div class="d-inline-flex align-items-center justify-content-center">
+                    <i class="bi bi-envelope fs-4 me-3"></i>
+                    <div class="text-start">
+                        <h6 class="text-uppercase mb-1">Envíanos un Email</h6>
+                        <span>info@pasteriamilsabores.cl</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center py-3">
+                <div class="d-inline-flex align-items-center justify-content-center">
+                    <a href="index.html" class="text-decoration-none">
+                        <h3 class="m-0 text-uppercase">
+                            <i class="fa fa-birthday-cake me-2"></i>Pastelería Mil Sabores
+                        </h3>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center py-3">
+                <div class="d-inline-flex align-items-center justify-content-center">
+                    <i class="bi bi-phone-vibrate fs-4 me-3"></i>
+                    <div class="text-start">
+                        <h6 class="text-uppercase mb-1">Llámanos</h6>
+                        <span>+56 2 2123 4567</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a href="index.html" class="navbar-brand d-block d-lg-none">Pastelería Mil Sabores</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav mx-auto">
+                    <a href="index.html" class="nav-item nav-link">Inicio</a>
+                    <a href="nosotros.html" class="nav-item nav-link">Nosotros</a>
+                    <a href="productos.html" class="nav-item nav-link">Productos</a>
+                    <a href="blogs.html" class="nav-item nav-link">Blog</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Más</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="servicios.html">Nuestros Servicios</a></li>
+                            <li><a class="dropdown-item" href="testimonios.html">Testimonios</a></li>
+                        </ul>
+                    </div>
+                    <a href="contacto.html" class="nav-item nav-link">Contacto</a>
+                </div>
+                <div class="d-flex">
+                    <a href="login.html" class="btn btn-outline me-2">Iniciar Sesión</a>
+                    <a href="registro.html" class="btn btn-primary">Registrarse</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="container py-5">
+        <h1 class="text-center mb-5">Tu Carrito de Compras</h1>
+
+        <!-- Lista de Productos en el Carrito -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="cart-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <img src="https://via.placeholder.com/150x150?text=Torta+Chocolate" class="img-fluid rounded" alt="Torta de Chocolate">
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Torta Cuadrada de Chocolate</h5>
+                            <p class="text-muted">Mensaje: "¡Feliz Cumpleaños Ana!"</p>
+                            <p class="text-muted">Tamaño: Grande</p>
+                            <span class="discount-tag">Descuento 50%</span>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <div class="input-group mb-2" style="max-width: 120px;">
+                                <button class="btn btn-outline-secondary" type="button">-</button>
+                                <input type="text" class="form-control text-center" value="1" style="max-width: 50px;">
+                                <button class="btn btn-outline-secondary" type="button">+</button>
+                            </div>
+                            <h5>$22.500 CLP</h5>
+                            <a href="#" class="text-danger">Eliminar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cart-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <img src="https://via.placeholder.com/150x150?text=Mousse" class="img-fluid rounded" alt="Mousse de Chocolate">
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Mousse de Chocolate</h5>
+                            <p class="text-muted">Cantidad: 4 unidades</p>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <div class="input-group mb-2" style="max-width: 120px;">
+                                <button class="btn btn-outline-secondary" type="button">-</button>
+                                <input type="text" class="form-control text-center" value="4" style="max-width: 50px;">
+                                <button class="btn btn-outline-secondary" type="button">+</button>
+                            </div>
+                            <h5>$20.000 CLP</h5>
+                            <a href="#" class="text-danger">Eliminar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cart-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <img src="https://via.placeholder.com/150x150?text=Torta+Boda" class="img-fluid rounded" alt="Torta de Boda">
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Torta Especial de Boda</h5>
+                            <p class="text-muted">Mensaje: "Para siempre"</p>
+                            <p class="text-muted">Tamaño: Extra Grande</p>
+                            <span class="discount-tag">¡Feliz Cumpleaños! GRATIS</span>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <div class="input-group mb-2" style="max-width: 120px;">
+                                <button class="btn btn-outline-secondary" type="button">-</button>
+                                <input type="text" class="form-control text-center" value="1" style="max-width: 50px;">
+                                <button class="btn btn-outline-secondary" type="button">+</button>
+                            </div>
+                            <h5 class="text-success">$0 CLP</h5>
+                            <a href="#" class="text-danger">Eliminar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen del Pedido -->
+            <div class="col-lg-4">
+                <div class="cart-total">
+                    <h3>Resumen del Pedido</h3>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span>Subtotal</span>
+                        <span>$62.000 CLP</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Descuento Edad (50%)</span>
+                        <span class="text-success">-$22.500 CLP</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Torta de Cumpleaños Gratis</span>
+                        <span class="text-success">-$60.000 CLP</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Envío</span>
+                        <span>$3.500 CLP</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <h4>Total</h4>
+                        <h4 class="text-danger">$23.000 CLP</h4>
+                    </div>
+                    <hr>
+                    <button class="btn btn-primary w-100 py-3">Proceder al Pago</button>
+                    <a href="productos.html" class="btn btn-outline w-100 py-3 mt-2">Seguir Comprando</a>
+                </div>
+
+                <div class="mt-4 p-4 bg-white rounded" style="box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <h5><i class="bi bi-info-circle me-2"></i> ¿Tienes un cupón?</h5>
+                    <div class="input-group mt-2">
+                        <input type="text" class="form-control" placeholder="Ingresa tu código">
+                        <button class="btn btn-outline" type="button">Aplicar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Simulado -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">© 2025 Pastelería Mil Sabores. Todos los derechos reservados.</p>
+            <p class="mt-2">
+                <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="text-white"><i class="bi bi-whatsapp"></i></a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS (opcional, para el menú hamburguesa) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
