@@ -21,7 +21,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet (Tu archivo style.css) -->
-    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
 
     <style>
         /* Incorporating design elements from the PDF */
@@ -121,7 +121,7 @@
         <div class="row gx-0">
             <div class="col-lg-4 text-center bg-secondary py-3">
                 <div class="d-inline-flex align-items-center justify-content-center">
-                    <i class="bi bi-envelope fs-1 text-primary me-3"></i>
+                    <i class="fas fa-envelope fs-1 text-primary me-3"></i>
                     <div class="text-start">
                         <h6 class="text-uppercase mb-1">Envíanos un correo</h6>
                         <span>contacto@milsabores.cl</span>
@@ -130,14 +130,14 @@
             </div>
             <div class="col-lg-4 text-center bg-primary border-inner py-3">
                 <div class="d-inline-flex align-items-center justify-content-center">
-                    <a href="index.html" class="navbar-brand">
-                        <h1 class="m-0 text-uppercase text-white"><i class="fa fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores</h1>
+                    <a href="../../index.html" class="navbar-brand">
+                        <h1 class="m-0 text-uppercase text-white"><i class="fas fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores</h1>
                     </a>
                 </div>
             </div>
             <div class="col-lg-4 text-center bg-secondary py-3">
                 <div class="d-inline-flex align-items-center justify-content-center">
-                    <i class="bi bi-phone-vibrate fs-1 text-primary me-3"></i>
+                    <i class="fas fa-phone fs-1 text-primary me-3"></i>
                     <div class="text-start">
                         <h6 class="text-uppercase mb-1">Llámanos</h6>
                         <span>+56 2 2345 6789</span>
@@ -148,36 +148,29 @@
     </div>
     <!-- Topbar End -->
 
-    <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-lg bg-dark navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-0">
-        <a href="index.html" class="navbar-brand d-block d-lg-none">
-            <h1 class="m-0 text-uppercase text-white"><i class="fa fa-birthday-cake fs-1 text-primary me-3"></i>Mil Sabores</h1>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav ms-auto mx-lg-auto py-0">
-                <a href="index.html" class="nav-item nav-link">Inicio</a>
-                <a href="about.html" class="nav-item nav-link">Sobre Nosotros</a>
-                <a href="menu.html" class="nav-item nav-link">Menú y Precios</a>
-                <a href="team.html" class="nav-item nav-link">Nuestros Chefs</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Páginas</a>
-                    <div class="dropdown-menu m-0">
-                        <a href="service.html" class="dropdown-item">Nuestros Servicios</a>
-                        <a href="testimonial.html" class="dropdown-item">Testimonios</a>
-                        <a href="#" class="dropdown-item">Blog de Repostería</a>
-                    </div>
-                </div>
-                <a href="contact.html" class="nav-item nav-link">Contáctanos</a>
-                 <!-- Enlace al Carrito -->
-                <a href="cart.html" class="nav-item nav-link active">Carrito</a>
-            </div>
+<nav class="navbar navbar-expand-lg bg-dark navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-0">
+    <a href="../../index.html" class="navbar-brand d-block d-lg-none">
+        <div class="logo">
+            <h1>Pastelería Mil Sabores</h1>
         </div>
-    </nav>
-    <!-- Navbar End -->
-
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto mx-lg-auto py-0">
+            <a href="../../index.html" class="nav-item nav-link active">Inicio</a>
+            <a href="productos.html" class="nav-item nav-link">Productos</a>
+            <a href="about.html" class="nav-item nav-link">nosotros</a>
+            <a href="contact.html" class="nav-item nav-link">Contacto</a>
+            <a href="blogs.html" class="nav-item nav-link">Blog</a>
+            <a href="carrito.html" class="nav-item nav-link">Carrito</a>
+            <a href="login.html" class="nav-item nav-link">iniciar sesión</a>
+            <a href="registro.html" class="nav-item nav-link">Registro</a>
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
     <!-- Page Header Start (Breadcrumb) -->
     <div class="container-fluid bg-dark bg-img p-5 mb-5">
         <div class="row">
@@ -240,7 +233,7 @@
                             </div>
                             <div class="d-grid gap-2 mt-3">
                                 <button class="btn btn-primary" type="button" id="btn-proceed-to-checkout">Proceder al Pago</button>
-                                <a href="menu.html" class="btn btn-outline-secondary">Seguir Comprando</a>
+                                <a href="productos.html" class="btn btn-outline-secondary">Seguir Comprando</a>
                             </div>
                         </div>
                     </div>
@@ -249,13 +242,13 @@
         </div>
     </div>
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-img text-secondary" style="margin-top: 90px">
+     <!-- Footer Start -->
+    <div class="container-fluid bg-dark bg-img text-secondary" style="margin-top: 135px">
         <div class="container">
             <div class="row gx-5">
                 <div class="col-lg-4 col-md-6 mt-lg-n5">
                     <div class="d-flex flex-column align-items-center justify-content-center text-center h-100 bg-primary border-inner p-4">
-                        <a href="index.html" class="navbar-brand">
+                        <a href="../../index.html" class="navbar-brand">
                             <h1 class="m-0 text-uppercase text-white"><i class="fa fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores</h1>
                         </a>
                         <p class="mt-3">Celebramos 50 años de dulzura, tradición e innovación. Cada torta y postre es una obra de arte hecha con amor, ingredientes de primera calidad y la pasión que nos caracteriza desde 1974. ¡Descubre por qué somos un referente en la repostería chilena!</p>
@@ -280,19 +273,21 @@
                             <div class="d-flex mt-4">
                                 <a class="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#"><i class="fab fa-twitter fw-normal"></i></a>
                                 <a class="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#"><i class="fab fa-facebook-f fw-normal"></i></a>
-                                <a class="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#"><i class="fab fa-instagram fw-normal"></i></a>
+                                <a class="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#"><i class="fab fa-instagram fw-normal"></i></a> <!-- Changed to Instagram -->
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
                             <h4 class="text-primary text-uppercase mb-4">Enlaces Rápidos</h4>
-                            <div class="d-flex flex-column justify-content-start">
-                                <a class="text-secondary mb-2" href="index.html"><i class="bi bi-arrow-right text-primary me-2"></i>Inicio</a>
-                                <a class="text-secondary mb-2" href="about.html"><i class="bi bi-arrow-right text-primary me-2"></i>Sobre Nosotros</a>
-                                <a class="text-secondary mb-2" href="menu.html"><i class="bi bi-arrow-right text-primary me-2"></i>Menú y Precios</a>
-                                <a class="text-secondary mb-2" href="team.html"><i class="bi bi-arrow-right text-primary me-2"></i>Nuestros Chefs</a>
-                                <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Blog de Repostería</a>
-                                <a class="text-secondary" href="contact.html"><i class="bi bi-arrow-right text-primary me-2"></i>Contáctanos</a>
-                            </div>
+                        <div class="d-flex flex-column justify-content-start">
+                            <a class="text-secondary mb-2" href="../../index.html"><i class="bi bi-arrow-right text-primary me-2"></i>Inicio</a>
+                            <a class="text-secondary mb-2" href="productos.html"><i class="bi bi-arrow-right text-primary me-2"></i>Productos</a>
+                            <a class="text-secondary mb-2" href="about.html"><i class="bi bi-arrow-right text-primary me-2"></i>Nosotros</a>
+                            <a class="text-secondary mb-2" href="contact.html"><i class="bi bi-arrow-right text-primary me-2"></i>Contacto</a>
+                            <a class="text-secondary mb-2" href="blogs.html"><i class="bi bi-arrow-right text-primary me-2"></i>Blog</a>
+                            <a class="text-secondary mb-2" href="carrito.html"><i class="bi bi-arrow-right text-primary me-2"></i>Carrito</a>
+                            <a class="text-secondary" href="login.html"><i class="bi bi-arrow-right text-primary me-2"></i>Iniciar Sesión</a>
+                            <a class="text-secondary" href="registro.html"><i class="bi bi-arrow-right text-primary me-2"></i>Registro</a>
+                        </div>
                         </div>
                         <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
                             <h4 class="text-primary text-uppercase mb-4">Boletín Informativo</h4>
@@ -312,6 +307,8 @@
     <div class="container-fluid text-secondary py-4" style="background: #111111;">
         <div class="container text-center">
             <p class="mb-0">&copy; <a class="text-white border-bottom" href="#">Pastelería Mil Sabores</a>. Todos los Derechos Reservados.
+
+            <!--/*** Esta plantilla es gratuita siempre que mantengas el enlace de crédito del autor/enlace de atribución/enlace de retorno. Si deseas usar la plantilla sin el enlace de crédito del autor/enlace de atribución/enlace de retorno, puedes comprar la Licencia de Eliminación de Crédito en "https://htmlcodex.com/credit-removal    ". Gracias por tu apoyo. ***/-->
             Diseñado por <a class="text-white border-bottom" href="https://htmlcodex.com">HTML Codex</a></p>
         </div>
     </div>
