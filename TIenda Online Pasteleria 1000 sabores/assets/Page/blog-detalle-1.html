@@ -6,7 +6,7 @@
     <title>La Torta que Entró en el Libro Guinness - Blogs | Pastelería 1000 Sabores</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Pacifico&display=swap" rel="stylesheet">
@@ -64,76 +64,66 @@
     </style>
 </head>
 <body>
-   
-    <!-- Topbar (Información de contacto) -->
-    <div class="container-fluid px-0 d-none d-lg-block" style="background-color: #8B4513; color: #FFF5E1; font-family: 'Lato', sans-serif;">
+    <!-- Topbar Start -->
+    <div class="container-fluid px-0 d-none d-lg-block">
         <div class="row gx-0">
-            <div class="col-lg-4 text-center py-3" style="background-color: #5D4037;">
+            <div class="col-lg-4 text-center bg-secondary py-3">
                 <div class="d-inline-flex align-items-center justify-content-center">
-                    <i class="bi bi-envelope fs-4 me-3" style="color: #FFC0CB;"></i>
+                    <i class="bi bi-envelope fs-1 text-primary me-3"></i>
                     <div class="text-start">
-                        <h6 class="text-uppercase mb-1" style="font-family: 'Pacifico', cursive; color: #FFF5E1; margin: 0;">Envíanos un Email</h6>
-                        <span style="color: #FFF5E1; font-size: 0.9rem;">info@pasteriamilsabores.cl</span>
+                        <h6 class="text-uppercase mb-1">Envíanos un correo</h6>
+                        <span>contacto@milsabores.cl</span>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 text-center py-3" style="background-color: #8B4513; border-left: 2px solid #FFC0CB; border-right: 2px solid #FFC0CB;">
+            <div class="col-lg-4 text-center bg-primary border-inner py-3">
                 <div class="d-inline-flex align-items-center justify-content-center">
-                    <a href="index.html" class="text-decoration-none">
-                        <h3 class="m-0 text-uppercase" style="font-family: 'Pacifico', cursive; color: #FFF5E1; font-size: 1.5rem;">
-                            <i class="fa fa-birthday-cake me-2" style="color: #FFF5E1;"></i>Pastelería Mil Sabores
-                        </h3>
+                    <a href="../../index.html" class="navbar-brand">
+                        <h1 class="m-0 text-uppercase text-white"><i class="fa fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores</h1>
                     </a>
                 </div>
             </div>
-            <div class="col-lg-4 text-center py-3" style="background-color: #5D4037;">
+            <div class="col-lg-4 text-center bg-secondary py-3">
                 <div class="d-inline-flex align-items-center justify-content-center">
-                    <i class="bi bi-phone-vibrate fs-4 me-3" style="color: #FFC0CB;"></i>
+                    <i class="bi bi-phone-vibrate fs-1 text-primary me-3"></i>
                     <div class="text-start">
-                        <h6 class="text-uppercase mb-1" style="font-family: 'Pacifico', cursive; color: #FFF5E1; margin: 0;">Llámanos</h6>
-                        <span style="color: #FFF5E1; font-size: 0.9rem;">+56 2 2123 4567</span>
+                        <h6 class="text-uppercase mb-1">Llámanos</h6>
+                        <span>+56 2 2345 6789</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- Topbar End -->
-
-    <!-- Navbar Principal -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #FFF5E1; padding: 1rem 0; box-shadow: 0 2px 5px rgba(93, 64, 55, 0.1);">
-        <div class="container">
-            <a href="index.html" class="navbar-brand d-block d-lg-none" style="font-family: 'Pacifico', cursive; color: #8B4513; font-size: 1.5rem;">
-                Pastelería Mil Sabores
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" style="border-color: #8B4513;">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav mx-auto">
-                    <a href="index.html" class="nav-item nav-link" style="color: #5D4037; font-weight: 500; margin: 0 10px; font-family: 'Lato', sans-serif;">Inicio</a>
-                    <a href="nosotros.html" class="nav-item nav-link" style="color: #5D4037; font-weight: 500; margin: 0 10px; font-family: 'Lato', sans-serif;">Nosotros</a>
-                    <a href="productos.html" class="nav-item nav-link" style="color: #5D4037; font-weight: 500; margin: 0 10px; font-family: 'Lato', sans-serif;">Productos</a>
-                    <a href="chefs.html" class="nav-item nav-link" style="color: #5D4037; font-weight: 500; margin: 0 10px; font-family: 'Lato', sans-serif;">Nuestros Chefs</a>
-                    <a href="blogs.html" class="nav-item nav-link active" style="color: #8B4513; font-weight: 700; margin: 0 10px; font-family: 'Lato', sans-serif; border-bottom: 2px solid #FFC0CB;">Blog</a>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" style="color: #5D4037; font-weight: 500; margin: 0 10px; font-family: 'Lato', sans-serif;" role="button">
-                            Más
-                        </a>
-                        <ul class="dropdown-menu" style="background-color: #FFF5E1; border: 1px solid #FFC0CB; border-radius: 5px; padding: 0.5rem 0;">
-                            <li><a class="dropdown-item" href="servicios.html" style="color: #5D4037; font-family: 'Lato', sans-serif; padding: 0.5rem 1.5rem;">Nuestros Servicios</a></li>
-                            <li><a class="dropdown-item" href="testimonios.html" style="color: #5D4037; font-family: 'Lato', sans-serif; padding: 0.5rem 1.5rem;">Testimonios</a></li>
-                        </ul>
+        <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-0">
+        <a href="../../index.html" class="navbar-brand d-block d-lg-none">
+            <div class="logo">
+                <h1>Pastelería Mil Sabores</h1>
+            </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto mx-lg-auto py-0">
+                <a href="../../index.html" class="nav-item nav-link active">Inicio</a>
+                <a href="/TIenda Online Pasteleria 1000 sabores/assets/page/about.html" class="nav-item nav-link">Nosotros</a>
+                <a href="/TIenda Online Pasteleria 1000 sabores/assets/page/menu.html" class="nav-item nav-link">Catálogo & Precios</a>
+                <a href="/TIenda Online Pasteleria 1000 sabores/assets/page/team.html" class="nav-item nav-link">Nuestros Chefs</a>
+                <a href="/TIenda Online Pasteleria 1000 sabores/assets/page/blogs.html" class="nav-item nav-link">Blogs</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Páginas</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="/TIenda Online Pasteleria 1000 sabores/assets/page/service.html" class="dropdown-item">Nuestros Servicios</a>
+                        <a href="/TIenda Online Pasteleria 1000 sabores/assets/page/testimonial.html" class="dropdown-item">Testimonios</a>
                     </div>
-                    <a href="contacto.html" class="nav-item nav-link" style="color: #5D4037; font-weight: 500; margin: 0 10px; font-family: 'Lato', sans-serif;">Contacto</a>
                 </div>
-                <div class="d-flex">
-                    <a href="login.html" class="btn btn-outline" style="color: #8B4513; border: 2px solid #8B4513; margin-right: 10px; border-radius: 20px; padding: 5px 15px; font-family: 'Lato', sans-serif; font-weight: 600;">Iniciar Sesión</a>
-                    <a href="registro.html" class="btn btn-primary" style="background-color: #FFC0CB; color: #5D4037; border: none; border-radius: 20px; padding: 5px 15px; font-family: 'Lato', sans-serif; font-weight: 600;">Registrarse</a>
-                </div>
+                <a href="/TIenda Online Pasteleria 1000 sabores/assets/page/contact.html" class="nav-item nav-link">Contacto</a>
             </div>
         </div>
     </nav>
-
+    <!-- Navbar End -->
     <header class="blog-header">
         <div class="container text-center">
             <h1 class="display-4">La Torta que Entró en el Libro Guinness</h1>
