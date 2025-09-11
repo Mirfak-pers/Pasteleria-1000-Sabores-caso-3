@@ -2,12 +2,12 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>Nombre del Producto - Pastelería Mil Sabores</title> <!-- Se debe cambiar dinámicamente -->
+    <title id="page-title">Nombre del Producto - Pastelería Mil Sabores</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Detalle del producto: Nombre del Producto - Pastelería Mil Sabores" name="description"> <!-- Se debe cambiar dinámicamente -->
+    <meta content="Detalle del producto: Nombre del Producto - Pastelería Mil Sabores" name="description" id="page-description">
 
     <!-- Favicon -->
-    <link href="assets/image/favicon.ico" rel="icon">
+    <link href="../assets/image/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,8 +23,6 @@
 
     <!-- Customized Bootstrap Stylesheet (Tu archivo style.css) -->
     <link href="../css/style.css" rel="stylesheet">
-
-   
 </head>
 <body>
     <!-- Topbar Start -->
@@ -62,7 +60,9 @@
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-0">
         <a href="../../index.html" class="navbar-brand d-block d-lg-none">
-            <h1 class="m-0 text-uppercase text-white"><i class="fa fa-birthday-cake fs-1 text-primary me-3"></i>Mil Sabores</h1>
+            <div class="logo">
+                <h1>Pastelería Mil Sabores</h1>
+            </div>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
@@ -70,20 +70,12 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto mx-lg-auto py-0">
                 <a href="../../index.html" class="nav-item nav-link">Inicio</a>
-                <a href="about.html" class="nav-item nav-link">Sobre Nosotros</a>
-                <a href="menu.html" class="nav-item nav-link">Menú y Precios</a>
-                <a href="team.html" class="nav-item nav-link">Nuestros Chefs</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Páginas</a>
-                    <div class="dropdown-menu m-0">
-                        <a href="service.html" class="dropdown-item">Nuestros Servicios</a>
-                        <a href="testimonial.html" class="dropdown-item">Testimonios</a>
-                        <a href="#" class="dropdown-item">Blog de Repostería</a>
-                    </div>
-                </div>
-                <a href="contact.html" class="nav-item nav-link">Contáctanos</a>
-                 <!-- Enlace al Carrito -->
-                <a href="cart.html" class="nav-item nav-link">Carrito</a>
+                <a href="productos.html" class="nav-item nav-link">Productos</a>
+                <a href="about.html" class="nav-item nav-link">Nosotros</a>
+                <a href="contact.html" class="nav-item nav-link">Contacto</a>
+                <a href="blogs.html" class="nav-item nav-link">Blog</a>
+                <a href="login.html" class="nav-item nav-link">Iniciar Sesión</a>
+                <a href="registro.html" class="nav-item nav-link">Registro</a>
             </div>
         </div>
     </nav>
@@ -94,12 +86,13 @@
         <div class="row">
             <div class="col-12 text-center">
                 <h1 class="display-4 text-uppercase text-white">Detalle del Producto</h1>
-                 <!-- Ejemplo de Breadcrumb, se puede generar dinámicamente -->
-                <a href="../../index.html">Inicio</a>
-                <i class="far fa-square text-primary px-2"></i>
-                <a href="menu.html">Menú</a>
-                <i class="far fa-square text-primary px-2"></i>
-                <a href="#">Nombre del Producto</a> <!-- Se debe cambiar dinámicamente -->
+                <div id="breadcrumb">
+                    <a href="../../index.html">Inicio</a>
+                    <i class="far fa-square text-primary px-2"></i>
+                    <a href="productos.html">Productos</a>
+                    <i class="far fa-square text-primary px-2"></i>
+                    <span id="breadcrumb-product-name">Nombre del Producto</span>
+                </div>
             </div>
         </div>
     </div>
@@ -109,25 +102,18 @@
     <div class="container">
         <div class="product-detail-container">
             <div class="product-detail-header">
-                 <!-- Nombre del Producto - Se debe cambiar dinámicamente -->
                 <h1 id="product-name">Nombre del Producto</h1>
-                 <!-- Código y Categoría - Se debe cambiar dinámicamente -->
                 <p class="text-muted"><strong>Código:</strong> <span id="product-code">XXXX</span> | <strong>Categoría:</strong> <span id="product-category">Categoría del Producto</span></p>
             </div>
 
             <div class="row">
                 <div class="col-lg-6 mb-4">
-                    <!-- Imagen del Producto - Se debe cambiar dinámicamente -->
-                    <img id="product-image" src="assets/image/cake-placeholder.jpg" alt="Nombre del Producto" class="product-detail-image">
+                    <img id="product-image" src="../assets/image/cake-placeholder.jpg" alt="Nombre del Producto" class="product-detail-image img-fluid">
                 </div>
                 <div class="col-lg-6">
-                    <!-- Descripción del Producto - Se debe cambiar dinámicamente -->
                     <p id="product-description">Descripción detallada del producto. Esta descripción debería ser cargada dinámicamente desde una fuente de datos (como un arreglo JS o un archivo JSON).</p>
-
-                    <!-- Precio del Producto - Se debe cambiar dinámicamente -->
                     <div class="product-detail-price mb-3" id="product-price">$0.00 CLP</div>
 
-                    <!-- Selector de Cantidad (Opcional) -->
                     <div class="mb-3">
                         <label for="product-quantity" class="form-label">Cantidad:</label>
                         <select class="form-select" id="product-quantity" style="width: auto;">
@@ -136,30 +122,14 @@
                             <option value="3">3</option>
                             <option value="4">4</option>
                             <option value="5">5</option>
-                            <!-- Puedes agregar más opciones -->
                         </select>
                     </div>
 
-                    <!-- Botón Agregar al Carrito -->
-                     <!-- El data-product-id debe ser único para cada producto y se debe cambiar dinámicamente -->
-                    <button type="button" class="btn btn-primary btn-lg" id="btn-add-to-cart" data-product-id="ID_DEL_PRODUCTO_AQUI">
+                    <button type="button" class="btn btn-primary btn-lg" id="btn-add-to-cart" data-product-id="">
                         <i class="bi bi-cart-plus me-2"></i> Agregar al Carrito
                     </button>
                 </div>
             </div>
-
-            <!-- Sección de Personalización (Opcional) -->
-            <!--
-            <div class="row mt-5">
-                <div class="col-12">
-                    <h3>Personaliza tu Torta</h3>
-                    <div class="mb-3">
-                        <label for="personalization-message" class="form-label">Agrega un mensaje especial:</label>
-                        <textarea class="form-control" id="personalization-message" rows="3" placeholder="Ej: ¡Feliz Cumpleaños Juan!"></textarea>
-                    </div>
-                </div>
-            </div>
-            -->
         </div>
     </div>
     <!-- Product Detail End -->
@@ -171,7 +141,7 @@
                 <div class="col-lg-4 col-md-6 mt-lg-n5">
                     <div class="d-flex flex-column align-items-center justify-content-center text-center h-100 bg-primary border-inner p-4">
                         <a href="../../index.html" class="navbar-brand">
-                            <h1 class="m-0 text-uppercase text-white"><i class="fa fa-birthday-cake fs-1 text-dark me-3"></i>CakeZone</h1>
+                            <h1 class="m-0 text-uppercase text-white"><i class="fa fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores</h1>
                         </a>
                         <p class="mt-3">Lorem diam sit erat dolor elitr et, diam lorem justo labore amet clita labore stet eos magna sit. Elitr dolor eirmod duo tempor lorem, elitr clita ipsum sea. Nonumy rebum et takimata ea takimata amet gubergren, erat rebum magna lorem stet eos. Diam amet et kasd eos duo dolore no.</p>
                     </div>
@@ -201,12 +171,12 @@
                         <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
                             <h4 class="text-primary text-uppercase mb-4">Enlaces Rápidos</h4>
                             <div class="d-flex flex-column justify-content-start">
-                                <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Inicio</a>
-                                <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Sobre Nosotros</a>
+                                <a class="text-secondary mb-2" href="../../index.html"><i class="bi bi-arrow-right text-primary me-2"></i>Inicio</a>
+                                <a class="text-secondary mb-2" href="about.html"><i class="bi bi-arrow-right text-primary me-2"></i>Sobre Nosotros</a>
                                 <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Nuestros Servicios</a>
                                 <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Conoce al Equipo</a>
-                                <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Último Blog</a>
-                                <a class="text-secondary" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Contáctanos</a>
+                                <a class="text-secondary mb-2" href="blogs.html"><i class="bi bi-arrow-right text-primary me-2"></i>Último Blog</a>
+                                <a class="text-secondary" href="contact.html"><i class="bi bi-arrow-right text-primary me-2"></i>Contáctanos</a>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
@@ -226,10 +196,8 @@
     </div>
     <div class="container-fluid text-secondary py-4" style="background: #111111;">
         <div class="container text-center">
-            <p class="mb-0">&copy; <a class="text-white border-bottom" href="#">Nombre de Tu Sitio</a>. Todos los Derechos Reservados. 
-			
-			<!--/*** Esta plantilla es gratuita siempre que mantengas el enlace de crédito/atribución/enlace de autor en el pie de página. Si deseas usar la plantilla sin el enlace de crédito/atribución/enlace de autor en el pie de página, puedes comprar la Licencia de Eliminación de Crédito en "https://htmlcodex.com/credit-removal  ". Gracias por tu apoyo. ***/-->
-			Diseñado por <a class="text-white border-bottom" href="https://htmlcodex.com  ">HTML Codex</a></p>
+            <p class="mb-0">&copy; <a class="text-white border-bottom" href="#">Pastelería Mil Sabores</a>. Todos los Derechos Reservados. 
+            Diseñado por <a class="text-white border-bottom" href="https://htmlcodex.com">HTML Codex</a></p>
         </div>
     </div>
     <!-- Pie de Página Fin -->
@@ -237,138 +205,93 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/carrito.js"></script>
-    <script>
-        // --- Simulación de Datos de Productos ---
-        // En una implementación real, estos datos vendrían de un servidor o de menu.html
-        const allProducts = [
-            { id: 'TC001', name: 'Torta Cuadrada de Chocolate', category: 'Tortas Cuadradas', price: 45000, description: 'Deliciosa torta de chocolate con capas de ganache y un toque de avellanas. Personalizable con mensajes especiales.' },
-            { id: 'TC002', name: 'Torta Cuadrada de Frutas', category: 'Tortas Cuadradas', price: 50000, description: 'Una mezcla de frutas frescas y crema chantilly sobre un suave bizcocho de vainilla, ideal para celebraciones.' },
-            { id: 'TT001', name: 'Torta Circular de Vainilla', category: 'Tortas Circulares', price: 40000, description: 'Bizcocho de vainilla clásico relleno con crema pastelera y cubierto con un glaseado dulce, perfecto para cualquier ocasión.' },
-            { id: 'PI001', name: 'Mousse de Chocolate', category: 'Postres Individuales', price: 5000, description: 'Postre individual cremoso y suave, hecho con chocolate de alta calidad, ideal para los amantes del chocolate.' },
-            { id: 'PSA001', name: 'Torta Sin Azúcar de Naranja', category: 'Productos Sin Azúcar', price: 48000, description: 'Torta ligera y deliciosa, endulzada naturalmente, ideal para quienes buscan opciones más saludables.' },
-            { id: 'PT001', name: 'Empanada de Manzana', category: 'Pastelería Tradicional', price: 3000, description: 'Pastelería tradicional rellena de manzanas especiadas, perfecta para un dulce desayuno o merienda.' },
-            { id: 'PG001', name: 'Brownie Sin Gluten', category: 'Productos Sin Gluten', price: 4000, description: 'Rico y denso, este brownie es perfecto para quienes necesitan evitar el gluten sin sacrificar el sabor.' },
-            { id: 'PV001', name: 'Torta Vegana de Chocolate', category: 'Productos Vegana', price: 50000, description: 'Torta de chocolate húmeda y deliciosa, hecha sin productos de origen animal, perfecta para veganos.' },
-            { id: 'TE001', name: 'Torta Especial de Cumpleaños', category: 'Tortas Especiales', price: 55000, description: 'Diseñada especialmente para celebraciones, personalizable con decoraciones y mensajes únicos.' }
-            // ... (agregar más productos según sea necesario)
-        ];
+<script src="../js/carrito.js"></script>
+<script>
+    // Función para formatear precios en CLP
+    function formatPrice(price) {
+        return new Intl.NumberFormat('es-CL', {
+            style: 'currency',
+            currency: 'CLP'
+        }).format(price);
+    }
 
-        // --- Funciones del Carrito ---
-        let cart = [];
-
-        // Función para obtener el carrito desde localStorage
-        function getCartFromLocalStorage() {
-            const cartJSON = localStorage.getItem('cart');
-            return cartJSON ? JSON.parse(cartJSON) : [];
+    // Función para cargar el detalle del producto por código
+    function loadProductDetailByCodigo(productCodigo) {
+        // Asumiendo que tienes una función en carrito.js que puede obtener productos por código
+        // Si no existe, puedes crearla o usar una variable global con los productos
+        const producto = window.productos ? 
+            window.productos.find(p => p.codigo === productCodigo) : 
+            findProductByCodigo(productCodigo); // Esta función debe estar en carrito.js
+        
+        if (!producto) {
+            document.querySelector('.product-detail-container').innerHTML = `
+                <div class="text-center">
+                    <h3 class="text-danger">Producto no encontrado</h3>
+                    <a href="productos.html" class="btn btn-primary">Volver a Productos</a>
+                </div>
+            `;
+            return;
         }
 
-        // Función para guardar el carrito en localStorage
-        function saveCartToLocalStorage() {
-            localStorage.setItem('cart', JSON.stringify(cart));
+        // Actualizar todos los elementos dinámicos
+        document.getElementById('page-title').textContent = `${producto.nombre} - Pastelería Mil Sabores`;
+        document.getElementById('page-description').setAttribute('content', `Detalle del producto: ${producto.nombre} - Pastelería Mil Sabores`);
+        document.getElementById('breadcrumb-product-name').textContent = producto.nombre;
+        document.getElementById('product-name').textContent = producto.nombre;
+        document.getElementById('product-code').textContent = producto.codigo;
+        document.getElementById('product-category').textContent = producto.categoria;
+        document.getElementById('product-image').src = producto.imagen || '../assets/image/cake-placeholder.jpg';
+        document.getElementById('product-image').alt = producto.nombre;
+        document.getElementById('product-description').textContent = producto.descripcion;
+        document.getElementById('product-price').textContent = formatPrice(producto.precio);
+        document.getElementById('btn-add-to-cart').dataset.productId = producto.codigo; // Usar código en lugar de ID
+    }
+
+    // --- Inicialización ---
+    document.addEventListener('DOMContentLoaded', function () {
+        // Obtener el código del producto de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productCodigo = urlParams.get('codigo');
+
+        if (productCodigo) {
+            loadProductDetailByCodigo(productCodigo);
+        } else {
+            document.querySelector('.product-detail-container').innerHTML = `
+                <div class="text-center">
+                    <h3 class="text-danger">No se especificó un producto</h3>
+                    <a href="productos.html" class="btn btn-primary">Volver a Productos</a>
+                </div>
+            `;
         }
 
-        // Función para formatear precios en CLP
-        function formatPrice(price) {
-            return `$${parseInt(price).toLocaleString('es-CL')} CLP`;
-        }
+        // Agregar event listener al botón "Agregar al Carrito"
+        document.getElementById('btn-add-to-cart').addEventListener('click', function() {
+            const productCodigo = this.dataset.productId;
+            const quantitySelect = document.getElementById('product-quantity');
+            const quantity = parseInt(quantitySelect ? quantitySelect.value : 1);
 
-        // Función para encontrar un producto por su ID
-        function findProductById(productId) {
-            return allProducts.find(product => product.id === productId);
-        }
-
-        // Función para agregar un producto al carrito
-        function addToCart(productId, quantity = 1) {
-            const product = findProductById(productId);
-            if (!product) {
-                console.error('Producto no encontrado:', productId);
-                alert('Error: Producto no encontrado.');
-                return;
-            }
-
-            // Verificar si el producto ya está en el carrito
-            const existingItemIndex = cart.findIndex(item => item.id === productId);
-
-            if (existingItemIndex > -1) {
-                // Si existe, actualizar la cantidad
-                cart[existingItemIndex].quantity += quantity;
-            } else {
-                // Si no existe, agregarlo como un nuevo item
-                cart.push({ id: productId, quantity: quantity });
-            }
-
-            // Guardar en localStorage y mostrar mensaje
-            saveCartToLocalStorage();
-            alert(`"${product.name}" ha sido agregado al carrito.`);
-            console.log('Carrito actualizado:', cart); // Para depuración
-        }
-
-        // --- Funcionalidad específica de la página de detalle ---
-        // Esta función se llamaría al cargar la página con un ID específico
-        function loadProductDetail(productId) {
-            const product = findProductById(productId);
-            if (!product) {
-                // Manejar el caso de producto no encontrado (mostrar mensaje, redirigir a menú, etc.)
-                document.querySelector('.product-detail-container').innerHTML = '<p class="text-center text-danger">Producto no encontrado.</p>';
-                return;
-            }
-
-            // Actualizar el contenido de la página con los datos del producto
-            document.title = `${product.name} - Pastelería Mil Sabores`;
-            document.getElementById('product-name').textContent = product.name;
-            document.getElementById('product-code').textContent = product.id;
-            document.getElementById('product-category').textContent = product.category;
-            // Asumiendo que tienes imágenes específicas por producto, usa una lógica para obtener la ruta correcta
-            // Por ahora, usamos placeholders genéricos o basados en la categoría
-            let imageSrc = 'assets/image/cake-placeholder.jpg';
-            if (product.category.includes('Cuadrada')) {
-                imageSrc = 'assets/image/cake-1.jpg';
-            } else if (product.category.includes('Circular')) {
-                imageSrc = 'assets/image/cake-2.jpg';
-            } else {
-                imageSrc = 'assets/image/cake-3.jpg';
-            }
-            document.getElementById('product-image').src = imageSrc;
-            document.getElementById('product-image').alt = product.name;
-            document.getElementById('product-description').textContent = product.description;
-            document.getElementById('product-price').textContent = formatPrice(product.price);
-
-            // Actualizar el data-product-id del botón
-            document.getElementById('btn-add-to-cart').dataset.productId = product.id;
-        }
-
-        // --- Inicialización ---
-        document.addEventListener('DOMContentLoaded', function () {
-            // Cargar el carrito desde localStorage al iniciar (opcional)
-            cart = getCartFromLocalStorage();
-
-            // --- Obtener el ID del producto de la URL ---
-            // Ejemplo de URL: product-detail.html?id=TC001
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id');
-
-            if (productId) {
-                loadProductDetail(productId);
-            } else {
-                // Manejar el caso de que no se proporcione un ID (mostrar mensaje, redirigir, etc.)
-                 document.querySelector('.product-detail-container').innerHTML = '<p class="text-center text-danger">No se especificó un producto.</p>';
-            }
-
-            // Agregar event listener al botón "Agregar al Carrito"
-            document.getElementById('btn-add-to-cart').addEventListener('click', function() {
-                const productId = this.dataset.productId;
-                const quantitySelect = document.getElementById('product-quantity');
-                const quantity = parseInt(quantitySelect ? quantitySelect.value : 1);
-
-                if (productId) {
-                    addToCart(productId, quantity);
+            if (productCodigo) {
+                // Llamar a la función del carrito (debe estar definida en carrito.js)
+                if (typeof agregarAlCarrito === 'function') {
+                    // Si agregarAlCarrito espera un objeto producto
+                    const producto = window.productos ? 
+                        window.productos.find(p => p.codigo === productCodigo) : 
+                        findProductByCodigo(productCodigo);
+                    
+                    if (producto) {
+                        agregarAlCarrito({
+                            ...producto,
+                            cantidad: quantity
+                        });
+                    }
                 } else {
-                    console.error('ID de producto no encontrado en el botón.');
+                    console.error('La función agregarAlCarrito no está definida en carrito.js');
                 }
-            });
+            } else {
+                console.error('Código de producto no encontrado en el botón.');
+            }
         });
-    </script>
-
+    });
+</script>
 </body>
 </html>
