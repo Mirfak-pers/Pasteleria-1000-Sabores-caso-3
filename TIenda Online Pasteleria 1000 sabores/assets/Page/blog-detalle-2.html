@@ -65,36 +65,71 @@
 </head>
 <body>
    
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <!-- Topbar (Información de contacto) -->
+    <div class="container-fluid px-0 d-none d-lg-block" style="background-color: #8B4513; color: #FFF5E1; font-family: 'Lato', sans-serif;">
+        <div class="row gx-0">
+            <div class="col-lg-4 text-center py-3" style="background-color: #5D4037;">
+                <div class="d-inline-flex align-items-center justify-content-center">
+                    <i class="bi bi-envelope fs-4 me-3" style="color: #FFC0CB;"></i>
+                    <div class="text-start">
+                        <h6 class="text-uppercase mb-1" style="font-family: 'Pacifico', cursive; color: #FFF5E1; margin: 0;">Envíanos un Email</h6>
+                        <span style="color: #FFF5E1; font-size: 0.9rem;">info@pasteriamilsabores.cl</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center py-3" style="background-color: #8B4513; border-left: 2px solid #FFC0CB; border-right: 2px solid #FFC0CB;">
+                <div class="d-inline-flex align-items-center justify-content-center">
+                    <a href="index.html" class="text-decoration-none">
+                        <h3 class="m-0 text-uppercase" style="font-family: 'Pacifico', cursive; color: #FFF5E1; font-size: 1.5rem;">
+                            <i class="fa fa-birthday-cake me-2" style="color: #FFF5E1;"></i>Pastelería Mil Sabores
+                        </h3>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center py-3" style="background-color: #5D4037;">
+                <div class="d-inline-flex align-items-center justify-content-center">
+                    <i class="bi bi-phone-vibrate fs-4 me-3" style="color: #FFC0CB;"></i>
+                    <div class="text-start">
+                        <h6 class="text-uppercase mb-1" style="font-family: 'Pacifico', cursive; color: #FFF5E1; margin: 0;">Llámanos</h6>
+                        <span style="color: #FFF5E1; font-size: 0.9rem;">+56 2 2123 4567</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+    <!-- Navbar Principal -->
+    <nav class="navbar navbar-expand-lg" style="background-color: #FFF5E1; padding: 1rem 0; box-shadow: 0 2px 5px rgba(93, 64, 55, 0.1);">
         <div class="container">
-            <a class="navbar-brand" href="../../index.html">
-                <img src="img/logo-pasteleria.png" alt="Logo" height="40" class="me-2">
-                Pastelería 1000 Sabores
+            <a href="index.html" class="navbar-brand d-block d-lg-none" style="font-family: 'Pacifico', cursive; color: #8B4513; font-size: 1.5rem;">
+                Pastelería Mil Sabores
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" style="border-color: #8B4513;">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="productos.html">Productos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="blogs.html">Blogs</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="nosotros.html">Nosotros</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contacto.html">Contacto</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.html">Iniciar Sesión</a>
-                    </li>
-                </ul>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav mx-auto">
+                    <a href="index.html" class="nav-item nav-link" style="color: #5D4037; font-weight: 500; margin: 0 10px; font-family: 'Lato', sans-serif;">Inicio</a>
+                    <a href="nosotros.html" class="nav-item nav-link" style="color: #5D4037; font-weight: 500; margin: 0 10px; font-family: 'Lato', sans-serif;">Nosotros</a>
+                    <a href="productos.html" class="nav-item nav-link" style="color: #5D4037; font-weight: 500; margin: 0 10px; font-family: 'Lato', sans-serif;">Productos</a>
+                    <a href="chefs.html" class="nav-item nav-link" style="color: #5D4037; font-weight: 500; margin: 0 10px; font-family: 'Lato', sans-serif;">Nuestros Chefs</a>
+                    <a href="blogs.html" class="nav-item nav-link active" style="color: #8B4513; font-weight: 700; margin: 0 10px; font-family: 'Lato', sans-serif; border-bottom: 2px solid #FFC0CB;">Blog</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" style="color: #5D4037; font-weight: 500; margin: 0 10px; font-family: 'Lato', sans-serif;" role="button">
+                            Más
+                        </a>
+                        <ul class="dropdown-menu" style="background-color: #FFF5E1; border: 1px solid #FFC0CB; border-radius: 5px; padding: 0.5rem 0;">
+                            <li><a class="dropdown-item" href="servicios.html" style="color: #5D4037; font-family: 'Lato', sans-serif; padding: 0.5rem 1.5rem;">Nuestros Servicios</a></li>
+                            <li><a class="dropdown-item" href="testimonios.html" style="color: #5D4037; font-family: 'Lato', sans-serif; padding: 0.5rem 1.5rem;">Testimonios</a></li>
+                        </ul>
+                    </div>
+                    <a href="contacto.html" class="nav-item nav-link" style="color: #5D4037; font-weight: 500; margin: 0 10px; font-family: 'Lato', sans-serif;">Contacto</a>
+                </div>
+                <div class="d-flex">
+                    <a href="login.html" class="btn btn-outline" style="color: #8B4513; border: 2px solid #8B4513; margin-right: 10px; border-radius: 20px; padding: 5px 15px; font-family: 'Lato', sans-serif; font-weight: 600;">Iniciar Sesión</a>
+                    <a href="registro.html" class="btn btn-primary" style="background-color: #FFC0CB; color: #5D4037; border: none; border-radius: 20px; padding: 5px 15px; font-family: 'Lato', sans-serif; font-weight: 600;">Registrarse</a>
+                </div>
             </div>
         </div>
     </nav>
