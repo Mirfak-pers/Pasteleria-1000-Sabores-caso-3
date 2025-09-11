@@ -358,3 +358,4 @@ function findProductByCodigo(codigo) {
     // Puede ser una variable global o importada
     return productos.find(producto => producto.codigo === codigo);
 }
+
