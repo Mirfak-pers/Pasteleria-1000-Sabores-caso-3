@@ -1,0 +1,186 @@
+/* === Importación de fuentes de Google Fonts === */
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,400&family=Pacifico&display=swap');
+
+/* === Variables de diseño === */
+:root {
+  --color-fondo-principal: #FFF5E1;       /* Crema pastel */
+  --color-acento-rosa: #FFC0CB;           /* Rosa suave */
+  --color-acento-chocolate: #8B4513;      /* Chocolate */
+  --color-texto-principal: #5D4037;       /* Marrón oscuro */
+  --color-texto-secundario: #795548;      /* Marrón medio (mejor legibilidad que gris claro) */
+}
+
+/* === Reset y estilos generales === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  background-color: var(--color-fondo-principal);
+  color: var(--color-texto-principal);
+  line-height: 1.6;
+}
+
+/* === Tipografía === */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Pacifico', cursive;
+  color: var(--color-acento-chocolate);
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+}
+
+/* === Clases de texto === */
+.text-body {
+  color: var(--color-texto-principal) !important;
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+}
+
+.text-secondary {
+  color: var(--color-texto-secundario) !important;
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+}
+
+/* === Botones === */
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.btn-primary {
+  background-color: var(--color-acento-chocolate);
+  color: white !important;
+  border-color: var(--color-acento-chocolate);
+}
+
+.btn-primary:hover {
+  background-color: transparent;
+  color: var(--color-acento-chocolate) !important;
+}
+
+.btn-secondary {
+  background-color: var(--color-acento-rosa);
+  color: var(--color-acento-chocolate) !important;
+  border-color: var(--color-acento-rosa);
+}
+
+.btn-secondary:hover {
+  background-color: transparent;
+  color: var(--color-acento-rosa) !important;
+}
+
+/* === Enlaces generales === */
+a {
+  color: var(--color-acento-chocolate);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* === Secciones === */
+.section {
+  padding: 3rem 1.5rem;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* === Navbar === */
+.navbar {
+  background-color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para navbar-light (fondo claro) */
+.navbar-light .navbar-brand,
+.navbar-light .navbar-nav .nav-link {
+  color: var(--color-acento-chocolate) !important;
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.navbar-light .navbar-nav .nav-link:hover,
+.navbar-light .navbar-brand:hover {
+  color: var(--color-acento-rosa) !important;
+  text-decoration: none;
+}
+
+/* Ícono del menú hamburguesa en móvil (color chocolate) */
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%238B4513' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+/* === Segunda navbar (solo desktop) === */
+.navbar.bg-white.py-1 {
+  border-top: 1px solid #f0e6d2;
+}
+
+/* === Footer / Impacto comunitario === */
+.impacto-comunitario {
+  background-color: white;
+  border-top: 3px solid var(--color-acento-rosa);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+/* === Back to Top === */
+.back-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
+  display: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--color-acento-chocolate) !important;
+  color: white !important;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  text-decoration: none !important;
+}
+
+.back-to-top:hover {
+  background-color: var(--color-acento-rosa) !important;
+  color: var(--color-texto-principal) !important;
+  text-decoration: none !important;
+}
+
+/* === Responsive adicional === */
+@media (max-width: 991px) {
+  .navbar-brand span {
+    font-size: 1.25rem;
+  }
+}
