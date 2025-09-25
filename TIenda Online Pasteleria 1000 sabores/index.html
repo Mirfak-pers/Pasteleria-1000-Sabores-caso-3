@@ -24,55 +24,58 @@
 </head>
 <body>
 
-<!-- Navbar 1: Enlaces principales + Carrito (en desktop) -->
-<nav class="navbar navbar-expand-lg bg-dark navbar-dark shadow-sm py-2 px-3 px-lg-5">
+<!-- Navbar 1: Logo + Menú Principal + Carrito -->
+<nav class="navbar navbar-expand-lg bg-light navbar-dark shadow-sm py-2 px-3 px-lg-4">
     <div class="container-fluid">
-        <!-- Logo solo en móvil -->
-        <a href="index.html" class="navbar-brand d-lg-none">
-            <h1 class="h5 m-0">Pastelería Mil Sabores</h1>
+        <!-- Logo (solo visible en desktop) -->
+        <a href="index.html" class="navbar-brand d-none d-lg-block">
+            <i class="fas fa-square me-2 text-dark"></i>
+            <span class="text-dark">Site Name</span>
         </a>
 
-        <!-- Botón colapsable solo en móvil -->
+        <!-- Botón colapsable para móvil -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarMain">
-            <!-- Enlaces principales (izquierda/centro) -->
+            <!-- Menú principal (izquierda/centro) -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a href="index.html" class="nav-link active">Inicio</a>
+                    <a href="index.html" class="nav-link text-dark">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="assets/Page/productos.html" class="nav-link">Productos</a>
+                    <a href="assets/Page/productos.html" class="nav-link text-dark">Productos</a>
                 </li>
                 <li class="nav-item">
-                    <a href="assets/Page/contact.html" class="nav-link">Contacto</a>
+                    <a href="assets/Page/about.html" class="nav-link text-dark">Nosotros</a>
                 </li>
                 <li class="nav-item">
-                    <a href="assets/Page/about.html" class="nav-link">Nosotros</a>
+                    <a href="assets/Page/blogs.html" class="nav-link text-dark">Blog</a>
                 </li>
                 <li class="nav-item">
-                    <a href="assets/Page/blogs.html" class="nav-link">Blog</a>
+                    <a href="assets/Page/contact.html" class="nav-link text-dark">Contacto</a>
                 </li>
             </ul>
 
-            <!-- Carrito: siempre a la derecha -->
+            <!-- Carrito (derecha) -->
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a href="assets/Page/carrito.html" class="nav-link">Carrito</a>
+                    <a href="assets/Page/carrito.html" class="nav-link text-dark">
+                        <i class="fas fa-shopping-cart me-1"></i> Cart (0)
+                    </a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
 
-<!-- Navbar 2: Solo en desktop → "Iniciar sesión | Registro" alineados a la derecha -->
-<nav class="navbar navbar-expand-lg bg-darker navbar-dark py-1 px-3 px-lg-5 d-none d-lg-block" style="background-color: #1a1a1a;">
+<!-- Navbar 2: Solo en desktop → Iniciar sesión | Registrar usuario -->
+<nav class="navbar navbar-expand-lg bg-white py-1 px-3 px-lg-4 d-none d-lg-block">
     <div class="container-fluid">
         <div class="navbar-nav ms-auto">
-            <a href="assets/Page/login.html" class="nav-link">Iniciar sesión</a>
-            <a href="assets/Page/registro.html" class="nav-link">Registro</a>
+            <a href="assets/Page/login.html" class="nav-link text-primary">Iniciar sesión</a>
+            <a href="assets/Page/registro.html" class="nav-link text-primary">Registrar usuario</a>
         </div>
     </div>
 </nav>
