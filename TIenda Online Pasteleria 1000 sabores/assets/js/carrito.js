@@ -8,7 +8,7 @@ const productos = [
         precio: 45000, 
         stock: 10, 
         categoria: "Tortas Cuadradas", 
-        imagen: "../image/torta-chocolate.jpg",
+        imagen: "../image/torta-chocolate.jpg" ,
         descripcion: "Deliciosa torta de chocolate con capas de ganache y un toque de avellanas. Personalizable con mensajes especiales."
     },
     { 
