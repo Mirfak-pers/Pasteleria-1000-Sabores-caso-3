@@ -23,61 +23,59 @@
     <link href="assets/css/style.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Topbar Start -->
-    <div class="container-fluid px-0 d-none d-lg-block">
-        <div class="row gx-0">
-            <div class="col-lg-4 text-center bg-secondary py-3">
-                <div class="d-inline-flex align-items-center justify-content-center">
-                    <i class="fas fa-envelope fs-1 text-primary me-3"></i>
-                    <div class="text-start">
-                        <h6 class="text-uppercase mb-1">Envíanos un correo</h6>
-                        <span>contacto@milsabores.cl</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 text-center bg-primary border-inner py-3">
-                <div class="d-inline-flex align-items-center justify-content-center">
-                    <a href="index.html" class="navbar-brand">
-                        <h1 class="m-0 text-uppercase text-white"><i class="fas fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores</h1>
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-4 text-center bg-secondary py-3">
-                <div class="d-inline-flex align-items-center justify-content-center">
-                    <i class="fas fa-phone fs-1 text-primary me-3"></i>
-                    <div class="text-start">
-                        <h6 class="text-uppercase mb-1">Llámanos</h6>
-                        <span>+56 2 2345 6789</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Topbar End -->
 
-<nav class="navbar navbar-expand-lg bg-dark navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-0">
-    <a href="index.html" class="navbar-brand d-block d-lg-none">
-        <div class="logo">
-            <h1>Pastelería Mil Sabores</h1>
-        </div>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-        <div class="navbar-nav ms-auto mx-lg-auto py-0">
-            <a href="index.html" class="nav-item nav-link active">Inicio</a>
-            <a href="assets/Page/productos.html" class="nav-item nav-link">Productos</a>
-            <a href="assets/Page/about.html" class="nav-item nav-link">nosotros</a>
-            <a href="assets/Page/contact.html" class="nav-item nav-link">Contacto</a>
-            <a href="assets/Page/blogs.html" class="nav-item nav-link">Blog</a>
-            <a href="assets/Page/carrito.html" class="nav-item nav-link">Carrito</a>
-            <a href="assets/Page/login.html" class="nav-item nav-link">iniciar sesión</a>
-            <a href="assets/Page/registro.html" class="nav-item nav-link">Registro</a>
+<!-- Navbar 1: Enlaces principales + Carrito (en desktop) -->
+<nav class="navbar navbar-expand-lg bg-dark navbar-dark shadow-sm py-2 px-3 px-lg-5">
+    <div class="container-fluid">
+        <!-- Logo solo en móvil -->
+        <a href="index.html" class="navbar-brand d-lg-none">
+            <h1 class="h5 m-0">Pastelería Mil Sabores</h1>
+        </a>
+
+        <!-- Botón colapsable solo en móvil -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <!-- Enlaces principales (izquierda/centro) -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link active">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a href="assets/Page/productos.html" class="nav-link">Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a href="assets/Page/contact.html" class="nav-link">Contacto</a>
+                </li>
+                <li class="nav-item">
+                    <a href="assets/Page/about.html" class="nav-link">Nosotros</a>
+                </li>
+                <li class="nav-item">
+                    <a href="assets/Page/blogs.html" class="nav-link">Blog</a>
+                </li>
+            </ul>
+
+            <!-- Carrito: siempre a la derecha -->
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a href="assets/Page/carrito.html" class="nav-link">Carrito</a>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
-<!-- Navbar End -->
+
+<!-- Navbar 2: Solo en desktop → "Iniciar sesión | Registro" alineados a la derecha -->
+<nav class="navbar navbar-expand-lg bg-darker navbar-dark py-1 px-3 px-lg-5 d-none d-lg-block" style="background-color: #1a1a1a;">
+    <div class="container-fluid">
+        <div class="navbar-nav ms-auto">
+            <a href="assets/Page/login.html" class="nav-link">Iniciar sesión</a>
+            <a href="assets/Page/registro.html" class="nav-link">Registro</a>
+        </div>
+    </div>
+</nav>
 
     <!-- Hero Start -->
     <div class="container-fluid bg-primary py-5 mb-5 text-secondary hero-header">
