@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario - Panel Admin | Pastelería 1000 Sabores</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Pacifico&display=swap" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --color-fondo-crema: #FFF5E1;
+            --color-acento-rosa: #FFC0CB;
+            --color-acento-chocolate: #8B4513;
+            --color-texto-marron: #5D4037;
+            --color-secundario-oscuro: #3E2723;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--color-fondo-crema);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Pacifico', cursive;
+        }
+
+        .sidebar {
+            background-color: var(--color-secundario-oscuro);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .sidebar .nav-link {
+            color: #ecf0f1;
+            border-radius: 8px;
+            margin-bottom: 0.3rem;
+            transition: all 0.3s;
+        }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: var(--color-acento-chocolate);
+            color: var(--color-acento-rosa);
+            transform: translateX(5px);
+        }
+
+        .sidebar .section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-acento-rosa);
+            font-weight: bold;
+            margin-top: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        .admin-header {
+            background-color: var(--color-acento-chocolate);
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--color-acento-rosa);
+            border-color: var(--color-acento-rosa);
+        }
+
+        .btn-primary:hover {
+            background-color: #ff99b0;
+            border-color: #ff99b0;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: var(--color-acento-chocolate);
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--color-acento-rosa);
+            box-shadow: 0 0 0 0.2rem rgba(255, 192, 203, 0.25);
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        footer {
+            background-color: var(--color-acento-chocolate);
+            color: var(--color-acento-rosa);
+            font-family: 'Pacifico', cursive;
+        }
+
+   
+        .invalid-feedback {
+            color: #e53935;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+
+    <nav class="navbar admin-header">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <img src="../image/logo-pasteleria.png" alt="Logo" height="50" class="me-3 rounded-circle border border-2" style="border-color: #FFC0CB !important;">
+                <span class="h4 mb-0" style="color: #FFC0CB;">Panel de Administración</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="me-3">¡Hola, Admin!</span>
+                <a href="../../index.html" class="btn btn-outline-light btn-sm">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+      
+            <div class="col-md-3 col-lg-2 sidebar p-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin-home.html">
+                            <i class="bi bi-house-door me-2"></i> Inicio
+                        </a>
+                    </li>
+
+                    <li class="nav-item section-title">Gestión de Productos</li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin-productos-lista.html">
+                            <i class="bi bi-list-ul me-2"></i> Listado de Productos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin-producto-crear.html">
+                            <i class="bi bi-plus-circle me-2"></i> Añadir Producto
+                        </a>
+                    </li>
+
+                    <li class="nav-item section-title">Categorías</li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Tortas Cuadradas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Tortas Circulares</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Postres Individuales</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Productos Sin Azúcar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Pastelería Tradicional</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Productos Sin Gluten</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Productos Veganos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Tortas Especiales</a>
+                    </li>
+
+                    <li class="nav-item section-title">Gestión de Usuarios</li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin-usuarios-lista.html">
+                            <i class="bi bi-people me-2"></i> Listado de Usuarios
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="admin-usuario-crear.html">
+                            <i class="bi bi-person-plus me-2"></i> Crear Usuario
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+     
+            <div class="col-md-9 col-lg-10 p-4">
+           
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">Crear Nuevo Usuario</h2>
+                    <a href="admin-usuarios-lista.html" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver al Listado
+                    </a>
+                </div>
+
+          
+                <div class="card">
+                    <div class="card-body">
+                        <form id="formUsuario">
+                            <div class="row">
+                    
+                                <div class="col-md-6 mb-3">
+                                    <label for="runUsuario" class="form-label">RUN *</label>
+                                    <input type="text" class="form-control" id="runUsuario" placeholder="Ej: 19011022K">
+                                    <div class="invalid-feedback">
+                                        El RUN es requerido, debe tener entre 7 y 9 caracteres, sin puntos ni guión (Ej: 19011022K).
+                                    </div>
+                                </div>
+
+                        
+                                <div class="col-md-6 mb-3">
+                                    <label for="nombreUsuario" class="form-label">Nombre *</label>
+                                    <input type="text" class="form-control" id="nombreUsuario" placeholder="Ej: Ana María">
+                                    <div class="invalid-feedback">
+                                        El nombre es requerido y máximo 50 caracteres.
+                                    </div>
+                                </div>
+
+                
+                                <div class="col-md-6 mb-3">
+                                    <label for="apellidosUsuario" class="form-label">Apellidos *</label>
+                                    <input type="text" class="form-control" id="apellidosUsuario" placeholder="Ej: Pérez González">
+                                    <div class="invalid-feedback">
+                                        Los apellidos son requeridos y máximo 100 caracteres.
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="correoUsuario" class="form-label">Correo Electrónico *</label>
+                                    <input type="email" class="form-control" id="correoUsuario" placeholder="Ej: usuario@duoc.cl">
+                                    <div class="invalid-feedback">
+                                        El correo es requerido, máximo 100 caracteres y debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com.
+                                    </div>
+                                </div>
+
+                    
+                                <div class="col-md-6 mb-3">
+                                    <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control" id="fechaNacimiento">
+                                    <div class="invalid-feedback">
+                                        La fecha debe ser válida.
+                                    </div>
+                                </div>
+
+                        
+                                <div class="col-md-6 mb-3">
+                                    <label for="tipoUsuario" class="form-label">Tipo de Usuario *</label>
+                                    <select class="form-select" id="tipoUsuario">
+                                        <option value="" selected>Selecciona un tipo</option>
+                                        <option value="Administrador">Administrador</option>
+                                        <option value="Vendedor">Vendedor</option>
+                                        <option value="Cliente">Cliente</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Debes seleccionar un tipo de usuario.
+                                    </div>
+                                </div>
+
+                        
+                                <div class="col-md-6 mb-3">
+                                    <label for="regionUsuario" class="form-label">Región *</label>
+                                    <select class="form-select" id="regionUsuario">
+                                        <option value="" selected>Selecciona una región</option>
+                                        <option value="1">Región de Tarapacá</option>
+                                        <option value="2">Región de Antofagasta</option>
+                                        <option value="3">Región de Atacama</option>
+                                        <option value="4">Región de Coquimbo</option>
+                                        <option value="5">Región de Valparaíso</option>
+                                        <option value="6">Región del Libertador General Bernardo O'Higgins</option>
+                                        <option value="7">Región del Maule</option>
+                                        <option value="8">Región del Biobío</option>
+                                        <option value="9">Región de La Araucanía</option>
+                                        <option value="10">Región de Los Lagos</option>
+                                        <option value="11">Región Aysén del General Carlos Ibáñez del Campo</option>
+                                        <option value="12">Región de Magallanes y de la Antártica Chilena</option>
+                                        <option value="13">Región Metropolitana de Santiago</option>
+                                        <option value="14">Región de Los Ríos</option>
+                                        <option value="15">Región de Arica y Parinacota</option>
+                                        <option value="16">Región de Ñuble</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Debes seleccionar una región.
+                                    </div>
+                                </div>
+
+                   
+                                <div class="col-md-6 mb-3">
+                                    <label for="comunaUsuario" class="form-label">Comuna *</label>
+                                    <select class="form-select" id="comunaUsuario">
+                                        <option value="" selected>Primero selecciona una región</option>
+                             
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Debes seleccionar una comuna.
+                                    </div>
+                                </div>
+
+                   
+                                <div class="col-12 mb-3">
+                                    <label for="direccionUsuario" class="form-label">Dirección *</label>
+                                    <textarea class="form-control" id="direccionUsuario" rows="2" placeholder="Ej: Calle Falsa 123, Depto 45"></textarea>
+                                    <div class="invalid-feedback">
+                                        La dirección es requerida y máximo 300 caracteres.
+                                    </div>
+                                </div>
+
+                          
+                                <div class="col-12 d-flex gap-3 mt-4">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="bi bi-save"></i> Guardar Usuario
+                                    </button>
+                                    <button type="reset" class="btn btn-outline-secondary px-4">
+                                        <i class="bi bi-arrow-counterclockwise"></i> Limpiar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="text-center py-3 mt-auto">
+        <p class="mb-0">&copy; 2024 Pastelería 1000 Sabores — Celebrando 50 años de dulzura y tradición 🍪</p>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script>
+       
+        const regionesYComunas = {
+            "1": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Huara", "Pica"],
+            "2": ["Antofagasta", "Mejillones", "Sierra Gorda", "Taltal"],
+            "13": ["Santiago", "Providencia", "Las Condes", "Ñuñoa", "Maipú", "Puente Alto"],
+            "16": ["Chillán", "Chillán Viejo", "Quillón", "San Carlos", "Bulnes"]
+          
+        };
+
+        document.getElementById('regionUsuario').addEventListener('change', function() {
+            const regionId = this.value;
+            const comunaSelect = document.getElementById('comunaUsuario');
+            comunaSelect.innerHTML = '<option value="">Selecciona una comuna</option>';
+
+            if (regionId && regionesYComunas[regionId]) {
+                regionesYComunas[regionId].forEach(comuna => {
+                    const option = document.createElement('option');
+                    option.value = comuna;
+                    option.textContent = comuna;
+                    comunaSelect.appendChild(option);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

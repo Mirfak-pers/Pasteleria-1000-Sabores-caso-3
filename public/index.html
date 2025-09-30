@@ -1,43 +1,225 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Pastelería Mil Sabores - Tienda Online</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Tienda online de Pastelería Mil Sabores, celebrando 50 años de repostería chilena." name="keywords">
+    <meta content="Tienda online de Pastelería Mil Sabores, celebrando 50 años de repostería chilena." name="description">
+    <!-- Favicon -->
+    <link href="assets/image/favicon.ico" rel="icon">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Libraries Stylesheet -->
+    <link href="assets/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Template Stylesheet -->
+    <link href="assets/css/style.index.css" rel="stylesheet">
+</head>
+<body>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+<!-- Navbar 1: Logo + Menú Principal + Carrito (+ Login/Registro en móvil) -->
+<nav class="navbar navbar-expand-lg bg-light navbar-light shadow-sm py-2 px-3 px-lg-4">
+    <div class="container-fluid">
+      <!-- Logo: visible siempre en móvil, y también en desktop si quieres -->
+      <a href="index.html" class="navbar-brand">
+        <i class="fas fa-birthday-cake me-2" style="color: #8B4513;"></i>
+        <span style="color: #8B4513; font-family: 'Pacifico', cursive;">Mil Sabores</span>
+      </a>
+  
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <!-- Menú principal -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a href="assets/Page/productos.html" class="nav-link">Productos</a>
+          </li>
+          <li class="nav-item">
+            <a href="assets/Page/contact.html" class="nav-link">Contacto</a>
+          </li>
+          <li class="nav-item">
+            <a href="assets/Page/about.html" class="nav-link">Nosotros</a>
+          </li>
+          <li class="nav-item">
+            <a href="assets/Page/blogs.html" class="nav-link">Blog</a>
+          </li>
+        </ul>
+  
+        <!-- Carrito + Login/Registro (siempre visibles en desktop) -->
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a href="assets/Page/carrito.html" class="nav-link">
+              <i class="fas fa-shopping-cart me-1"></i> Carrito
+            </a>
+          </li>
+          <!-- Estos dos SOLO en desktop -->
+          <li class="nav-item d-none d-lg-block">
+            <a href="assets/Page/login.html" class="nav-link">Iniciar sesión</a>
+          </li>
+          <li class="nav-item d-none d-lg-block">
+            <a href="assets/Page/registro.html" class="nav-link">Registro</a>
+          </li>
+        </ul>
+  
+        <!-- Login/Registro SOLO en móvil (dentro del menú colapsado) -->
+        <ul class="navbar-nav d-lg-none mt-3 pt-2 border-top">
+          <li class="nav-item">
+            <a href="assets/Page/login.html" class="nav-link">Iniciar sesión</a>
+          </li>
+          <li class="nav-item">
+            <a href="assets/Page/registro.html" class="nav-link">Registro</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Navbar 2: Solo en desktop → Iniciar sesión | Registrar usuario -->
+  <nav class="navbar navbar-expand-lg bg-white py-1 px-3 px-lg-4 d-none d-lg-block">
+    <div class="container-fluid">
+      <div class="navbar-nav ms-auto">
+        <a href="assets/Page/login.html" class="nav-link">Iniciar sesión</a>
+        <a href="assets/Page/registro.html" class="nav-link">Registro</a>
+      </div>
+    </div>
+  </nav>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+  
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+    <!-- About Start -->
+    <div class="container-fluid pt-5">
+        <div class="container">
+            <div class="section-title position-relative text-center mx-auto mb-5 text-secondary pb-3" style="max-width: 600px;">
+                <h2 class="text-primary font-secondary">Sobre Nosotros</h2>
+                <h1 class="display-4 text-uppercase">Bienvenidos a Pastelería Mil Sabores</h1>
+            </div>
+            <div class="row gx-5">
+
+                <div class="col-lg-6 pb-5">
+                    
+                    <div class="col-lg-6 pb-5">
+                        <h4 class="mb-4">Nuestra misión es ofrecer una experiencia 
+                            dulce y memorable.</h4>
+                        <p class="text-body">
+                            Ofrecemos tortas y productos de repostería
+                             de alta calidad para todas las ocasiones,
+                              celebrando nuestras raíces históricas y fomentando la creatividad.
+                               Conocida por nuestro récord Guinness en 1995,
+                                renovamos nuestra tienda online para brindarte lo mejor.</p>
+                    </div>
+                </div>
+                <div class="col-lg-5 mb-5 text-secondary mb-lg-0" style="min-height: 400px;">
+                    <div class="position-relative h-100">
+                        <img class="position-absolute w-100 h-100" src="assets/image/about.jpg" style="object-fit: cover;" alt="Nuestra Pastelería">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- About End -->
+
+<!-- Products Start -->
+    <div id="lista-productos" class="row">
+        <!-- Los productos se cargarán aquí dinámicamente -->
+    </div>
+<!-- Products End -->
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark bg-img text-secondary" style="margin-top: 135px">
+        <div class="container">
+            <div class="row gx-5">
+                <div class="col-lg-4 col-md-6 mt-lg-n5">
+                    <div class="d-flex flex-column align-items-center justify-content-center text-center h-100 bg-primary border-inner p-4">
+                        <a href="../../index.html" class="navbar-brand">
+                            <h1 class="m-0 text-uppercase text-white"><i class="fa fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores</h1>
+                        </a>
+                        <p class="mt-3">Celebramos 50 años de dulzura, tradición e innovación. Cada torta y postre es una obra de arte hecha con amor, ingredientes de primera calidad y la pasión que nos caracteriza desde 1974. ¡Descubre por qué somos un referente en la repostería chilena!</p>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-6">
+                    <div class="row gx-5">
+                        <div class="col-lg-4 col-md-12 pt-5 mb-5">
+                            <h4 class="text-primary text-uppercase mb-4">Ponte en Contacto</h4>
+                            <div class="d-flex mb-2">
+                                <i class="bi bi-geo-alt text-primary me-2"></i>
+                                <p class="mb-0">Av. Siempre Viva 123, Santiago, Chile</p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <i class="bi bi-envelope-open text-primary me-2"></i>
+                                <p class="mb-0">contacto@milsabores.cl</p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <i class="bi bi-telephone text-primary me-2"></i>
+                                <p class="mb-0">+56 2 2345 6789</p>
+                            </div>
+                            <div class="d-flex mt-4">
+                                <a class="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#"><i class="fab fa-twitter fw-normal"></i></a>
+                                <a class="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#"><i class="fab fa-facebook-f fw-normal"></i></a>
+                                <a class="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#"><i class="fab fa-instagram fw-normal"></i></a> <!-- Changed to Instagram -->
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
+                            <h4 class="text-primary text-uppercase mb-4">Enlaces Rápidos</h4>
+                        <div class="d-flex flex-column justify-content-start">
+                            <a class="text-secondary mb-2" href="index.html"><i class="bi bi-arrow-right text-primary me-2"></i>Inicio</a>
+                            <a class="text-secondary mb-2" href="assets/Page/productos.html"><i class="bi bi-arrow-right text-primary me-2"></i>Productos</a>
+                            <a class="text-secondary mb-2" href="assets/Page/about.html"><i class="bi bi-arrow-right text-primary me-2"></i>Nosotros</a>
+                            <a class="text-secondary mb-2" href="assets/Page/contact.html"><i class="bi bi-arrow-right text-primary me-2"></i>Contacto</a>
+                            <a class="text-secondary mb-2" href="assets/Page/blogs.html"><i class="bi bi-arrow-right text-primary me-2"></i>Blog</a>
+                            <a class="text-secondary mb-2" href="assets/Page/carrito.html"><i class="bi bi-arrow-right text-primary me-2"></i>Carrito</a>
+                            <a class="text-secondary" href="assets/Page/login.html"><i class="bi bi-arrow-right text-primary me-2"></i>Iniciar Sesión</a>
+                            <a class="text-secondary" href="assets/Page/registro.html"><i class="bi bi-arrow-right text-primary me-2"></i>Registro</a>
+                        </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
+                            <h4 class="text-primary text-uppercase mb-4">Boletín Informativo</h4>
+                            <p>¡Suscríbete y recibe un 10% de descuento en tu primera compra! Entérate de nuestras nuevas recetas, promociones y eventos especiales.</p>
+                            <form action="">
+                                <div class="input-group">
+                                    <input type="text" class="form-control border-white p-3" placeholder="Tu Correo Electrónico">
+                                    <button class="btn btn-primary">Suscríbete</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid text-secondary py-4" style="background: #111111;">
+        <div class="container text-center">
+            <p class="mb-0">&copy; <a class="text-white border-bottom" href="#">Pastelería Mil Sabores</a>. Todos los Derechos Reservados.
+
+            <!--/*** Esta plantilla es gratuita siempre que mantengas el enlace de crédito del autor/enlace de atribución/enlace de retorno. Si deseas usar la plantilla sin el enlace de crédito del autor/enlace de atribución/enlace de retorno, puedes comprar la Licencia de Eliminación de Crédito en "https://htmlcodex.com/credit-removal    ". Gracias por tu apoyo. ***/-->
+            Diseñado por <a class="text-white border-bottom" href="https://htmlcodex.com">HTML Codex</a></p>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary border-inner py-3 fs-4 back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/lib/easing/easing.min.js"></script>
+    <script src="assets/lib/waypoints/waypoints.min.js"></script>
+    <script src="assets/lib/counterup/counterup.min.js"></script>
+    <script src="assets/lib/owlcarousel/owl.carousel.min.js"></script>
+    <!-- Template Javascript -->
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/carrito.js"></script>
+</body>
 </html>
