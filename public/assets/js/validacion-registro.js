@@ -20,6 +20,21 @@ function validadMayoriaEdad(fecha) {
     }
     return edad >= 18;
 }
+// Configuración de Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyC01DeLX515dsD29to5rHeqaWC8RV98KNg",
+    authDomain: "tiendapasteleriamilsabor-a7ac6.firebaseapp.com",
+    databaseURL: "https://tiendapasteleriamilsabor-a7ac6-default-rtdb.firebaseio.com", // ← ESTA LÍNEA ES CLAVE
+    projectId: "tiendapasteleriamilsabor-a7ac6",
+    storageBucket: "tiendapasteleriamilsabor-a7ac6.firebasestorage.app",
+    messagingSenderId: "522171765461",
+    appId: "1:522171765461:web:6745850bf2a9735682885c",
+    measurementId: "G-08JFT3CMHR"
+};
+
+// Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database(); // ← Realtime Database
 
 document.addEventListener("DOMContentLoaded", () => {
     const runInput = document.getElementById("run");
@@ -71,17 +86,32 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        //Todos los datos son correctos
-        let nombreUsuario = nombre;
-        mensaje.innerText = `Formuario enviado correctamente`;
+// Todos los datos son válidos
+    const usuarioData = {
+        rut: run, // Nota: usas "run" en tu código, pero en la BD se llama "rut"
+        nombre: nombre,
+        correo: correo,
+        fechaNacimiento: fecha // será una cadena en formato "YYYY-MM-DD"
+    };
 
-        //REdireccionamos
+    // Guardar en Realtime Database bajo la colección "usuario"
+    database.ref('usuario').push(usuarioData)
+    .then(() => {
+        mensaje.innerText = "Formulario enviado correctamente";
+        
         const destino = correo.toLowerCase() === "admin@duoc.cl" ?
-        `assets/page/perfilAdmin.html?nombre=${encodeURIComponent(nombreUsuario)}` :
-        `assets/page/perfilCliente.html?nombre=${encodeURIComponent(nombreUsuario)}`;
+            `assets/page/perfilAdmin.html?nombre=${encodeURIComponent(nombre)}` :
+            `assets/page/perfilCliente.html?nombre=${encodeURIComponent(nombre)}`;
 
-        setTimeout(() =>{
+        setTimeout(() => {
             window.location.href = destino;
         }, 1000);
+    })
+    .catch((error) => {
+        console.error("Error al guardar en Firebase Realtime Database:", error);
+        mensaje.innerText = "Error al enviar el formulario. Inténtalo más tarde.";
+        mensaje.style.color = "red";
+    });
+
     });
 });
