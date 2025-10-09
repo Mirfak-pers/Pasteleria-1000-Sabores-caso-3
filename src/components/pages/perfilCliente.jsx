@@ -1,8 +1,15 @@
-import { useLocation} from "react-router-dom";
+import React, { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 
-function useQuery() {return new URLSearchParams(useLocation().search)};
 const PerfilCliente = () => {
-    const q = useQuery();
-    return <h2>Perfil CLiente - Bienvenido { q.get("nombre")}</h2>
+  const { user } = useContext(UserContext); // Accedemos al usuario desde el contexto
+
+  return (
+    <div>
+      <h2>Perfil Cliente</h2>
+      <p>Bienvenido, {user?.nombre || "Cliente"}!</p>
+    </div>
+  );
 };
+
 export default PerfilCliente;
