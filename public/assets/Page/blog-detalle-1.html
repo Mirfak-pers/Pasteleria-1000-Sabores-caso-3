@@ -64,61 +64,57 @@
     </style>
 </head>
 <body>
- <!-- Topbar Start -->
-    <div class="container-fluid px-0 d-none d-lg-block">
-        <div class="row gx-0">
-            <div class="col-lg-4 text-center bg-secondary py-3">
-                <div class="d-inline-flex align-items-center justify-content-center">
-                    <i class="fas fa-envelope fs-1 text-primary me-3"></i>
-                    <div class="text-start">
-                        <h6 class="text-uppercase mb-1">Envíanos un correo</h6>
-                        <span>contacto@milsabores.cl</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 text-center bg-primary border-inner py-3">
-                <div class="d-inline-flex align-items-center justify-content-center">
-                    <a href="../../index.html" class="navbar-brand">
-                        <h1 class="m-0 text-uppercase text-white"><i class="fas fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores</h1>
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-4 text-center bg-secondary py-3">
-                <div class="d-inline-flex align-items-center justify-content-center">
-                    <i class="fas fa-phone fs-1 text-primary me-3"></i>
-                    <div class="text-start">
-                        <h6 class="text-uppercase mb-1">Llámanos</h6>
-                        <span>+56 2 2345 6789</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Topbar End -->
-
-<nav class="navbar navbar-expand-lg bg-dark navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-0">
-    <a href="../../index.html" class="navbar-brand d-block d-lg-none">
-        <div class="logo">
-            <h1>Pastelería Mil Sabores</h1>
-        </div>
+<nav class="navbar navbar-expand-lg bg-light navbar-light shadow-sm py-2 px-3 px-lg-4">
+  <div class="container-fluid">
+    <!-- Logo -->
+    <a href="index.html" class="navbar-brand">
+      <i class="fas fa-birthday-cake me-2" style="color: #8B4513;"></i>
+      <span style="color: #8B4513; font-family: 'Pacifico', cursive;">Mil Sabores</span>
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-        <span class="navbar-toggler-icon"></span>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+      <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-        <div class="navbar-nav ms-auto mx-lg-auto py-0">
-            <a href="../../index.html" class="nav-item nav-link">Inicio</a>
-            <a href="productos.html" class="nav-item nav-link">Productos</a>
-            <a href="about.html" class="nav-item nav-link">nosotros</a>
-            <a href="contact.html" class="nav-item nav-link">Contacto</a>
-            <a href="blogs.html" class="nav-item nav-link active">Blog</a>
-            <a href="carrito.html" class="nav-item nav-link">Carrito</a>
-            <a href="login.html" class="nav-item nav-link">iniciar sesión</a>
-            <a href="registro.html" class="nav-item nav-link">Registro</a>
-        </div>
+
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <!-- Menú principal (izquierda) -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a href="index.html" class="nav-link">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a href="assets/Page/productos.html" class="nav-link">Productos</a>
+        </li>
+        <li class="nav-item">
+          <a href="assets/Page/contact.html" class="nav-link">Contacto</a>
+        </li>
+        <li class="nav-item">
+          <a href="assets/Page/about.html" class="nav-link">Nosotros</a>
+        </li>
+        <li class="nav-item">
+          <a href="assets/Page/blogs.html" class="nav-link">Blog</a>
+        </li>
+      </ul>
+
+      <!-- Derecha: Carrito + Login + Registro -->
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <!-- Carrito: visible en todos los tamaños -->
+        <li class="nav-item">
+          <a href="assets/Page/carrito.html" class="nav-link">
+            <i class="fas fa-shopping-cart me-1"></i> Carrito
+          </a>
+        </li>        
+          <!-- Login y Registro-->
+        <li class="nav-item">
+          <a href="assets/Page/login.html" class="nav-link">Iniciar sesión</a>
+        </li>
+        <li class="nav-item">
+          <a href="assets/Page/registro.html" class="nav-link">Registro</a>
+        </li>
+      </ul>
     </div>
+  </div>
 </nav>
-<!-- Navbar End -->
 
     <header class="blog-header">
         <div class="container text-center">
