@@ -23,23 +23,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  const registerForm = document.getElementById('registerForm');
-  if (registerForm) {
-    registerForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const email = document.getElementById('register-email').value;
-      const password = document.getElementById('register-password').value;
-
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(userCredential => {
-          alert('Usuario registrado exitosamente');
-          window.location.href = 'index.html';
-        })
-        .catch(error => {
-          console.error('Error al registrar usuario:', error);
-          alert('Error al registrar: ' + error.message);
-        });
-    });
-  }
 });
