@@ -96,76 +96,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
-    <script>
-     
-        function validarCorreo(correo) {
-            const regex = /^[\w.+-]+@(duoc\.cl|profesor\.duoc\.cl|gmail\.com)$/i;
-            return regex.test(correo);
-        }
-
-        // Función para validar la contraseña (4 a 10 caracteres)
-        function validarPassword(password) {
-            return password.length >= 4 && password.length <= 10;
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const correoInput = document.getElementById("correoLogin");
-            const passwordInput = document.getElementById("passwordLogin");
-            const mensaje = document.getElementById("mensaje");
-            const form = document.getElementById("formLogin");
-
-            // Limpiar mensajes de error al escribir
-            [correoInput, passwordInput].forEach(input => {
-                input.addEventListener("input", () => {
-                    input.setCustomValidity("");
-                    mensaje.style.display = "none";
-                });
-            });
-
-            // Manejar el envío del formulario
-            form.addEventListener("submit", function(e) {
-                e.preventDefault(); 
-
-
-                mensaje.style.display = "none";
-
-                // Obtener valores
-                const correo = correoInput.value.trim();
-                const password = passwordInput.value;
-
-  
-                if (!validarCorreo(correo)) {
-                    correoInput.setCustomValidity("El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com.");
-                    correoInput.reportValidity();
-                    return;
-                }
-
-                if (!validarPassword(password)) {
-                    passwordInput.setCustomValidity("La contraseña debe tener entre 4 y 10 caracteres.");
-                    passwordInput.reportValidity();
-                    return;
-                }
-
-                mensaje.className = "alert alert-success";
-                mensaje.innerText = "¡Inicio de sesión exitoso! Redirigiendo...";
-                mensaje.style.display = "block";
-
- 
-                let destino;
-                if (correo.toLowerCase() === "admin@duoc.cl") {
-                    destino = "admin-home.html"; 
-                } else if (correo.toLowerCase() === "vendedor@duoc.cl") {
-                    destino = "vendedor-home.html";
-                } else {
-                    destino = "../../index.html"; 
-                }
-
-       
-                setTimeout(() => {
-                    window.location.href = destino;
-                }, 1500);
-            });
-        });
-    </script>
+<script src="../js/config.js"></script>
+<script src="../js/auth.js"></script>
 </body>
 </html>

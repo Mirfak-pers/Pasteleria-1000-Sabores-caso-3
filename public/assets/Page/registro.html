@@ -66,6 +66,12 @@
             margin-top: 1rem;
             font-size: 0.9rem;
         }
+        /* Mensaje de error */
+        .error-message {
+            color: red;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 <body>
@@ -73,7 +79,7 @@
         <div class="form-container">
             <h2>Registro de usuario</h2>
 
-            <form id="formUsuario">
+            <form id="registerForm">
                 <!-- Nombre Completo -->
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre Completo *</label>
@@ -84,24 +90,28 @@
                 <div class="mb-3">
                     <label for="correo" class="form-label">Correo *</label>
                     <input type="email" class="form-control" id="correo" placeholder="Ej: usuario@duoc.cl" required>
+                    <div id="email-error" class="error-message"></div> <!-- Mensaje de error para email -->
                 </div>
 
                 <!-- Confirmar Correo -->
                 <div class="mb-3">
                     <label for="confirmar-correo" class="form-label">Confirmar Correo *</label>
                     <input type="email" class="form-control" id="confirmar-correo" placeholder="Confirma tu correo" required>
+                    <div id="confirm-email-error" class="error-message"></div> <!-- Mensaje de error para confirmación -->
                 </div>
 
                 <!-- Contraseña -->
                 <div class="mb-3">
                     <label for="contrasena" class="form-label">Contraseña *</label>
-                    <input type="password" class="form-control" id="contrasena" placeholder="Ingresa tu contraseña" required>
+                    <input type="password" class="form-control" id="contrasena" placeholder="Ingresa tu contraseña" required minlength="6">
+                    <div id="password-error" class="error-message"></div> <!-- Mensaje de error para contraseña -->
                 </div>
 
                 <!-- Confirmar Contraseña -->
                 <div class="mb-3">
                     <label for="confirmar-contrasena" class="form-label">Confirmar Contraseña *</label>
                     <input type="password" class="form-control" id="confirmar-contrasena" placeholder="Confirma tu contraseña" required>
+                    <div id="confirm-password-error" class="error-message"></div> <!-- Mensaje de error para confirmación -->
                 </div>
 
                 <!-- Teléfono (Opcional) -->
@@ -110,22 +120,25 @@
                     <input type="tel" class="form-control" id="telefono" placeholder="Ej: +56 9 1234 5678">
                 </div>
 
-                <!-- Región -->
-                <div class="mb-3">
-                    <label for="region" class="form-label">Región *</label>
-                    <select class="form-select" id="region" required>
-                        <option value="">-- Seleccione la región --</option>
-                        <option value="metropolitana">Región Metropolitana de Santiago</option>
-                        <option value="araucania">Región de la Araucanía</option>
-                        <option value="nuble">Región de Ñuble</option>
-                    </select>
-                </div>
+                <button type="submit" class="btn btn-primary">Registrarse</button>
+            </form>
 
-                <!-- Comuna -->
-                <div class="mb-3">
-                    <label for="comuna" class="form-label">Comuna *</label>
-                    <select class="form-select" id="comuna" required>
-                        <option value="">-- Seleccione la comuna --</option>
-                        <option value="linares">Linares</option>
-                        <option value="longavi">Longaví</option>
-                        <
+            <p class="form-text">
+                ¿Ya tienes una cuenta? <a href="login.html">Inicia sesión aquí</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Incluye Firebase SDK -->
+    <script type="importmap">
+      {
+        "imports": {
+          "firebase/app": "https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js",
+          "firebase/auth": "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js",
+          "firebase/firestore": "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"
+        }
+      }
+    </script>
+    <script type="module" src="../js/registro.js"></script>
+</body>
+</html>
