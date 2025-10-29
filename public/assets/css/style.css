@@ -394,7 +394,7 @@ h6,
 
 /* --- Fondo general con imagen --- */
 .bg-img {
-    /* background: linear-gradient(rgba(139, 69, 19, .5), rgba(139, 69, 19, .5)), url(../image/bg.jpg) center center no-repeat; */
+    background: linear-gradient(rgba(139, 69, 19, .5), rgba(139, 69, 19, .5)), url(../image/bg.jpg) center center no-repeat; 
     background: var(--dark); /* Fallback sólido */
     background-size: cover;
     background-color: var(--secondary); /* Fallback crema pastel adicional */
