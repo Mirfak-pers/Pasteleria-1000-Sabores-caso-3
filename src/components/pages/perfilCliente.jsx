@@ -1,15 +1,22 @@
-import React, { useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
+// src/components/pages/perfilCliente.jsx
+import React from 'react';
+import { useUser } from '../../context/UserContext'; // Importa el hook
 
-const PerfilCliente = () => {
-  const { user } = useContext(UserContext); // Accedemos al usuario desde el contexto
+export default function PerfilCliente() {
+  const { user } = useUser(); // Obtiene el usuario del contexto
+
+  if (!user) {
+    // Opcional: Redirigir al login si no hay usuario
+    // return <Navigate to="/login" />;
+    return <p>Debes iniciar sesión para ver tu perfil.</p>;
+  }
 
   return (
     <div>
-      <h2>Perfil Cliente</h2>
-      <p>Bienvenido, {user?.nombre || "Cliente"}!</p>
+      <h2>Perfil del Cliente</h2>
+      <p>Nombre: {user.nombre}</p>
+      <p>Email: {user.email}</p>
+      {/* Muestra más datos del usuario aquí */}
     </div>
   );
-};
-
-export default PerfilCliente;
+}

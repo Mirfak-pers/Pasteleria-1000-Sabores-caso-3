@@ -4,14 +4,15 @@ import { collection, getDocs } from "firebase/firestore";
 import { addToCart, updateCart } from './common.js'; // Asegúrate que common.js exporte estas funciones
 
 document.addEventListener("DOMContentLoaded", function () {
-  const productsContainer = document.getElementById('products-container'); // Asegúrate que productos.html tenga este contenedor
+  // Cambiado: Ahora busca el ID correcto del HTML
+  const productsContainer = document.getElementById('lista-productos');
 
   if (productsContainer) {
     // Función para cargar y mostrar productos
     async function cargarProductosDesdeFirestore() {
       try {
         console.log("Cargando productos desde Firestore en productos.html...");
-        const querySnapshot = await getDocs(collection(db, "productos")); // Consulta la colección 'productos'
+          const querySnapshot = await getDocs(collection(db, "producto")); 
 
         if (querySnapshot.empty) {
           console.log("No se encontraron productos en la colección 'productos'.");
