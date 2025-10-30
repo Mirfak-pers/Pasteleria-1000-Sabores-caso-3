@@ -73,12 +73,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Verificar si existe el perfil en Firestore (colección "usuario")
             console.log('Verificando perfil en Firestore...');
-            const perfilDoc = await db.collection('usuario').doc(user.uid).get();
+            const perfilDoc = await db.collection('usuarios').doc(user.uid).get();
             
             if (!perfilDoc.exists) {
                 console.log('Perfil no existe, creando nuevo perfil...');
                 // Crear perfil básico si no existe
-                await db.collection('usuario').doc(user.uid).set({
+                await db.collection('usuarios').doc(user.uid).set({
                     nombre: user.displayName || correo.split('@')[0],
                     correo: user.email,
                     telefono: "",
