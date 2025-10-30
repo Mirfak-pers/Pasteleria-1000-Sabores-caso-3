@@ -240,9 +240,9 @@ document.addEventListener("DOMContentLoaded", async function () {
   /**
    * Redirigir al detalle del producto
    */
-  function irADetalle(productId) {
-    window.location.href = `detalleProducto.html?id=${productId}`;
-  }
+function irADetalle(productId) {
+    window.location.href = "assets/Page/detalleProducto.html?id=${productId}";
+}
 
   async function agregarAlCarrito(productId) {
     const producto = productosGlobal.find(p => p.id === productId);

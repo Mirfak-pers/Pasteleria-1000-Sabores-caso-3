@@ -1,5 +1,5 @@
 // js/auth.js
-// Login con Firebase v8
+// Login con Firebase v8 - Con detección de admin
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log('auth.js cargado');
@@ -69,6 +69,50 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.log('✅ Usuario autenticado:', user.uid);
             console.log('Email:', user.email);
+
+            // DETECTAR SI ES ADMINISTRADOR
+            const esAdmin = correo.toLowerCase() === 'admin@duoc.cl';
+            
+            if (esAdmin) {
+                console.log('🔑 Usuario ADMIN detectado');
+                mostrarMensaje('¡Bienvenido Administrador! Redirigiendo al panel...', 'success');
+                
+                // Verificar/crear perfil de admin
+                const adminDoc = await db.collection('usuarios').doc(user.uid).get();
+                
+                if (!adminDoc.exists) {
+                    console.log('Creando perfil de administrador...');
+                    await db.collection('usuarios').doc(user.uid).set({
+                        nombre: 'Administrador',
+                        correo: user.email,
+                        rol: 'admin',
+                        telefono: "",
+                        rut: "",
+                        fechaCreacion: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    console.log('✅ Perfil de admin creado');
+                } else {
+                    // Actualizar rol si no lo tiene
+                    const adminData = adminDoc.data();
+                    if (adminData.rol !== 'admin') {
+                        await db.collection('usuarios').doc(user.uid).update({
+                            rol: 'admin'
+                        });
+                        console.log('✅ Rol de admin actualizado');
+                    }
+                }
+                
+                // Redirigir a panel de administrador
+                setTimeout(() => {
+                    const adminUrl = window.location.origin + '/assets/Page/admin-home.html';
+                    console.log('Redirigiendo a:', adminUrl);
+                    window.location.href = adminUrl;
+                }, 1000);
+                return;
+            }
+
+            // USUARIO NORMAL - continuar con flujo normal
+            console.log('👤 Usuario normal detectado');
             mostrarMensaje('¡Inicio de sesión exitoso! Redirigiendo...', 'success');
 
             // Verificar si existe el perfil en Firestore (colección "usuario")
@@ -81,18 +125,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 await db.collection('usuarios').doc(user.uid).set({
                     nombre: user.displayName || correo.split('@')[0],
                     correo: user.email,
+                    rol: 'cliente',
                     telefono: "",
-                    clave: "", // No guardar contraseña aquí por seguridad
                     rut: "",
                     fechaNacimiento: null,
                     fechaCreacion: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                console.log('✅ Perfil de usuario creado en colección "usuario"');
+                console.log('✅ Perfil de usuario creado en colección "usuarios"');
+            } else {
+                // Verificar que tenga rol de cliente
+                const userData = perfilDoc.data();
+                if (!userData.rol) {
+                    await db.collection('usuarios').doc(user.uid).update({
+                        rol: 'cliente'
+                    });
+                }
             }
 
             // TAMBIÉN verificar/crear en colección "clientes" para perfil-cliente
             console.log('Verificando perfil de cliente...');
-            const clienteDoc = await db.collection('usuarios').doc(user.uid).get();
+            const clienteDoc = await db.collection('clientes').doc(user.uid).get();
             
             if (!clienteDoc.exists) {
                 console.log('Perfil de cliente no existe, creando...');
@@ -106,13 +158,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     fechaCreacion: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
-                await db.collection('usuarios').doc(user.uid).set(clienteProfile);
+                await db.collection('clientes').doc(user.uid).set(clienteProfile);
                 console.log('✅ Perfil de cliente creado en colección "clientes"');
             }
 
-            // Redirigir después de 1 segundo
+            // Redirigir a inicio después de 1 segundo
             setTimeout(() => {
-                window.location.href = '../../index.html';
+                window.location.href = '/index.html';
             }, 1000);
 
         } catch (error) {
@@ -173,7 +225,7 @@ function cerrarSesion() {
         auth.signOut().then(() => {
             console.log('Sesión cerrada');
             alert('Has cerrado sesión correctamente');
-            window.location.href = 'login.html';
+            window.location.href = '/assets/Page/login.html';
         }).catch((error) => {
             console.error('Error al cerrar sesión:', error);
             alert('Error al cerrar sesión');
@@ -181,5 +233,42 @@ function cerrarSesion() {
     }
 }
 
-// Exportar función globalmente
+// Función para verificar si el usuario actual es admin
+async function esUsuarioAdmin() {
+    try {
+        const user = auth.currentUser;
+        if (!user) return false;
+        
+        const correo = user.email.toLowerCase();
+        return correo === 'admin@duoc.cl';
+    } catch (error) {
+        console.error('Error al verificar admin:', error);
+        return false;
+    }
+}
+
+// Función para proteger páginas de admin
+async function protegerPaginaAdmin() {
+    const user = auth.currentUser;
+    
+    if (!user) {
+        alert('Debes iniciar sesión para acceder a esta página');
+        window.location.href = '/assets/Page/login.html';
+        return;
+    }
+    
+    const esAdmin = await esUsuarioAdmin();
+    
+    if (!esAdmin) {
+        alert('No tienes permisos para acceder a esta página');
+        window.location.href = '/index.html';
+        return;
+    }
+    
+    console.log('✅ Acceso de admin verificado');
+}
+
+// Exportar funciones globalmente
 window.cerrarSesion = cerrarSesion;
+window.esUsuarioAdmin = esUsuarioAdmin;
+window.protegerPaginaAdmin = protegerPaginaAdmin;
