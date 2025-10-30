@@ -1,5 +1,5 @@
 // assets/js/config.js
-// Configuración de Firebase
+// Configuración de Firebase v8
 
 const firebaseConfig = {
   apiKey: "AIzaSyC01DeLX515dsD29to5rHeqaWC8RV98KNg",
@@ -27,4 +27,7 @@ if (typeof firebase === 'undefined') {
   }
 }
 
-// No es necesario exportar db aquí porque productos.js lo obtendrá directamente
+// Exportar referencias globales para v8
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
