@@ -2,148 +2,203 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title id="page-title">Nombre del Producto - Pastelería Mil Sabores</title>
-        <link href="../image/logo.jpg" rel="icon">
+    <title id="page-title">Producto - Pastelería Mil Sabores</title>
+    <link href="../image/logo.jpg" rel="icon">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Detalle del producto: Nombre del Producto - Pastelería Mil Sabores" name="description" id="page-description">
+    <meta content="Detalle del producto - Pastelería Mil Sabores" name="description" id="page-description">
+    
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
-    <!-- Icon Font Stylesheet (Bootstrap Icons & Font Awesome) -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome & Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Bootstrap Stylesheet -->
+    
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Customized Bootstrap Stylesheet (Tu archivo style.css) -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <!-- Template Stylesheet -->
     <link href="../css/style.index.css" rel="stylesheet">
+    
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
- <nav class="navbar navbar-expand-lg bg-light navbar-light shadow-sm py-2 px-3 px-lg-4">
-  <div class="container-fluid">
-    <!-- Logo -->
-                          <a href="index.html" class="navbar-brand d-flex align-items-center">
-                          <img src="../image/logo.jpg" alt="Mil Sabores Logo" height="30">
-                      </a>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-light navbar-light shadow-sm py-2 px-3 px-lg-4">
+        <div class="container-fluid">
+            <a href="../../index.html" class="navbar-brand d-flex align-items-center">
+                <img src="../image/logo.jpg" alt="Mil Sabores Logo" height="30">
+            </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-    <div class="collapse navbar-collapse" id="navbarMain">
-      <!-- Menú principal (izquierda) -->
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a href="../../index.html" class="nav-link">Inicio</a>
-        </li>
-        <li class="nav-item">
-          <a href="/productos.html" class="nav-link">Productos</a>
-        </li>
-        <li class="nav-item">
-          <a href="contact.html" class="nav-link">Contacto</a>
-        </li>
-        <li class="nav-item">
-          <a href="about.html" class="nav-link">Nosotros</a>
-        </li>
-        <li class="nav-item">
-          <a href="blogs.html" class="nav-link">Blog</a>
-        </li>
-      </ul>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a href="../../index.html" class="nav-link">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="productos.html" class="nav-link">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="contact.html" class="nav-link">Contacto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="about.html" class="nav-link">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="blogs.html" class="nav-link">Blog</a>
+                    </li>
+                </ul>
 
-      <!-- Derecha: Carrito + Login + Registro -->
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <!-- Carrito: visible en todos los tamaños -->
-        <li class="nav-item">
-          <a href="carrito.html" class="nav-link">
-            <i class="fas fa-shopping-cart me-1"></i> Carrito
-          </a>
-        </li>        
-          <!-- Login y Registro-->
-        <li class="nav-item">
-          <a href="login.html" class="nav-link">Iniciar sesión</a>
-        </li>
-        <li class="nav-item">
-          <a href="registro.html" class="nav-link">Registro</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a href="carrito.html" class="nav-link">
+                            <i class="fas fa-shopping-cart me-1"></i> Carrito
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="login.html" class="nav-link">Iniciar sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="registro.html" class="nav-link">Registro</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Page Header Start (Breadcrumb) -->
+    <!-- Breadcrumb -->
     <div class="container-fluid bg-dark bg-img p-5 mb-5">
         <div class="row">
             <div class="col-12 text-center">
-                <h1 class="display-4  text-white">Detalle del Producto</h1>
-                <div id="breadcrumb">
-                    <a href="../../index.html">Inicio</a>
+                <h1 class="display-4 text-white">Detalle del Producto</h1>
+                <div id="breadcrumb" style="color: #ffc107;">
+                    <a href="../../index.html" style="color: #fff;">Inicio</a>
                     <i class="far fa-square text-primary px-2"></i>
-                    <a href="productos.html">Productos</a>
+                    <a href="productos.html" style="color: #fff;">Productos</a>
                     <i class="far fa-square text-primary px-2"></i>
-                    <span id="breadcrumb-product-name">Nombre del Producto</span>
+                    <span id="breadcrumb-product-name">Producto</span>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Page Header End -->
 
-    <!-- Product Detail Start -->
-    <div class="container">
+    <!-- Product Detail -->
+    <div class="container mb-5">
         <div class="product-detail-container">
-            <div class="product-detail-header">
+            <div class="product-detail-header mb-4">
                 <h1 id="product-name">Nombre del Producto</h1>
-                <p class="text-muted"><strong>Código:</strong> <span id="product-code">XXXX</span> | <strong>Categoría:</strong> <span id="product-category">Categoría del Producto</span></p>
+                <p class="text-muted">
+                    <strong>Código:</strong> <span id="product-code">---</span> | 
+                    <strong>Categoría:</strong> <span id="product-category">---</span>
+                </p>
             </div>
 
             <div class="row">
+                <!-- Imagen del Producto -->
                 <div class="col-lg-6 mb-4">
-                    <img id="product-image" src="../assets/image/cake-placeholder.jpg" alt="Nombre del Producto" class="product-detail-image img-fluid">
+                    <div class="position-relative">
+                        <img id="product-image" 
+                             src="https://via.placeholder.com/600x600/FFC0CB/8B4513?text=Cargando..." 
+                             alt="Producto" 
+                             class="img-fluid rounded shadow-sm"
+                             style="width: 100%; object-fit: cover;">
+                    </div>
                 </div>
-                <div class="col-lg-6">
-                    <p id="product-description">Descripción detallada del producto. Esta descripción debería ser cargada dinámicamente desde una fuente de datos (como un arreglo JS o un archivo JSON).</p>
-                    <div class="product-detail-price mb-3" id="product-price">$0.00 CLP</div>
 
-                    <div class="mb-3">
-                        <label for="product-quantity" class="form-label">Cantidad:</label>
-                        <select class="form-select" id="product-quantity" style="width: auto;">
+                <!-- Información del Producto -->
+                <div class="col-lg-6">
+                    <!-- Descripción -->
+                    <div class="mb-4">
+                        <h5 class="mb-3"><i class="fas fa-info-circle me-2"></i>Descripción</h5>
+                        <p id="product-description" class="text-muted">
+                            Cargando descripción...
+                        </p>
+                    </div>
+
+                    <!-- Precio -->
+                    <div id="product-price" class="mb-4">
+                        <!-- Se llenará dinámicamente -->
+                    </div>
+
+                    <!-- Stock (se agregará dinámicamente) -->
+                    <div id="stock-info" class="mb-3">
+                        <!-- Se llenará dinámicamente -->
+                    </div>
+
+                    <!-- Cantidad -->
+                    <div class="mb-4">
+                        <label for="product-quantity" class="form-label fw-bold">
+                            <i class="fas fa-shopping-basket me-2"></i>Cantidad:
+                        </label>
+                        <select class="form-select" id="product-quantity" style="max-width: 150px;">
                             <option value="1" selected>1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
                         </select>
                     </div>
 
-                    <button type="button" class="btn btn-primary btn-lg" id="btn-add-to-cart" data-product-id="">
-                        <i class="bi bi-cart-plus me-2"></i> Agregar al Carrito
-                    </button>
+                    <!-- Botones -->
+                    <div class="d-flex gap-2">
+                        <button type="button" 
+                                class="btn btn-primary btn-lg flex-grow-1" 
+                                id="btn-add-to-cart">
+                            <i class="fas fa-cart-plus me-2"></i> Agregar al Carrito
+                        </button>
+                        <a href="productos.html" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-arrow-left me-2"></i> Volver
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Product Detail End -->
 
-    <!-- Footer Start -->
+    <!-- Footer -->
     <div class="container-fluid bg-dark bg-img text-secondary" style="margin-top: 135px">
         <div class="container">
             <div class="row gx-5">
                 <div class="col-lg-4 col-md-6 mt-lg-n5">
                     <div class="d-flex flex-column align-items-center justify-content-center text-center h-100 bg-primary border-inner p-4">
                         <a href="../../index.html" class="navbar-brand">
-                            <h1 class="m-0  text-white"><i class="fa fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores</h1>
+                            <h1 class="m-0 text-white">
+                                <i class="fa fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores
+                            </h1>
                         </a>
-                        <p class="mt-3">Celebramos 50 años de dulzura, tradición e innovación. Cada torta y postre es una obra de arte hecha con amor, ingredientes de primera calidad y la pasión que nos caracteriza desde 1974. ¡Descubre por qué somos un referente en la repostería chilena!</p>
+                        <p class="mt-3">50 años de dulzura y tradición</p>
                     </div>
                 </div>
                 <div class="col-lg-8 col-md-6">
                     <div class="row gx-5">
                         <div class="col-lg-4 col-md-12 pt-5 mb-5">
-                            <h4 class="text-primary  mb-4">Ponte en Contacto</h4>
+                            <h4 class="text-primary mb-4">Contacto</h4>
                             <div class="d-flex mb-2">
                                 <i class="bi bi-geo-alt text-primary me-2"></i>
-                                <p class="mb-0">Av. Siempre Viva 123, Santiago, Chile</p>
+                                <p class="mb-0">Av. Siempre Viva 123, Santiago</p>
                             </div>
                             <div class="d-flex mb-2">
                                 <i class="bi bi-envelope-open text-primary me-2"></i>
@@ -153,30 +208,30 @@
                                 <i class="bi bi-telephone text-primary me-2"></i>
                                 <p class="mb-0">+56 2 2345 6789</p>
                             </div>
-                            <div class="d-flex mt-4">
-                                <a class="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#"><i class="fab fa-twitter fw-normal"></i></a>
-                                <a class="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#"><i class="fab fa-facebook-f fw-normal"></i></a>
-                                <a class="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#"><i class="fab fa-instagram fw-normal"></i></a> <!-- Changed to Instagram -->
+                        </div>
+                        <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
+                            <h4 class="text-primary mb-4">Enlaces Rápidos</h4>
+                            <div class="d-flex flex-column justify-content-start">
+                                <a class="text-secondary mb-2" href="../../index.html">
+                                    <i class="bi bi-arrow-right text-primary me-2"></i>Inicio
+                                </a>
+                                <a class="text-secondary mb-2" href="productos.html">
+                                    <i class="bi bi-arrow-right text-primary me-2"></i>Productos
+                                </a>
+                                <a class="text-secondary mb-2" href="about.html">
+                                    <i class="bi bi-arrow-right text-primary me-2"></i>Nosotros
+                                </a>
+                                <a class="text-secondary mb-2" href="contact.html">
+                                    <i class="bi bi-arrow-right text-primary me-2"></i>Contacto
+                                </a>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
-                            <h4 class="text-primary  mb-4">Enlaces Rápidos</h4>
-                        <div class="d-flex flex-column justify-content-start">
-                            <a class="text-secondary mb-2" href="../../index.html"><i class="bi bi-arrow-right text-primary me-2"></i>Inicio</a>
-                            <a class="text-secondary mb-2" href="productos.html"><i class="bi bi-arrow-right text-primary me-2"></i>Productos</a>
-                            <a class="text-secondary mb-2" href="about.html"><i class="bi bi-arrow-right text-primary me-2"></i>Nosotros</a>
-                            <a class="text-secondary mb-2" href="contact.html"><i class="bi bi-arrow-right text-primary me-2"></i>Contacto</a>
-                            <a class="text-secondary mb-2" href="blogs.html"><i class="bi bi-arrow-right text-primary me-2"></i>Blog</a>
-                            <a class="text-secondary" href="login.html"><i class="bi bi-arrow-right text-primary me-2"></i>Iniciar Sesión</a>
-                            <a class="text-secondary" href="registro.html"><i class="bi bi-arrow-right text-primary me-2"></i>Registro</a>
-                        </div>
-                        </div>
-                        <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
-                            <h4 class="text-primary  mb-4">Boletín Informativo</h4>
-                            <p>¡Suscríbete y recibe un 10% de descuento en tu primera compra! Entérate de nuestras nuevas recetas, promociones y eventos especiales.</p>
+                            <h4 class="text-primary mb-4">Newsletter</h4>
+                            <p>¡Suscríbete y recibe ofertas especiales!</p>
                             <form action="">
                                 <div class="input-group">
-                                    <input type="text" class="form-control border-white p-3" placeholder="Tu Correo Electrónico">
+                                    <input type="text" class="form-control border-white p-3" placeholder="Tu Email">
                                     <button class="btn btn-primary">Suscríbete</button>
                                 </div>
                             </form>
@@ -186,105 +241,18 @@
             </div>
         </div>
     </div>
+    
     <div class="container-fluid text-secondary py-4" style="background: #111111;">
         <div class="container text-center">
-            <p class="mb-0">&copy; <a class="text-white border-bottom" href="#">Pastelería Mil Sabores</a>. Todos los Derechos Reservados.
-
-           
+            <p class="mb-0">&copy; Pastelería Mil Sabores. Todos los Derechos Reservados.</p>
         </div>
     </div>
-    <!-- Footer End -->
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../js/carrito.js"></script>
-<script>
-    // Función para formatear precios en CLP
-    function formatPrice(price) {
-        return new Intl.NumberFormat('es-CL', {
-            style: 'currency',
-            currency: 'CLP'
-        }).format(price);
-    }
-
-    // Función para cargar el detalle del producto por código
-    function loadProductDetailByCodigo(productCodigo) {
-        // Asumiendo que tienes una función en carrito.js que puede obtener productos por código
-        // Si no existe, puedes crearla o usar una variable global con los productos
-        const producto = window.productos ? 
-            window.productos.find(p => p.codigo === productCodigo) : 
-            findProductByCodigo(productCodigo); // Esta función debe estar en carrito.js
-        
-        if (!producto) {
-            document.querySelector('.product-detail-container').innerHTML = `
-                <div class="text-center">
-                    <h3 class="text-danger">Producto no encontrado</h3>
-                    <a href="productos.html" class="btn btn-primary">Volver a Productos</a>
-                </div>
-            `;
-            return;
-        }
-
-        // Actualizar todos los elementos dinámicos
-        document.getElementById('page-title').textContent = `${producto.nombre} - Pastelería Mil Sabores`;
-        document.getElementById('page-description').setAttribute('content', `Detalle del producto: ${producto.nombre} - Pastelería Mil Sabores`);
-        document.getElementById('breadcrumb-product-name').textContent = producto.nombre;
-        document.getElementById('product-name').textContent = producto.nombre;
-        document.getElementById('product-code').textContent = producto.codigo;
-        document.getElementById('product-category').textContent = producto.categoria;
-        document.getElementById('product-image').src = producto.imagen || '../assets/image/cake-placeholder.jpg';
-        document.getElementById('product-image').alt = producto.nombre;
-        document.getElementById('product-description').textContent = producto.descripcion;
-        document.getElementById('product-price').textContent = formatPrice(producto.precio);
-        document.getElementById('btn-add-to-cart').dataset.productId = producto.codigo; // Usar código en lugar de ID
-    }
-
-    // --- Inicialización ---
-    document.addEventListener('DOMContentLoaded', function () {
-        // Obtener el código del producto de la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const productCodigo = urlParams.get('codigo');
-
-        if (productCodigo) {
-            loadProductDetailByCodigo(productCodigo);
-        } else {
-            document.querySelector('.product-detail-container').innerHTML = `
-                <div class="text-center">
-                    <h3 class="text-danger">No se especificó un producto</h3>
-                    <a href="productos.html" class="btn btn-primary">Volver a Productos</a>
-                </div>
-            `;
-        }
-
-        // Agregar event listener al botón "Agregar al Carrito"
-        document.getElementById('btn-add-to-cart').addEventListener('click', function() {
-            const productCodigo = this.dataset.productId;
-            const quantitySelect = document.getElementById('product-quantity');
-            const quantity = parseInt(quantitySelect ? quantitySelect.value : 1);
-
-            if (productCodigo) {
-                // Llamar a la función del carrito (debe estar definida en carrito.js)
-                if (typeof agregarAlCarrito === 'function') {
-                    // Si agregarAlCarrito espera un objeto producto
-                    const producto = window.productos ? 
-                        window.productos.find(p => p.codigo === productCodigo) : 
-                        findProductByCodigo(productCodigo);
-                    
-                    if (producto) {
-                        agregarAlCarrito({
-                            ...producto,
-                            cantidad: quantity
-                        });
-                    }
-                } else {
-                    console.error('La función agregarAlCarrito no está definida en carrito.js');
-                }
-            } else {
-                console.error('Código de producto no encontrado en el botón.');
-            }
-        });
-    });
-</script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/detalleProducto.js"></script>
 </body>
 </html>
