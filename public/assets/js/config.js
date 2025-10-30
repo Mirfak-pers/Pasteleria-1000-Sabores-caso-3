@@ -28,6 +28,5 @@ if (typeof firebase === 'undefined') {
 }
 
 // Exportar referencias globales para v8
-const auth = firebase.auth();
-const db = firebase.firestore();
-const storage = firebase.storage();
+var auth = firebase.auth();
+var db = firebase.firestore();

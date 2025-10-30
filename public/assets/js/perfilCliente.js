@@ -1,20 +1,6 @@
-// firebase-perfil.js
-// Configuración de Firebase para Perfil de Cliente - Pastelería 1000 Sabores
-
-// ==========================================
-// CONFIGURACIÓN DE FIREBASE
-// ==========================================
-const firebaseConfig = {
-    apiKey: "AIzaSyC01DeLX515dsD29to5rHeqaWC8RV98KNg",
-    authDomain: "tiendapasteleriamilsabor-a7ac6.firebaseapp.com",
-    databaseURL: "https://tiendapasteleriamilsabor-a7ac6-default-rtdb.firebaseio.com",
-    projectId: "tiendapasteleriamilsabor-a7ac6",
-};
-
-// Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
+// perfilCliente.js
+// Perfil de Cliente - Pastelería 1000 Sabores
+// NOTA: Este archivo usa auth y db del config.js global
 
 // ==========================================
 // VARIABLES GLOBALES
@@ -82,8 +68,10 @@ function actualizarInterfazCliente(datos) {
         document.getElementById('avatar').textContent = iniciales;
     }
     
-    // Reinicializar iconos de Lucide
-    lucide.createIcons();
+    // Reinicializar iconos de Lucide si está disponible
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 }
 
 /**
@@ -285,7 +273,9 @@ function toggleEdit() {
         btnEditar.innerHTML = '<i data-lucide="x"></i> Cancelar';
     }
     
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 }
 
 /**
