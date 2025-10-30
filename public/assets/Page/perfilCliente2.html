@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Cliente - Pastelería 1000 Sabores</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/style.index.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header del Perfil -->
+        <div class="profile-header">
+            <div class="profile-content">
+                <div class="avatar" id="avatar">--</div>
+                <div class="profile-info">
+                    <h1 id="clienteName">Cargando...</h1>
+                    <div class="profile-meta">
+                        <span>
+                            <i data-lucide="calendar"></i>
+                            Miembro desde <span id="fechaRegistro">...</span>
+                        </span>
+                        <span class="points">
+                            <i data-lucide="award"></i>
+                            <span id="puntos">0</span> puntos
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Columna Principal -->
+            <div>
+                <!-- Historial de Compras -->
+                <div class="section">
+                    <div class="section-header">
+                        <div class="icon-box green">
+                            <i data-lucide="shopping-bag" style="color: white;"></i>
+                        </div>
+                        <h2>Historial de Compras</h2>
+                    </div>
+                    <div id="historialCompras">
+                        <div class="loading">Cargando compras...</div>
+                    </div>
+                </div>
+
+                <!-- Historial de Contacto -->
+                <div class="section" style="margin-top: 2rem;">
+                    <div class="section-header">
+                        <div class="icon-box blue">
+                            <i data-lucide="message-square" style="color: white;"></i>
+                        </div>
+                        <h2>Historial de Contacto</h2>
+                    </div>
+                    <div id="historialContacto">
+                        <div class="loading">Cargando contactos...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Lateral -->
+            <div class="sidebar">
+                <!-- Información del Cliente -->
+                <div class="section info-section">
+                    <div class="edit-header">
+                        <h2>Mi Información</h2>
+                        <button class="edit-btn" id="btnEditar" onclick="toggleEdit()">
+                            <i data-lucide="edit-2"></i>
+                            Editar
+                        </button>
+                    </div>
+
+                    <!-- Vista Normal -->
+                    <div id="infoView">
+                        <div class="info-item">
+                            <i data-lucide="mail"></i>
+                            <div>
+                                <div class="info-label">Email</div>
+                                <div class="info-value" id="displayEmail">...</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i data-lucide="phone"></i>
+                            <div>
+                                <div class="info-label">Teléfono</div>
+                                <div class="info-value" id="displayTelefono">...</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i data-lucide="map-pin"></i>
+                            <div>
+                                <div class="info-label">Dirección</div>
+                                <div class="info-value" id="displayDireccion">...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vista de Edición -->
+                    <div id="editView" class="hidden">
+                        <form id="editForm">
+                            <div class="form-group">
+                                <label>Nombre</label>
+                                <input type="text" id="inputNombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="inputEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfono</label>
+                                <input type="tel" id="inputTelefono" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Dirección</label>
+                                <input type="text" id="inputDireccion" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-save">Guardar</button>
+                                <button type="button" class="btn btn-cancel" onclick="toggleEdit()">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tarjeta de Puntos -->
+                <div class="points-card">
+                    <div class="points-header">
+                        <i data-lucide="credit-card"></i>
+                        <h3>Tarjeta de Puntos</h3>
+                    </div>
+                    <div class="points-box">
+                        <div class="points-label">Puntos Acumulados</div>
+                        <div class="points-value" id="puntosCard">0</div>
+                    </div>
+                    <div class="points-description">
+                        ¡Acumula más puntos con cada compra y obtén descuentos especiales!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/perfilCliente.js"></script>
+</body>
+</html>
