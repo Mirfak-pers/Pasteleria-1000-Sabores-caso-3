@@ -14,7 +14,11 @@ import BlogDetalle2 from '../pages/blog-detalle-2';
 import Carrito from '../pages/carrito';
 import Login from '../pages/login'; // Asumiendo que tienes esta página
 import Registro from '../pages/registro'; // Asumiendo que tienes esta página
-
+import Catalogo from '../pages/catalogo';
+import Carrito  from '../pages/carrito'; 
+import Checkout from '../pages/checkout';
+import CompraExitosa from '../pages/compraExitosa';
+import ErrorPago from '../pages/errorPago';
 // ❌ REMOVER BrowserRouter de aquí
 const RouterConfig = () => (
   // No envolver con <Router> aquí si ya está en App.jsx o main.jsx
@@ -31,6 +35,11 @@ const RouterConfig = () => (
     <Route path="/registro" element={<Registro />} />
     <Route path="/perfil-cliente" element={<PerfilCliente />} /> {/* ✅ Ruta corregida */}
     <Route path="/perfil-admin" element={<PerfilAdmin />} />
+    <Route path="/catalogo" element={Catalogo} />
+    <Route path="/carrito" element={Carrito} />
+    <Route path="/checkout" element={Checkout} />
+    <Route path="/exito" element={CompraExitosa} />
+    <Route path="/error" element={ErrorPago} />
     {/* Agrega más rutas aquí según necesites */}
   </Routes>
 );

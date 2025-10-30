@@ -1,252 +1,312 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { db } from '../../services/firebase';
+import { collection, getDocs } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
+import './Carrito.css';
 
-// Componente para un solo item del carrito
-const CartItem = ({ item, onUpdateQuantity, onRemoveItem }) => {
-  const handleQuantityChange = (e) => {
-    const newQuantity = parseInt(e.target.value);
-    if (!isNaN(newQuantity) && newQuantity > 0) {
-      onUpdateQuantity(item.id, newQuantity);
+/**
+ * Componente del Carrito de Compras
+ * Muestra productos en oferta y el resumen del carrito
+ */
+const Carrito = () => {
+  const [carrito, setCarrito] = useState([]);
+  const [productosOferta, setProductosOferta] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const navigate = useNavigate();
+
+  // Cargar carrito desde localStorage al inicializar
+  useEffect(() => {
+    const carritoGuardado = JSON.parse(localStorage.getItem('carrito')) || [];
+    setCarrito(carritoGuardado);
+    cargarProductosOferta();
+  }, []);
+
+  /**
+   * Carga productos en oferta desde Firestore
+   */
+  const cargarProductosOferta = async () => {
+    try {
+      const snapshot = await getDocs(collection(db, 'producto'));
+      const productos = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      
+      // Filtrar productos con precio anterior (en oferta)
+      const productosConOferta = productos.filter(producto => producto.precioAnterior);
+      setProductosOferta(productosConOferta);
+    } catch (error) {
+      console.error('Error cargando productos en oferta:', error);
+    } finally {
+      setCargando(false);
     }
   };
 
+  /**
+   * Agrega un producto al carrito
+   */
+  const agregarAlCarrito = (producto) => {
+    const productoExistente = carrito.find(item => item.id === producto.id);
+    let nuevoCarrito;
+
+    if (productoExistente) {
+      nuevoCarrito = carrito.map(item =>
+        item.id === producto.id
+          ? { ...item, cantidad: (item.cantidad || 1) + 1 }
+          : item
+      );
+    } else {
+      nuevoCarrito = [...carrito, { ...producto, cantidad: 1 }];
+    }
+
+    setCarrito(nuevoCarrito);
+    guardarCarrito(nuevoCarrito);
+    mostrarNotificacion(`"${producto.nombre}" agregado al carrito`);
+  };
+
+  /**
+   * Actualiza la cantidad de un producto en el carrito
+   */
+  const actualizarCantidad = (index, nuevaCantidad) => {
+    if (nuevaCantidad < 1) return;
+
+    const nuevoCarrito = carrito.map((item, i) =>
+      i === index ? { ...item, cantidad: nuevaCantidad } : item
+    );
+
+    setCarrito(nuevoCarrito);
+    guardarCarrito(nuevoCarrito);
+  };
+
+  /**
+   * Elimina un producto del carrito
+   */
+  const eliminarDelCarrito = (index) => {
+    const producto = carrito[index];
+    const nuevoCarrito = carrito.filter((_, i) => i !== index);
+    
+    setCarrito(nuevoCarrito);
+    guardarCarrito(nuevoCarrito);
+    mostrarNotificacion(`"${producto.nombre}" eliminado del carrito`);
+  };
+
+  /**
+   * Guarda el carrito en localStorage
+   */
+  const guardarCarrito = (nuevoCarrito) => {
+    localStorage.setItem('carrito', JSON.stringify(nuevoCarrito));
+  };
+
+  /**
+   * Limpia todo el carrito
+   */
+  const limpiarCarrito = () => {
+    if (carrito.length === 0) {
+      alert('El carrito ya está vacío');
+      return;
+    }
+
+    if (window.confirm('¿Estás seguro de que quieres limpiar todo el carrito?')) {
+      setCarrito([]);
+      localStorage.removeItem('carrito');
+      mostrarNotificacion('Carrito limpiado correctamente');
+    }
+  };
+
+  /**
+   * Navega al checkout
+   */
+  const irAlCheckout = () => {
+    if (carrito.length === 0) {
+      alert('Agrega productos al carrito antes de continuar');
+      return;
+    }
+    navigate('/checkout');
+  };
+
+  /**
+   * Muestra una notificación temporal
+   */
+  const mostrarNotificacion = (mensaje) => {
+    // Implementación simple de notificación
+    alert(mensaje); // En una app real usarías un sistema de notificaciones
+  };
+
+  /**
+   * Calcula el total del carrito
+   */
+  const calcularTotal = () => {
+    return carrito.reduce((total, producto) => {
+      return total + (producto.precio || 0) * (producto.cantidad || 1);
+    }, 0);
+  };
+
+  if (cargando) {
+    return (
+      <div className="cargando">
+        <div className="spinner">🔄</div>
+        <p>Cargando productos en oferta...</p>
+      </div>
+    );
+  }
+
   return (
-    <tr>
-      <td>
-        <div className="d-flex align-items-center">
-          {/* Imagen del producto (opcional, puedes agregarla si está en el objeto item) */}
-          {/* <img src={item.imagen} className="img-fluid rounded" style={{ width: '50px', height: '50px', objectFit: 'cover' }} alt={item.nombre} /> */}
-          <div className="ms-3">
-            <h6 className="mb-0">{item.nombre}</h6>
-            <p className="mb-0">{item.descripcion}</p>
-          </div>
+    <div className="carrito-container">
+      {/* Productos en Oferta */}
+      <section className="ofertas-section">
+        <h2 className="section-title">Productos en Oferta</h2>
+        <div className="productos-grid">
+          {productosOferta.length === 0 ? (
+            <p className="sin-ofertas">No hay productos en oferta en este momento.</p>
+          ) : (
+            productosOferta.map(producto => (
+              <div key={producto.id} className="producto-card">
+                <img 
+                  src={producto.imagen} 
+                  alt={producto.nombre}
+                  className="producto-imagen"
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/400x300/cccccc/969696?text=Imagen+No+Disponible';
+                  }}
+                />
+                <div className="producto-info">
+                  <h3 className="producto-nombre">{producto.nombre}</h3>
+                  <div className="precios-oferta">
+                    <span className="precio-anterior">
+                      ${producto.precioAnterior?.toLocaleString('es-CL')}
+                    </span>
+                    <span className="precio-actual">
+                      ${producto.precio?.toLocaleString('es-CL')}
+                    </span>
+                  </div>
+                  <p className="stock-disponible">
+                    Stock: {producto.stock || 10}
+                  </p>
+                  <button 
+                    className="btn-agregar-oferta"
+                    onClick={() => agregarAlCarrito(producto)}
+                  >
+                    ➕ Añadir
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
-      </td>
-      <td>${item.precio}</td>
-      <td>
-        <input
-          type="number"
-          className="form-control"
-          value={item.cantidad}
-          onChange={handleQuantityChange}
-          min="1"
-          style={{ width: '80px' }}
-        />
-      </td>
-      <td>${item.precio * item.cantidad}</td>
-      <td>
-        <button className="btn btn-sm btn-outline-danger" onClick={() => onRemoveItem(item.id)}>
-          <i className="bi bi-trash"></i>
-        </button>
-      </td>
-    </tr>
+      </section>
+
+      {/* Resumen del Carrito */}
+      <section className="resumen-carrito">
+        <h2 className="section-title">Resumen del Carrito</h2>
+        
+        {/* Tabla de productos en carrito */}
+        <div className="tabla-carrito-container">
+          <table className="tabla-carrito">
+            <thead>
+              <tr>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {carrito.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="carrito-vacio">
+                    <div className="icono">🛒</div>
+                    <h3>Tu carrito está vacío</h3>
+                    <p>Agrega algunos productos para continuar</p>
+                    <button 
+                      className="btn-ir-catalogo"
+                      onClick={() => navigate('/catalogo')}
+                    >
+                      Ir al Catálogo
+                    </button>
+                  </td>
+                </tr>
+              ) : (
+                carrito.map((producto, index) => (
+                  <tr key={`${producto.id}-${index}`}>
+                    <td>
+                      <img 
+                        src={producto.imagen} 
+                        alt={producto.nombre}
+                        className="imagen-tabla"
+                        onError={(e) => {
+                          e.target.src = 'https://via.placeholder.com/100x100/cccccc/969696?text=Imagen';
+                        }}
+                      />
+                    </td>
+                    <td>{producto.nombre}</td>
+                    <td>${producto.precio?.toLocaleString('es-CL')}</td>
+                    <td>
+                      <div className="controles-cantidad">
+                        <button 
+                          className="btn-cantidad"
+                          onClick={() => actualizarCantidad(index, (producto.cantidad || 1) - 1)}
+                        >
+                          -
+                        </button>
+                        <span className="cantidad-actual">
+                          {producto.cantidad || 1}
+                        </span>
+                        <button 
+                          className="btn-cantidad"
+                          onClick={() => actualizarCantidad(index, (producto.cantidad || 1) + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </td>
+                    <td>
+                      ${((producto.precio || 0) * (producto.cantidad || 1)).toLocaleString('es-CL')}
+                    </td>
+                    <td>
+                      <button 
+                        className="btn-eliminar"
+                        onClick={() => eliminarDelCarrito(index)}
+                      >
+                        🗑️ Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Total y Botones */}
+        {carrito.length > 0 && (
+          <div className="carrito-footer">
+            <div className="total-container">
+              <span className="total-text">Total: $</span>
+              <span className="total-precio">
+                {calcularTotal().toLocaleString('es-CL')}
+              </span>
+            </div>
+            <div className="botones-carrito">
+              <button 
+                className="btn-limpiar"
+                onClick={limpiarCarrito}
+              >
+                🗑️ Limpiar Carrito
+              </button>
+              <button 
+                className="btn-comprar-ahora"
+                onClick={irAlCheckout}
+              >
+                ✅ Comprar Ahora
+              </button>
+            </div>
+          </div>
+        )}
+      </section>
+    </div>
   );
 };
 
-export default function Carrito() {
-  // Estado del carrito (simulado por ahora)
-  const [cartItems, setCartItems] = useState([]);
-  const [cartSubtotal, setCartSubtotal] = useState(0);
-  const [cartTotal, setCartTotal] = useState(0);
-
-  // Simular carga de carrito desde localStorage o contexto (aquí se inicializa vacío)
-  useEffect(() => {
-    // Aquí puedes cargar el carrito desde un contexto o localStorage si lo tienes
-    // const savedCart = localStorage.getItem('cart');
-    // if (savedCart) setCartItems(JSON.parse(savedCart));
-
-    // Simulación de cálculo de totales
-    const subtotal = cartItems.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-    setCartSubtotal(subtotal);
-    // Puedes agregar lógica para envío, descuentos, etc. aquí
-    setCartTotal(subtotal);
-  }, [cartItems]);
-
-  const handleUpdateQuantity = (id, newQuantity) => {
-    setCartItems(prevItems =>
-      prevItems.map(item =>
-        item.id === id ? { ...item, cantidad: newQuantity } : item
-      )
-    );
-  };
-
-  const handleRemoveItem = (id) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== id));
-  };
-
-  const isCartEmpty = cartItems.length === 0;
-
-  return (
-    <div className="cart-page">
-      <div className="container">
-        <div className="cart-container">
-          {/* Mensaje de Carrito Vacío */}
-          {isCartEmpty ? (
-            <div id="cart-empty-message" className="cart-empty-message text-center py-5">
-              <i className="bi bi-cart-x" style={{ fontSize: '3rem', color: '#B0BEC5' }}></i>
-              <h3 className="mt-3">Tu carrito está vacío</h3>
-              <p>Agrega algunos productos deliciosos para comenzar.</p>
-              <Link to="/productos" className="btn btn-primary">Ver Productos</Link>
-            </div>
-          ) : (
-            // Contenido del Carrito
-            <div id="cart-content">
-              {/* Tabla de Items del Carrito */}
-              <div className="table-responsive">
-                <table className="table table-borderless align-middle">
-                  <thead>
-                    <tr>
-                      <th scope="col" width="40%">Producto</th>
-                      <th scope="col" width="15%">Precio</th>
-                      <th scope="col" width="20%">Cantidad</th>
-                      <th scope="col" width="15%">Subtotal</th>
-                      <th scope="col" width="10%">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody id="cart-items">
-                    {cartItems.map((item) => (
-                      <CartItem
-                        key={item.id}
-                        item={item}
-                        onUpdateQuantity={handleUpdateQuantity}
-                        onRemoveItem={handleRemoveItem}
-                      />
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Resumen del Carrito */}
-              <div className="row justify-content-end mt-4">
-                <div className="col-lg-4">
-                  <div className="cart-summary bg-light p-4 rounded">
-                    <h4>Resumen del Pedido</h4>
-                    <div className="d-flex justify-content-between mb-2">
-                      <span>Subtotal:</span>
-                      <span id="cart-subtotal">${cartSubtotal} CLP</span>
-                    </div>
-                    {/* Puedes agregar descuentos, envío, etc. aquí */}
-                    <hr />
-                    <div className="d-flex justify-content-between fw-bold">
-                      <span>Total:</span>
-                      <span id="cart-total">${cartTotal} CLP</span>
-                    </div>
-                    <div className="d-grid gap-2 mt-3">
-                      <button className="btn btn-primary" type="button" id="btn-proceed-to-checkout">
-                        Proceder al Pago
-                      </button>
-                      <Link to="/productos" className="btn btn-outline-secondary">
-                        Seguir Comprando
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Footer (puedes reutilizar un componente Footer.jsx aquí si lo tienes) */}
-      <div className="container-fluid bg-dark bg-img text-secondary" style={{ marginTop: '135px' }}>
-        <div className="container">
-          <div className="row gx-5">
-            <div className="col-lg-4 col-md-6 mt-lg-n5">
-              <div className="d-flex flex-column align-items-center justify-content-center text-center h-100 bg-primary border-inner p-4">
-                <Link to="/" className="navbar-brand">
-                  <h1 className="m-0 text-uppercase text-white">
-                    <i className="fa fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores
-                  </h1>
-                </Link>
-                <p className="mt-3">
-                  Celebramos 50 años de dulzura, tradición e innovación. Cada torta y postre es una obra de arte hecha con amor,
-                  ingredientes de primera calidad y la pasión que nos caracteriza desde 1974.
-                  ¡Descubre por qué somos un referente en la repostería chilena!
-                </p>
-              </div>
-            </div>
-            <div className="col-lg-8 col-md-6">
-              <div className="row gx-5">
-                <div className="col-lg-4 col-md-12 pt-5 mb-5">
-                  <h4 className="text-primary text-uppercase mb-4">Ponte en Contacto</h4>
-                  <div className="d-flex mb-2">
-                    <i className="bi bi-geo-alt text-primary me-2"></i>
-                    <p className="mb-0">Av. Siempre Viva 123, Santiago, Chile</p>
-                  </div>
-                  <div className="d-flex mb-2">
-                    <i className="bi bi-envelope-open text-primary me-2"></i>
-                    <p className="mb-0">contacto@milsabores.cl</p>
-                  </div>
-                  <div className="d-flex mb-2">
-                    <i className="bi bi-telephone text-primary me-2"></i>
-                    <p className="mb-0">+56 2 2345 6789</p>
-                  </div>
-                  <div className="d-flex mt-4">
-                    <a className="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#">
-                      <i className="fab fa-twitter fw-normal"></i>
-                    </a>
-                    <a className="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#">
-                      <i className="fab fa-facebook-f fw-normal"></i>
-                    </a>
-                    <a className="btn btn-lg btn-primary btn-lg-square border-inner rounded-0 me-2" href="#">
-                      <i className="fab fa-instagram fw-normal"></i>
-                    </a>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
-                  <h4 className="text-primary text-uppercase mb-4">Enlaces Rápidos</h4>
-                  <div className="d-flex flex-column justify-content-start">
-                    <Link to="/" className="text-secondary mb-2">
-                      <i className="bi bi-arrow-right text-primary me-2"></i>Inicio
-                    </Link>
-                    <Link to="/productos" className="text-secondary mb-2">
-                      <i className="bi bi-arrow-right text-primary me-2"></i>Productos
-                    </Link>
-                    <Link to="/nosotros" className="text-secondary mb-2">
-                      <i className="bi bi-arrow-right text-primary me-2"></i>Nosotros
-                    </Link>
-                    <Link to="/contacto" className="text-secondary mb-2">
-                      <i className="bi bi-arrow-right text-primary me-2"></i>Contacto
-                    </Link>
-                    <Link to="/blog" className="text-secondary mb-2">
-                      <i className="bi bi-arrow-right text-primary me-2"></i>Blog
-                    </Link>
-                    <Link to="/carrito" className="text-secondary mb-2">
-                      <i className="bi bi-arrow-right text-primary me-2"></i>Carrito
-                    </Link>
-                    <Link to="/login" className="text-secondary">
-                      <i className="bi bi-arrow-right text-primary me-2"></i>Iniciar Sesión
-                    </Link>
-                    <Link to="/registro" className="text-secondary">
-                      <i className="bi bi-arrow-right text-primary me-2"></i>Registro
-                    </Link>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
-                  <h4 className="text-primary text-uppercase mb-4">Boletín Informativo</h4>
-                  <p>
-                    ¡Suscríbete y recibe un 10% de descuento en tu primera compra! Entérate de nuestras nuevas recetas,
-                    promociones y eventos especiales.
-                  </p>
-                  <form>
-                    <div className="input-group">
-                      <input type="text" className="form-control border-white p-3" placeholder="Tu Correo Electrónico" />
-                      <button className="btn btn-primary">Suscríbete</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="container-fluid text-secondary py-4" style={{ background: '#111111' }}>
-        <div className="container text-center">
-          <p className="mb-0">
-            &copy; <a className="text-white border-bottom" href="#">Pastelería Mil Sabores</a>. Todos los Derechos Reservados.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
+export default Carrito;
