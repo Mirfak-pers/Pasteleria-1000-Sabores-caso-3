@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { db } from "../../services/firebase";
+import { db } from "../../services/firestoreService";
 
 const CatalogoLoader = () => {
   useEffect(() => {
