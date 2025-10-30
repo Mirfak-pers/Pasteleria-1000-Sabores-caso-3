@@ -21,7 +21,6 @@
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
     <!-- Template Stylesheet -->
     <link href="assets/css/style.index.css" rel="stylesheet"> 
-
 </head>
 <body>
   
@@ -107,21 +106,31 @@
     <!-- About End -->
 
 
- <!-- MAIN CONTENT -->
-  <main class="main">
-    <!-- CARDS DE CATEGORÍAS -->
-    <section class="categorias-section">
-      <h2 class="section-title">Categorías</h2>
-       <button id="btnVerTodos" class="btn-ver-todos">Todos los productos</button>
-      <div id="cardsCategorias" class="categorias-grid"></div>
-    </section>
+<!-- MAIN CONTENT -->
+<main class="container my-5">
+  <h2 class="text-center mb-4">Nuestros Productos</h2>
 
-    <!-- PRODUCTOS -->
-    <section class="productos-section">
-      <h2 id="tituloProductos" class="section-title">Todos los Productos</h2>
-      <div id="productosGrid" class="productos-grid"></div>
-    </section>
-  </main>
+  <!-- Filtros por categoría -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex flex-wrap justify-content-center gap-2">
+        <button class="btn btn-outline-primary btn-sm filter-btn active" data-category="all">Todos</button>
+        <button class="btn btn-outline-primary btn-sm filter-btn" data-category="Tortas Cuadradas">Tortas Cuadradas</button>
+        <button class="btn btn-outline-primary btn-sm filter-btn" data-category="Tortas Circulares">Tortas Circulares</button>
+        <button class="btn btn-outline-primary btn-sm filter-btn" data-category="Postres Individuales">Postres Individuales</button>
+        <button class="btn btn-outline-primary btn-sm filter-btn" data-category="Productos Sin Azúcar">Sin Azúcar</button>
+        <button class="btn btn-outline-primary btn-sm filter-btn" data-category="Pastelería Tradicional">Tradicional</button>
+        <button class="btn btn-outline-primary btn-sm filter-btn" data-category="Productos Sin Gluten">Sin Gluten</button>
+        <button class="btn btn-outline-primary btn-sm filter-btn" data-category="Productos Veganos">Veganos</button>
+        <button class="btn btn-outline-primary btn-sm filter-btn" data-category="Tortas Especiales">Especiales</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="lista-productos" class="row">
+    <!-- Los productos se cargarán aquí dinámicamente -->
+  </div>
+</main>
 
 
     <!-- Footer Start -->
@@ -203,8 +212,8 @@
     <script src="assets/lib/counterup/counterup.min.js"></script>
     <script src="assets/lib/owlcarousel/owl.carousel.min.js"></script>
     <!-- Template Javascript -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script type="module" src="assets/js/config.js"></script>
     <script type="module" src="assets/js/common.js"></script>
     <script type="module" src="assets/js/productos.js"></script>

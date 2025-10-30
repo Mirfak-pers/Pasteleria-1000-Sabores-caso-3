@@ -424,3 +424,126 @@ h6,
             border-color: #8B4513 !important;
         }
 
+
+:root {
+    --primary-color: #8B4513; /* Marrón chocolate */
+    --secondary-color: #D2691E; /* Chocolate claro */
+    --accent-color: #FFD700; /* Dorado */
+    --light-color: #FFF8DC; /* Crema */
+    --dark-color: #5D2906; /* Marrón oscuro */
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+}
+
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--dark-color) !important;
+    border-color: var(--dark-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(139, 69, 19, 0.25) !important;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.show > .btn-primary.dropdown-toggle {
+    background-color: var(--dark-color);
+    border-color: var(--dark-color);
+}
+
+/* Botones outline */
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled).active,
+.btn-outline-primary:not(:disabled):not(.disabled):active,
+.show > .btn-outline-primary.dropdown-toggle {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}.categoria {
+    color: #8B4513; /* Chocolate - Color principal */
+    font-weight: bold; /* Opcional: para hacerlo más llamativo */
+}
+/* O si usas una clase como .badge para las categorías */
+.badge.bg-primary {
+    background-color: #8B4513 !important; /* Asegura el fondo Chocolate */
+    color: #FFFFFF !important; /* Asegura el texto blanco */
+}
+:root {
+    --primary-color: #8B4513; /* Marrón chocolate */
+    --secondary-color: #D2691E; /* Chocolate claro */
+    --accent-color: #FFD700; /* Dorado */
+    --light-color: #FFF8DC; /* Crema */
+    --dark-color: #5D2906; /* Marrón oscuro */
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--dark-color) !important;
+    border-color: var(--dark-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(139, 69, 19, 0.25) !important;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.show > .btn-primary.dropdown-toggle {
+    background-color: var(--dark-color);
+    border-color: var(--dark-color);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled).active,
+.btn-outline-primary:not(:disabled):not(.disabled):active,
+.show > .btn-outline-primary.dropdown-toggle {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.categoria {
+    color: #8B4513;
+    font-weight: bold;
+}
+
+.badge.bg-primary {
+    background-color: #8B4513 !important;
+    color: #FFFFFF !important;
+}

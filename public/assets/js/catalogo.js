@@ -476,3 +476,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   console.log("Catálogo inicializado correctamente");
 });
+
