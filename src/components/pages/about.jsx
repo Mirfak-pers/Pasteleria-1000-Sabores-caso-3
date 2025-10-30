@@ -9,7 +9,7 @@ export default function About() {
         <div className="container">
           <div className="section-title position-relative text-center mx-auto mb-5 pb-3" style={{ maxWidth: '600px' }}>
             <h2 className="text-primary font-secondary">Nuestra Historia</h2>
-            <h1 className="display-4 text-uppercase">Bienvenidos a Mil Sabores</h1>
+            <h1 className="display-4 ">Bienvenidos a Mil Sabores</h1>
           </div>
           <div className="row gx-5">
             <div className="col-lg-5 mb-5 mb-lg-0" style={{ minHeight: '400px' }}>
@@ -35,7 +35,7 @@ export default function About() {
                   <div className="d-flex align-items-center justify-content-center bg-primary border-inner mb-4" style={{ width: '90px', height: '90px' }}>
                     <i className="fa fa-heartbeat fa-2x text-white"></i>
                   </div>
-                  <h4 className="text-uppercase">100% Saludable</h4>
+                  <h4 className="">100% Saludable</h4>
                   <p className="mb-0">
                     Ofrecemos opciones sin azúcar, sin gluten y veganas, cuidando tus necesidades y preferencias sin sacrificar el sabor.
                   </p>
@@ -44,7 +44,7 @@ export default function About() {
                   <div className="d-flex align-items-center justify-content-center bg-primary border-inner mb-4" style={{ width: '90px', height: '90px' }}>
                     <i className="fa fa-award fa-2x text-white"></i>
                   </div>
-                  <h4 className="text-uppercase">Ganadores de Premios</h4>
+                  <h4 className="">Ganadores de Premios</h4>
                   <p className="mb-0">
                     Reconocidos por nuestra calidad y creatividad, incluyendo nuestra participación histórica en un récord Guinness.
                   </p>
@@ -62,7 +62,7 @@ export default function About() {
             <div className="col-lg-4 col-md-6 mt-lg-n5">
               <div className="d-flex flex-column align-items-center justify-content-center text-center h-100 bg-primary border-inner p-4">
                 <Link to="/" className="navbar-brand">
-                  <h1 className="m-0 text-uppercase text-white">
+                  <h1 className="m-0  text-white">
                     <i className="fa fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores
                   </h1>
                 </Link>
@@ -76,7 +76,7 @@ export default function About() {
             <div className="col-lg-8 col-md-6">
               <div className="row gx-5">
                 <div className="col-lg-4 col-md-12 pt-5 mb-5">
-                  <h4 className="text-primary text-uppercase mb-4">Ponte en Contacto</h4>
+                  <h4 className="text-primary  mb-4">Ponte en Contacto</h4>
                   <div className="d-flex mb-2">
                     <i className="bi bi-geo-alt text-primary me-2"></i>
                     <p className="mb-0">Av. Siempre Viva 123, Santiago, Chile</p>
@@ -102,7 +102,7 @@ export default function About() {
                   </div>
                 </div>
                 <div className="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
-                  <h4 className="text-primary text-uppercase mb-4">Enlaces Rápidos</h4>
+                  <h4 className="text-primary  mb-4">Enlaces Rápidos</h4>
                   <div className="d-flex flex-column justify-content-start">
                     <Link to="/" className="text-secondary mb-2">
                       <i className="bi bi-arrow-right text-primary me-2"></i>Inicio
@@ -131,7 +131,7 @@ export default function About() {
                   </div>
                 </div>
                 <div className="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
-                  <h4 className="text-primary text-uppercase mb-4">Boletín Informativo</h4>
+                  <h4 className="text-primary  mb-4">Boletín Informativo</h4>
                   <p>
                     ¡Suscríbete y recibe un 10% de descuento en tu primera compra! Entérate de nuestras nuevas recetas,
                     promociones y eventos especiales.

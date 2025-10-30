@@ -73,7 +73,7 @@ export default function Blog() {
             <div className="col-lg-4 col-md-6 mt-lg-n5">
               <div className="d-flex flex-column align-items-center justify-content-center text-center h-100 bg-primary border-inner p-4">
                 <Link to="/" className="navbar-brand">
-                  <h1 className="m-0 text-uppercase text-white">
+                  <h1 className="m-0  text-white">
                     <i className="fa fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores
                   </h1>
                 </Link>
@@ -87,7 +87,7 @@ export default function Blog() {
             <div className="col-lg-8 col-md-6">
               <div className="row gx-5">
                 <div className="col-lg-4 col-md-12 pt-5 mb-5">
-                  <h4 className="text-primary text-uppercase mb-4">Ponte en Contacto</h4>
+                  <h4 className="text-primary  mb-4">Ponte en Contacto</h4>
                   <div className="d-flex mb-2">
                     <i className="bi bi-geo-alt text-primary me-2"></i>
                     <p className="mb-0">Av. Siempre Viva 123, Santiago, Chile</p>
@@ -113,7 +113,7 @@ export default function Blog() {
                   </div>
                 </div>
                 <div className="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
-                  <h4 className="text-primary text-uppercase mb-4">Enlaces Rápidos</h4>
+                  <h4 className="text-primary  mb-4">Enlaces Rápidos</h4>
                   <div className="d-flex flex-column justify-content-start">
                     <Link to="/" className="text-secondary mb-2">
                       <i className="bi bi-arrow-right text-primary me-2"></i>Inicio
@@ -142,7 +142,7 @@ export default function Blog() {
                   </div>
                 </div>
                 <div className="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
-                  <h4 className="text-primary text-uppercase mb-4">Boletín Informativo</h4>
+                  <h4 className="text-primary  mb-4">Boletín Informativo</h4>
                   <p>
                     ¡Suscríbete y recibe un 10% de descuento en tu primera compra! Entérate de nuestras nuevas recetas,
                     promociones y eventos especiales.

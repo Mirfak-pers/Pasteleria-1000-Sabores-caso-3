@@ -30,7 +30,7 @@ export default function Home() {
         <div className="container">
           <div className="section-title position-relative text-center mx-auto mb-5 text-secondary pb-3" style={{ maxWidth: '600px' }}>
             <h2 className="text-primary font-secondary">Sobre Nosotros</h2>
-            <h1 className="display-4 text-uppercase">Bienvenidos a Pastelería Mil Sabores</h1>
+            <h1 className="display-4 ">Bienvenidos a Pastelería Mil Sabores</h1>
           </div>
           <div className="row gx-5">
             <div className="col-lg-6 pb-5">
@@ -63,7 +63,7 @@ export default function Home() {
         <div className="container">
           <div className="section-title position-relative text-center mx-auto mb-5 pb-3" style={{ maxWidth: '600px' }}>
             <h2 className="text-primary font-secondary">Productos Destacados</h2>
-            <h1 className="display-4 text-uppercase">Lo más Dulce</h1>
+            <h1 className="display-4 ">Lo más Dulce</h1>
           </div>
 
           {loading ? (
@@ -113,7 +113,7 @@ export default function Home() {
             <div className="col-lg-8 col-md-6">
               <div className="row gx-5">
                 <div className="col-lg-4 col-md-12 pt-5 mb-5">
-                  <h4 className="text-primary text-uppercase mb-4">Ponte en Contacto</h4>
+                  <h4 className="text-primary  mb-4">Ponte en Contacto</h4>
                   <div className="d-flex mb-2">
                     <i className="bi bi-geo-alt text-primary me-2"></i>
                     <p className="mb-0">Av. Siempre Viva 123, Santiago, Chile</p>
@@ -139,7 +139,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
-                  <h4 className="text-primary text-uppercase mb-4">Enlaces Rápidos</h4>
+                  <h4 className="text-primary  mb-4">Enlaces Rápidos</h4>
                   <div className="d-flex flex-column justify-content-start">
                     <Link to="/" className="text-secondary mb-2">
                       <i className="bi bi-arrow-right text-primary me-2"></i>Inicio
@@ -168,7 +168,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
-                  <h4 className="text-primary text-uppercase mb-4">Boletín Informativo</h4>
+                  <h4 className="text-primary  mb-4">Boletín Informativo</h4>
                   <p>
                     ¡Suscríbete y recibe un 10% de descuento en tu primera compra! Entérate de nuestras nuevas recetas,
                     promociones y eventos especiales.
