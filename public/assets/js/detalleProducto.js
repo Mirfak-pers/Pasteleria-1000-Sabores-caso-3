@@ -69,6 +69,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       };
 
       console.log("Producto cargado:", producto);
+      ocultarCargando(); // ← Ocultar spinner antes de mostrar
       mostrarProducto(producto);
 
     } catch (error) {
@@ -81,28 +82,51 @@ document.addEventListener("DOMContentLoaded", async function () {
    * Mostrar información del producto
    */
   function mostrarProducto(producto) {
+    // Verificar que los elementos existan
+    const elements = {
+      pageTitle: document.getElementById('page-title'),
+      pageDescription: document.getElementById('page-description'),
+      breadcrumbName: document.getElementById('breadcrumb-product-name'),
+      productName: document.getElementById('product-name'),
+      productCode: document.getElementById('product-code'),
+      productCategory: document.getElementById('product-category'),
+      productImage: document.getElementById('product-image'),
+      productDescription: document.getElementById('product-description'),
+      productPrice: document.getElementById('product-price'),
+      btnAddToCart: document.getElementById('btn-add-to-cart')
+    };
+
+    // Validar que los elementos críticos existan
+    const elementosFaltantes = Object.entries(elements)
+      .filter(([key, element]) => !element)
+      .map(([key]) => key);
+
+    if (elementosFaltantes.length > 0) {
+      console.error('Elementos del DOM no encontrados:', elementosFaltantes);
+      mostrarError('Error al cargar la interfaz del producto');
+      return;
+    }
+
     // Actualizar título de página
-    document.getElementById('page-title').textContent = 
-      `${producto.nombre} - Pastelería Mil Sabores`;
+    elements.pageTitle.textContent = `${producto.nombre} - Pastelería Mil Sabores`;
     
-    document.getElementById('page-description').setAttribute('content', 
+    elements.pageDescription.setAttribute('content', 
       `${producto.descripcion || producto.nombre} - Pastelería Mil Sabores`);
 
     // Actualizar breadcrumb
-    document.getElementById('breadcrumb-product-name').textContent = producto.nombre;
+    elements.breadcrumbName.textContent = producto.nombre;
 
     // Actualizar contenido principal
-    document.getElementById('product-name').textContent = producto.nombre;
-    document.getElementById('product-code').textContent = producto.id;
-    document.getElementById('product-category').textContent = producto.categoria || 'Sin categoría';
+    elements.productName.textContent = producto.nombre;
+    elements.productCode.textContent = producto.id;
+    elements.productCategory.textContent = producto.categoria || 'Sin categoría';
     
     // Imagen
-    const imgElement = document.getElementById('product-image');
-    imgElement.src = producto.imagen || 'https://via.placeholder.com/600x600/FFC0CB/8B4513?text=Sin+Imagen';
-    imgElement.alt = producto.nombre;
+    elements.productImage.src = producto.imagen || 'https://via.placeholder.com/600x600/FFC0CB/8B4513?text=Sin+Imagen';
+    elements.productImage.alt = producto.nombre;
 
     // Descripción
-    document.getElementById('product-description').textContent = 
+    elements.productDescription.textContent = 
       producto.descripcion || 'Sin descripción disponible.';
 
     // Precios y ofertas
@@ -112,9 +136,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     mostrarStock(producto);
 
     // Guardar producto en data attribute del botón
-    const btnAgregar = document.getElementById('btn-add-to-cart');
-    btnAgregar.dataset.productId = producto.id;
-    btnAgregar.dataset.productData = JSON.stringify(producto);
+    elements.btnAddToCart.dataset.productId = producto.id;
+    elements.btnAddToCart.dataset.productData = JSON.stringify(producto);
   }
 
   /**
@@ -122,6 +145,8 @@ document.addEventListener("DOMContentLoaded", async function () {
    */
   function mostrarPrecio(producto) {
     const precioContainer = document.getElementById('product-price');
+    if (!precioContainer) return;
+
     const esOferta = producto.nuevoPrecio && producto.nuevoPrecio < producto.precio;
 
     if (esOferta) {
@@ -167,31 +192,26 @@ document.addEventListener("DOMContentLoaded", async function () {
     const stockContainer = document.getElementById('stock-info');
     const btnAgregar = document.getElementById('btn-add-to-cart');
     const quantitySelect = document.getElementById('product-quantity');
-    const stock = producto.stock || 0;
-
-    if (!stockContainer) {
-      // Crear contenedor si no existe
-      const priceContainer = document.getElementById('product-price');
-      const newStockContainer = document.createElement('div');
-      newStockContainer.id = 'stock-info';
-      newStockContainer.className = 'mb-3';
-      priceContainer.parentNode.insertBefore(newStockContainer, priceContainer.nextSibling);
+    
+    if (!stockContainer || !btnAgregar || !quantitySelect) {
+      console.error('Elementos de stock no encontrados');
+      return;
     }
 
-    const stockElement = document.getElementById('stock-info');
+    const stock = producto.stock || 0;
 
     if (stock <= 0) {
-      stockElement.innerHTML = `
+      stockContainer.innerHTML = `
         <div class="alert alert-danger">
           <i class="fas fa-times-circle me-2"></i>
           <strong>Sin stock disponible</strong>
         </div>
       `;
       btnAgregar.disabled = true;
-      btnAgregar.textContent = 'Sin stock';
+      btnAgregar.innerHTML = '<i class="fas fa-times me-2"></i>Sin stock';
       quantitySelect.disabled = true;
     } else if (stock <= 5) {
-      stockElement.innerHTML = `
+      stockContainer.innerHTML = `
         <div class="alert alert-warning">
           <i class="fas fa-exclamation-triangle me-2"></i>
           <strong>¡Últimas ${stock} unidades!</strong>
@@ -200,7 +220,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       // Actualizar opciones de cantidad
       actualizarOpcionesCantidad(stock);
     } else {
-      stockElement.innerHTML = `
+      stockContainer.innerHTML = `
         <div class="alert alert-success">
           <i class="fas fa-check-circle me-2"></i>
           <strong>${stock} unidades disponibles</strong>
@@ -215,6 +235,8 @@ document.addEventListener("DOMContentLoaded", async function () {
    */
   function actualizarOpcionesCantidad(maxStock) {
     const quantitySelect = document.getElementById('product-quantity');
+    if (!quantitySelect) return;
+
     quantitySelect.innerHTML = '';
 
     for (let i = 1; i <= maxStock; i++) {
@@ -230,10 +252,17 @@ document.addEventListener("DOMContentLoaded", async function () {
    */
   async function agregarAlCarrito() {
     const btnAgregar = document.getElementById('btn-add-to-cart');
-    const productData = JSON.parse(btnAgregar.dataset.productData);
-    const cantidad = parseInt(document.getElementById('product-quantity').value);
+    const quantitySelect = document.getElementById('product-quantity');
+    
+    if (!btnAgregar || !quantitySelect) {
+      mostrarNotificacion('Error al agregar producto', 'error');
+      return;
+    }
 
-    if (!productData) {
+    const productData = JSON.parse(btnAgregar.dataset.productData || '{}');
+    const cantidad = parseInt(quantitySelect.value);
+
+    if (!productData || !productData.id) {
       mostrarNotificacion('Error al agregar producto', 'error');
       return;
     }
@@ -328,6 +357,8 @@ document.addEventListener("DOMContentLoaded", async function () {
    */
   function animarBotonAgregado() {
     const btn = document.getElementById('btn-add-to-cart');
+    if (!btn) return;
+
     const textoOriginal = btn.innerHTML;
     
     btn.innerHTML = '<i class="fas fa-check me-2"></i>¡Agregado!';
@@ -377,22 +408,53 @@ document.addEventListener("DOMContentLoaded", async function () {
    * Mostrar mensaje de carga
    */
   function mostrarCargando() {
-    const container = document.querySelector('.product-detail-container');
-    container.innerHTML = `
-      <div class="text-center py-5">
+    // Crear overlay de carga sin destruir el contenido existente
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.id = 'loading-overlay';
+    loadingOverlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    `;
+    
+    loadingOverlay.innerHTML = `
+      <div class="text-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
           <span class="visually-hidden">Cargando...</span>
         </div>
         <p class="mt-3 text-muted">Cargando producto...</p>
       </div>
     `;
+    
+    document.body.appendChild(loadingOverlay);
+  }
+
+  /**
+   * Ocultar mensaje de carga
+   */
+  function ocultarCargando() {
+    const loadingOverlay = document.getElementById('loading-overlay');
+    if (loadingOverlay) {
+      loadingOverlay.remove();
+    }
   }
 
   /**
    * Mostrar mensaje de error
    */
   function mostrarError(mensaje) {
+    ocultarCargando(); // Asegurar que el overlay se elimine
+    
     const container = document.querySelector('.product-detail-container');
+    if (!container) return;
+
     container.innerHTML = `
       <div class="text-center py-5">
         <i class="fas fa-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
