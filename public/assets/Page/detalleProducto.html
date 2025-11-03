@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title id="page-title">Producto - Pastelería Mil Sabores</title>
-    <link href="../image/logo.jpg" rel="icon">
+    <!-- CORRECCIÓN: Rutas absolutas desde la raíz -->
+    <link href="/assets/image/logo.jpg" rel="icon">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Detalle del producto - Pastelería Mil Sabores" name="description" id="page-description">
     
@@ -16,10 +17,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     
-    <!-- Bootstrap -->
+    <!-- Bootstrap - CORREGIDO: Rutas absolutas -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/style.index.css" rel="stylesheet">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/style.index.css" rel="stylesheet">
     
     <style>
         @keyframes slideIn {
@@ -49,8 +50,9 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg bg-light navbar-light shadow-sm py-2 px-3 px-lg-4">
         <div class="container-fluid">
-            <a href="../../index.html" class="navbar-brand d-flex align-items-center">
-                <img src="../image/logo.jpg" alt="Mil Sabores Logo" height="30">
+            <!-- CORRECCIÓN: Rutas absolutas -->
+            <a href="/index.html" class="navbar-brand d-flex align-items-center">
+                <img src="/assets/image/logo.jpg" alt="Mil Sabores Logo" height="30">
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
@@ -60,33 +62,33 @@
             <div class="collapse navbar-collapse" id="navbarMain">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a href="../../index.html" class="nav-link">Inicio</a>
+                        <a href="/index.html" class="nav-link">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a href="productos.html" class="nav-link">Productos</a>
+                        <a href="/assets/Page/productos.html" class="nav-link">Productos</a>
                     </li>
                     <li class="nav-item">
-                        <a href="contact.html" class="nav-link">Contacto</a>
+                        <a href="/assets/Page/contact.html" class="nav-link">Contacto</a>
                     </li>
                     <li class="nav-item">
-                        <a href="about.html" class="nav-link">Nosotros</a>
+                        <a href="/assets/Page/about.html" class="nav-link">Nosotros</a>
                     </li>
                     <li class="nav-item">
-                        <a href="blogs.html" class="nav-link">Blog</a>
+                        <a href="/assets/Page/blogs.html" class="nav-link">Blog</a>
                     </li>
                 </ul>
 
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a href="carrito.html" class="nav-link">
+                        <a href="/assets/Page/carrito.html" class="nav-link">
                             <i class="fas fa-shopping-cart me-1"></i> Carrito
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="login.html" class="nav-link">Iniciar sesión</a>
+                        <a href="/assets/Page/login.html" class="nav-link">Iniciar sesión</a>
                     </li>
                     <li class="nav-item">
-                        <a href="registro.html" class="nav-link">Registro</a>
+                        <a href="/assets/Page/registro.html" class="nav-link">Registro</a>
                     </li>
                 </ul>
             </div>
@@ -99,9 +101,9 @@
             <div class="col-12 text-center">
                 <h1 class="display-4 text-white">Detalle del Producto</h1>
                 <div id="breadcrumb" style="color: #ffc107;">
-                    <a href="../../index.html" style="color: #fff;">Inicio</a>
+                    <a href="/index.html" style="color: #fff;">Inicio</a>
                     <i class="far fa-square text-primary px-2"></i>
-                    <a href="productos.html" style="color: #fff;">Productos</a>
+                    <a href="/assets/Page/productos.html" style="color: #fff;">Productos</a>
                     <i class="far fa-square text-primary px-2"></i>
                     <span id="breadcrumb-product-name">Producto</span>
                 </div>
@@ -147,7 +149,7 @@
                         <!-- Se llenará dinámicamente -->
                     </div>
 
-                    <!-- Stock (se agregará dinámicamente) -->
+                    <!-- Stock -->
                     <div id="stock-info" class="mb-3">
                         <!-- Se llenará dinámicamente -->
                     </div>
@@ -169,7 +171,7 @@
                                 id="btn-add-to-cart">
                             <i class="fas fa-cart-plus me-2"></i> Agregar al Carrito
                         </button>
-                        <a href="productos.html" class="btn btn-outline-secondary btn-lg">
+                        <a href="/assets/Page/productos.html" class="btn btn-outline-secondary btn-lg">
                             <i class="fas fa-arrow-left me-2"></i> Volver
                         </a>
                     </div>
@@ -184,7 +186,7 @@
             <div class="row gx-5">
                 <div class="col-lg-4 col-md-6 mt-lg-n5">
                     <div class="d-flex flex-column align-items-center justify-content-center text-center h-100 bg-primary border-inner p-4">
-                        <a href="../../index.html" class="navbar-brand">
+                        <a href="/index.html" class="navbar-brand">
                             <h1 class="m-0 text-white">
                                 <i class="fa fa-birthday-cake fs-1 text-dark me-3"></i>Mil Sabores
                             </h1>
@@ -212,16 +214,16 @@
                         <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
                             <h4 class="text-primary mb-4">Enlaces Rápidos</h4>
                             <div class="d-flex flex-column justify-content-start">
-                                <a class="text-secondary mb-2" href="../../index.html">
+                                <a class="text-secondary mb-2" href="/index.html">
                                     <i class="bi bi-arrow-right text-primary me-2"></i>Inicio
                                 </a>
-                                <a class="text-secondary mb-2" href="productos.html">
+                                <a class="text-secondary mb-2" href="/assets/Page/productos.html">
                                     <i class="bi bi-arrow-right text-primary me-2"></i>Productos
                                 </a>
-                                <a class="text-secondary mb-2" href="about.html">
+                                <a class="text-secondary mb-2" href="/assets/Page/about.html">
                                     <i class="bi bi-arrow-right text-primary me-2"></i>Nosotros
                                 </a>
-                                <a class="text-secondary mb-2" href="contact.html">
+                                <a class="text-secondary mb-2" href="/assets/Page/contact.html">
                                     <i class="bi bi-arrow-right text-primary me-2"></i>Contacto
                                 </a>
                             </div>
@@ -248,11 +250,16 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Scripts - ORDEN CORRECTO CON RUTAS ABSOLUTAS -->
+    <!-- 1. Firebase SDK (debe cargarse primero) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script> 
-<script src="../js/config.js"></script>
-    <script src="../js/detalleProducto.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <!-- 2. Configuración de Firebase - CORRECCIÓN: Ruta absoluta -->
+    <script src="/assets/js/config.js"></script>
+    
+    <!-- 3. Script específico de la página - CORRECCIÓN: Ruta absoluta -->
+    <script src="/assets/js/detalleProducto.js"></script>
 </body>
 </html>

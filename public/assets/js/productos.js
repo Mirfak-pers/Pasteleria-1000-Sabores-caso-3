@@ -1,5 +1,5 @@
 // assets/js/productos.js
-// Con integración de enlaces a detalle de producto
+// CORRECCIÓN: Rutas absolutas para detalle de producto
 
 document.addEventListener("DOMContentLoaded", async function () {
   const productsContainer = document.getElementById('lista-productos');
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   /**
-   * Mostrar productos en el grid - ACTUALIZADO con link a detalle
+   * Mostrar productos en el grid
    */
   function mostrarProductos(productos) {
     productsContainer.innerHTML = '';
@@ -238,11 +238,16 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   /**
-   * Redirigir al detalle del producto
+   * Redirigir al detalle del producto - CORREGIDO CON RUTAS ABSOLUTAS
+   * Funciona tanto en local como en Firebase Hosting
    */
-function irADetalle(productId) {
-    window.location.href = "assets/Page/detalleProducto.html?id=${productId}";
-}
+  function irADetalle(productId) {
+    // SIEMPRE usar ruta absoluta desde la raíz
+    const detalleUrl = `/assets/Page/detalleProducto.html?id=${productId}`;
+    
+    console.log('Navegando a:', detalleUrl);
+    window.location.href = detalleUrl;
+  }
 
   async function agregarAlCarrito(productId) {
     const producto = productosGlobal.find(p => p.id === productId);
@@ -372,7 +377,7 @@ function irADetalle(productId) {
   }
 
   /**
-   * Configurar eventos - ACTUALIZADO con click en imagen
+   * Configurar eventos
    */
   function configurarEventos() {
     // Click en imagen para ir al detalle
@@ -398,7 +403,7 @@ function irADetalle(productId) {
     const btnCarrito = document.querySelector('.btn-carrito');
     if (btnCarrito) {
       btnCarrito.addEventListener('click', () => {
-        window.location.href = 'carrito.html';
+        window.location.href = '/assets/Page/carrito.html';
       });
     }
 

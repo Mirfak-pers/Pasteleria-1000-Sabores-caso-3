@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           $${producto.nuevoPrecio.toLocaleString('es-CL')}
         </div>
         <div class="mt-2 p-2 bg-success bg-opacity-10 rounded">
-          <small class="text-success fw-bold">
+          <small class=" fw-bold">
             <i class="fas fa-tag me-1"></i>
             ¡Ahorras $${ahorro.toLocaleString('es-CL')}!
           </small>
