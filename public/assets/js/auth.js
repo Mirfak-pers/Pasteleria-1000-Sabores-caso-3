@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Redirigir a inicio después de 1 segundo
             setTimeout(() => {
-                window.location.href = '/index.html';
+                window.location.href = 'perfilCliente2.html';
             }, 1000);
 
         } catch (error) {
@@ -225,7 +225,7 @@ function cerrarSesion() {
         auth.signOut().then(() => {
             console.log('Sesión cerrada');
             alert('Has cerrado sesión correctamente');
-            window.location.href = '/assets/Page/login.html';
+            window.location.href = '/assets/Page/perfilCLiente2.html';
         }).catch((error) => {
             console.error('Error al cerrar sesión:', error);
             alert('Error al cerrar sesión');

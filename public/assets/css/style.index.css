@@ -193,8 +193,8 @@ h3 {
 }
 
 .badge.success {
-    background: #d4edda;
-    color: #155724;
+    background: #d4edda; /* Color de fondo verde claro */
+    color: #155724; /* Color de texto verde oscuro */
 }
 
 .badge.blue {
@@ -207,10 +207,20 @@ h3 {
     color: #721c24;
 }
 
+.badge.warning {
+    background: #fff3cd;
+    color: #856404;
+}
 .badge.yellow {
     background: #fff3cd;
     color: #856404;
 }
+
+.badge.error {
+    background-color: #f8d7da; /* Color de fondo rojo claro */
+    color: #721c24; /* Color de texto rojo oscuro */
+}
+
 
 /* === Cards de Contacto === */
 .contact-card {

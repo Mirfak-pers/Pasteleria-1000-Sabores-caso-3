@@ -87,8 +87,32 @@ function actualizarInterfazCliente(datos) {
     const nombre = datos.nombre || 'Usuario';
     document.getElementById('clienteName').textContent = nombre;
     
-    const fechaRegistro = datos.fechaRegistro || 
-                         (datos.fechaCreacion ? new Date(datos.fechaCreacion.toDate()).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }) : 'Reciente');
+    // Formatear fecha de registro correctamente
+    let fechaRegistro = 'Reciente';
+    
+    if (datos.fechaRegistro && typeof datos.fechaRegistro === 'string') {
+        // Si ya es un string formateado
+        fechaRegistro = datos.fechaRegistro;
+    } else if (datos.fechaCreacion) {
+        // Si es un Timestamp de Firebase
+        try {
+            const fecha = datos.fechaCreacion.toDate();
+            fechaRegistro = fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+        } catch (error) {
+            console.log('Error al convertir fechaCreacion:', error);
+            fechaRegistro = 'Reciente';
+        }
+    } else if (datos.fechaRegistro && datos.fechaRegistro.toDate) {
+        // Si fechaRegistro es un Timestamp
+        try {
+            const fecha = datos.fechaRegistro.toDate();
+            fechaRegistro = fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+        } catch (error) {
+            console.log('Error al convertir fechaRegistro:', error);
+            fechaRegistro = 'Reciente';
+        }
+    }
+    
     document.getElementById('fechaRegistro').textContent = fechaRegistro;
     
     const puntos = datos.puntos || 0;
@@ -143,52 +167,85 @@ async function cargarHistorialComprasFirebase(userId, email) {
     try {
         console.log('Cargando compras para userId:', userId, 'email:', email);
         
-        let comprasSnapshot = await db.collection('compras')
-            .where('correoCliente', '==', email)
-            .limit(10)
-            .get();
+        let comprasSnapshot;
         
+        // Buscar por cliente.correo (formato nuevo) - SIN orderBy para evitar índice
+        try {
+            comprasSnapshot = await db.collection('compras')
+                .where('cliente.correo', '==', email)
+                .limit(50)
+                .get();
+            
+            if (!comprasSnapshot.empty) {
+                console.log('Compras encontradas con cliente.correo:', comprasSnapshot.size);
+            }
+        } catch (error) {
+            console.log('Error buscando con cliente.correo:', error.message);
+        }
+        
+        // Fallback: buscar por correoCliente (formato antiguo)
         if (comprasSnapshot.empty && email) {
-            console.log('No se encontraron compras con correoCliente, intentando con email...');
-            comprasSnapshot = await db.collection('compras')
-                .where('email', '==', email)
-                .limit(10)
-                .get();
+            console.log('No se encontraron compras con cliente.correo, intentando con correoCliente...');
+            try {
+                comprasSnapshot = await db.collection('compras')
+                    .where('correoCliente', '==', email)
+                    .limit(50)
+                    .get();
+                
+                if (!comprasSnapshot.empty) {
+                    console.log('Compras encontradas con correoCliente:', comprasSnapshot.size);
+                }
+            } catch (error) {
+                console.log('Error buscando con correoCliente:', error.message);
+            }
         }
         
-        if (comprasSnapshot.empty && userId) {
-            console.log('No se encontraron compras por email, buscando por clienteId...');
-            comprasSnapshot = await db.collection('compras')
-                .where('clienteId', '==', userId)
-                .limit(10)
-                .get();
-        }
-        
-        const compras = [];
+        // Convertir a array y ordenar manualmente por fecha
+        const comprasArray = [];
         
         for (const doc of comprasSnapshot.docs) {
             const compra = doc.data();
             
-            let nombreProducto = compra.nombreProducto || 'Producto';
-            if (compra.pastelId) {
+            // Obtener productos de la compra
+            let productos = '';
+            let total = 0;
+            
+            if (compra.productos && Array.isArray(compra.productos)) {
+                productos = compra.productos.map(p => `${p.nombre} (x${p.cantidad})`).join(', ');
+                total = compra.total || 0;
+            } else if (compra.pastelId) {
+                // Formato antiguo con pastelId
                 try {
                     const pastelDoc = await db.collection('producto').doc(compra.pastelId).get();
                     if (pastelDoc.exists) {
-                        nombreProducto = pastelDoc.data().nombre || nombreProducto;
+                        productos = pastelDoc.data().nombre || 'Producto';
                     }
                 } catch (error) {
                     console.log("No se pudo obtener información del pastel");
+                    productos = compra.nombreProducto || 'Producto';
                 }
+                total = compra.total || 0;
+            } else {
+                productos = compra.nombreProducto || 'Producto';
+                total = compra.total || 0;
             }
             
-            compras.push({
+            comprasArray.push({
                 id: doc.id,
+                fechaObj: compra.fecha ? compra.fecha.toDate() : new Date(0),
                 fecha: compra.fecha ? formatearFecha(compra.fecha.toDate()) : 'Sin fecha',
-                producto: nombreProducto,
-                monto: formatearPrecio(compra.total || 0),
-                estado: compra.estado || 'Pendiente'
+                producto: productos,
+                monto: formatearPrecio(total),
+                estado: traducirEstado(compra.estado || 'pendiente'),
+                numeroOrden: compra.numeroOrden || doc.id
             });
         }
+        
+        // Ordenar manualmente por fecha (más reciente primero)
+        comprasArray.sort((a, b) => b.fechaObj - a.fechaObj);
+        
+        // Tomar solo las 10 más recientes
+        const compras = comprasArray.slice(0, 10);
         
         console.log('Compras cargadas:', compras.length);
         mostrarHistorialCompras(compras);
@@ -197,6 +254,20 @@ async function cargarHistorialComprasFirebase(userId, email) {
         document.getElementById('historialCompras').innerHTML = 
             '<p style="text-align: center; color: #999;">No hay compras registradas</p>';
     }
+}
+
+function traducirEstado(estado) {
+    const estados = {
+        'pendiente': 'Pendiente',
+        'confirmado': 'Confirmado',
+        'en_preparacion': 'En Preparación',
+        'enviado': 'Enviado',
+        'entregado': 'Entregado',
+        'completado': 'Completado',
+        'cancelado': 'Cancelado',
+        'error_pago': 'Error en Pago'
+    };
+    return estados[estado] || estado;
 }
 
 function mostrarHistorialCompras(compras) {
@@ -211,15 +282,21 @@ function mostrarHistorialCompras(compras) {
     compras.forEach(compra => {
         const card = document.createElement('div');
         card.className = 'card';
+        
+        const badgeClass = compra.estado === 'Completado' || compra.estado === 'Entregado' ? 'success' :
+                          compra.estado === 'Cancelado' || compra.estado === 'Error en Pago' ? 'error' :
+                          'warning';
+        
         card.innerHTML = `
             <div class="card-content">
                 <div>
                     <div class="card-title">${compra.producto}</div>
                     <div class="card-date">${compra.fecha}</div>
+                    <div class="card-date" style="font-size: 0.75rem; color: #999;">Orden: ${compra.numeroOrden}</div>
                 </div>
                 <div style="text-align: right;">
                     <div class="card-price">${compra.monto}</div>
-                    <span class="badge success">${compra.estado}</span>
+                    <span class="badge ${badgeClass}">${compra.estado}</span>
                 </div>
             </div>
         `;
@@ -242,16 +319,28 @@ async function cargarHistorialContactoFirebase(userId, email) {
             return;
         }
         
-        let contactosSnapshot = await db.collection('contacto')
+        // Buscar contactos por email - Intentar primero 'contactos' y luego 'contacto'
+        let contactosSnapshot = await db.collection('contactos')
             .where('email', '==', email)
-            .limit(10)
+            .limit(50)
             .get();
         
-        const contactos = [];
+        // Fallback: si no encuentra en 'contactos', buscar en 'contacto'
+        if (contactosSnapshot.empty) {
+            console.log('No se encontraron en "contactos", buscando en "contacto"...');
+            contactosSnapshot = await db.collection('contacto')
+                .where('email', '==', email)
+                .limit(50)
+                .get();
+        }
+        
+        const contactosArray = [];
         contactosSnapshot.forEach(doc => {
             const contacto = doc.data();
-            contactos.push({
+            console.log('Procesando contacto:', doc.id, contacto); // Debug
+            contactosArray.push({
                 id: doc.id,
+                fechaObj: contacto.fecha ? contacto.fecha.toDate() : new Date(0),
                 fecha: contacto.fecha ? formatearFecha(contacto.fecha.toDate()) : 'Sin fecha',
                 tipo: contacto.tipo || 'Consulta',
                 mensaje: contacto.message || contacto.mensaje || 'Sin mensaje',
@@ -259,6 +348,14 @@ async function cargarHistorialContactoFirebase(userId, email) {
                 respuesta: contacto.estadoRespuesta || contacto.estado || 'Pendiente'
             });
         });
+        
+        console.log('Total contactos procesados:', contactosArray.length); // Debug
+        
+        // Ordenar por fecha (más reciente primero)
+        contactosArray.sort((a, b) => b.fechaObj - a.fechaObj);
+        
+        // Tomar solo los 10 más recientes
+        const contactos = contactosArray.slice(0, 10);
         
         console.log('Contactos cargados:', contactos.length);
         mostrarHistorialContacto(contactos);
@@ -409,19 +506,34 @@ async function crearCompra(compraData) {
     }
     
     try {
+        // Obtener datos completos del cliente
+        const clienteInfo = {
+            nombre: clienteData.nombre || usuarioActual.displayName || "Cliente",
+            apellidos: clienteData.apellidos || "",
+            correo: usuarioActual.email
+        };
+        
+        // Estructura de la nueva compra siguiendo el formato del ejemplo
         const nuevaCompra = {
-            clienteId: usuarioActual.uid,
-            correoCliente: usuarioActual.email,
-            pastelId: compraData.pastelId || null,
-            nombreProducto: compraData.nombreProducto,
-            cantidad: compraData.cantidad || 1,
-            total: compraData.total,
-            estado: 'Pendiente',
-            fecha: firebase.firestore.FieldValue.serverTimestamp()
+            cliente: clienteInfo,
+            direccion: compraData.direccion || {
+                calle: clienteData.direccion || "",
+                comuna: "",
+                region: "",
+                departamento: "",
+                indicaciones: ""
+            },
+            estado: compraData.estado || 'pendiente',
+            fecha: firebase.firestore.FieldValue.serverTimestamp(),
+            numeroOrden: `ORDEN${Date.now()}${Math.floor(Math.random() * 1000)}`,
+            productos: compraData.productos || [],
+            total: compraData.total || 0
         };
         
         const compraRef = await db.collection('compras').add(nuevaCompra);
+        console.log('Compra creada con ID:', compraRef.id);
         
+        // Actualizar puntos del cliente
         const puntosGanados = Math.floor(compraData.total / 1000);
         if (puntosGanados > 0) {
             await db.collection('usuarios').doc(usuarioActual.uid).update({
@@ -430,6 +542,9 @@ async function crearCompra(compraData) {
             
             await cargarDatosClienteFirebase(usuarioActual.uid);
         }
+        
+        // Recargar historial de compras
+        await cargarHistorialComprasFirebase(usuarioActual.uid, usuarioActual.email);
         
         return compraRef.id;
     } catch (error) {
@@ -446,18 +561,27 @@ async function crearContacto(contactoData) {
     }
     
     try {
+        // Obtener nombre del cliente desde clienteData
+        const nombreCliente = clienteData.nombre || usuarioActual.displayName || "Usuario";
+        
+        // Estructura simple del contacto según el ejemplo
         const nuevoContacto = {
             email: usuarioActual.email,
-            nombre: clienteData.nombre || usuarioActual.displayName || "Usuario",
-            message: contactoData.mensaje || contactoData.message,
+            nombre: nombreCliente,
+            message: contactoData.mensaje || contactoData.message || "",
             tipo: contactoData.tipo || 'Consulta',
             estado: 'Pendiente',
             estadoRespuesta: 'Pendiente',
             fecha: firebase.firestore.FieldValue.serverTimestamp()
         };
         
-        const contactoRef = await db.collection('contacto').add(nuevoContacto);
+        console.log('Creando contacto:', nuevoContacto);
         
+        // Guardar en la colección 'contactos' (con 's')
+        const contactoRef = await db.collection('contactos').add(nuevoContacto);
+        console.log('Contacto creado con ID:', contactoRef.id);
+        
+        // Recargar historial de contactos
         await cargarHistorialContactoFirebase(usuarioActual.uid, usuarioActual.email);
         
         alert('✅ Contacto enviado correctamente');

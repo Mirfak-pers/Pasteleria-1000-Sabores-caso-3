@@ -5,13 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de Cliente - Pastelería 1000 Sabores</title>
     
-    <!-- Lucide Icons -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
-    
-    <!-- CSS -->
-    <link rel="stylesheet" href="../css/style.index.css">
+    <link href="../image/logo.jpg" rel="icon">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Libraries Stylesheet -->
+    <link href="../lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/style.index.css" rel="stylesheet">
 </head>
-<body>
+<body><nav class="navbar navbar-expand-lg bg-light navbar-light shadow-sm py-2 px-3 px-lg-4">
+    <div class="container-fluid">
+      <!-- Logo -->
+      <a href="/index.html" class="navbar-brand d-flex align-items-center">
+        <img src="/assets/image/logo.jpg" alt="Mil Sabores Logo" height="30">
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <!-- Menú principal (izquierda) -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a href="/index.html" class="nav-link">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a href="/assets/Page/productos.html" class="nav-link">Productos</a>
+          </li>
+          <li class="nav-item">
+            <a href="/assets/Page/contact.html" class="nav-link">Contacto</a>
+          </li>
+          <li class="nav-item">
+            <a href="/assets/Page/about.html" class="nav-link active">Nosotros</a>
+          </li>
+          <li class="nav-item">
+            <a href="/assets/Page/blogs.html" class="nav-link">Blog</a>
+          </li>
+        </ul>
+
+        <!-- Derecha: Buscador + Carrito + Auth -->
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <!-- Buscador -->
+          <li class="nav-item d-flex align-items-center me-3">
+            <input 
+              id="searchInput" 
+              type="text" 
+              class="form-control form-control-sm" 
+              placeholder="Buscar productos..."
+              style="width: 180px;"
+            >
+          </li>
+          
+          <!-- Carrito -->
+          <li class="nav-item">
+            <button class="btn-carrito" onclick="window.location.href='/assets/Page/carrito.html'">
+              <span class="carrito-icon">🛒</span>
+              Total: $<span class="carrito-total">0</span>
+            </button>
+          </li>       
+          
+          <!-- Auth dinámico (manejado por authState.js) -->
+          <li class="nav-item auth-buttons d-flex align-items-center"></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
     <div class="container">
         <!-- Header del Perfil -->
         <div class="profile-header">
@@ -145,10 +210,23 @@
         </div>
     </div>
 
-<!-- Firebase v8 SDK - AL FINAL DEL BODY -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<!-- Firebase v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/authState.js"></script>
+<script type="module" src="../js/common.js"></script>
+
+document.addEventListener('DOMContentLoaded', function() {
+  const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+  const carritoTotal = document.querySelector('.carrito-total');
+  
+  if (carritoTotal) {
+    const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+    carritoTotal.textContent = total.toLocaleString('es-CL');
+  }
+});
 
 <!-- Scripts de configuración y registro -->
 <script src="../js/config.js"></script>

@@ -86,61 +86,88 @@
 
 
 
-    <!-- Contact Start -->
-    <div class="container-fluid contact position-relative px-5" style="margin-top: 90px;">
-        <div class="container">
-            <div class="row g-5 mb-5">
-                <div class="col-lg-4 col-md-6">
-                    <div class="bg-primary border-inner text-center text-white p-5">
-                        <i class="bi bi-geo-alt fs-1 text-white"></i>
-                        <h6 class=" my-2">Nuestra Pastelería</h6>
-                        <span>Av. Siempre Viva 123, Santiago, Chile</span>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="bg-primary border-inner text-center text-white p-5">
-                        <i class="bi bi-envelope-open fs-1 text-white"></i>
-                        <h6 class=" my-2">Escríbenos</h6>
-                        <span>contacto@milsabores.cl</span>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="bg-primary border-inner text-center text-white p-5">
-                        <i class="bi bi-phone-vibrate fs-1 text-white"></i>
-                        <h6 class=" my-2">Llámanos</h6>
-                        <span>+56 2 2345 6789</span>
-                    </div>
+<!-- Contact Start -->
+<div class="container-fluid contact position-relative px-5" style="margin-top: 90px;">
+    <div class="container">
+        <div class="row g-5 mb-5">
+            <div class="col-lg-4 col-md-6">
+                <div class="bg-primary border-inner text-center text-white p-5">
+                    <i class="bi bi-geo-alt fs-1 text-white"></i>
+                    <h6 class="my-2">Nuestra Pastelería</h6>
+                    <span>Av. Siempre Viva 123, Santiago, Chile</span>
                 </div>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-lg-6">
-                    <form id="formContacto">
-                        <div class="row g-3">
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control bg-light border-0 px-4" id="nombre" placeholder="Tu Nombre" style="height: 55px;">
-                                <div class="invalid-feedback" style="display: none;"></div>
-                            </div>
-                            <div class="col-sm-6">
-                                <input type="email" class="form-control bg-light border-0 px-4" id="correo" placeholder="Tu Correo Electrónico" style="height: 55px;">
-                                <div class="invalid-feedback" style="display: none;"></div>
-                            </div>
-                            <div class="col-sm-12">
-                                <input type="text" class="form-control bg-light border-0 px-4" placeholder="Asunto" style="height: 55px;">
-                            </div>
-                            <div class="col-sm-12">
-                                <textarea class="form-control bg-light border-0 px-4 py-3" id="comentario" rows="4" placeholder="Tu Mensaje"></textarea>
-                                <div class="invalid-feedback" style="display: none;"></div>
-                            </div>
-                            <div class="col-sm-12">
-                                <button class="btn btn-primary border-inner w-100 py-3" type="submit">Enviar Mensaje</button>
-                            </div>
-                        </div>
-                    </form>
+            <div class="col-lg-4 col-md-6">
+                <div class="bg-primary border-inner text-center text-white p-5">
+                    <i class="bi bi-envelope-open fs-1 text-white"></i>
+                    <h6 class="my-2">Escríbenos</h6>
+                    <span>contacto@milsabores.cl</span>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="bg-primary border-inner text-center text-white p-5">
+                    <i class="bi bi-phone-vibrate fs-1 text-white"></i>
+                    <h6 class="my-2">Llámanos</h6>
+                    <span>+56 2 2345 6789</span>
                 </div>
             </div>
         </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <form id="formContacto">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <input 
+                                type="text" 
+                                class="form-control bg-light border-0 px-4" 
+                                id="nombre" 
+                                placeholder="Tu Nombre" 
+                                style="height: 55px;"
+                                required>
+                            <div class="invalid-feedback" style="display: none;">Este campo es obligatorio</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <input 
+                                type="email" 
+                                class="form-control bg-light border-0 px-4" 
+                                id="correo" 
+                                placeholder="Tu Correo Electrónico" 
+                                style="height: 55px;"
+                                required>
+                            <div class="invalid-feedback" style="display: none;">Ingresa un correo válido</div>
+                        </div>
+                        <div class="col-sm-12">
+                            <select 
+                                class="form-control bg-light border-0 px-4" 
+                                id="tipo"
+                                style="height: 55px;">
+                                <option value="Consulta">Consulta General</option>
+                                <option value="Pedido">Consulta sobre Pedido</option>
+                                <option value="Reclamo">Reclamo</option>
+                                <option value="Sugerencia">Sugerencia</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-12">
+                            <textarea 
+                                class="form-control bg-light border-0 px-4 py-3" 
+                                id="comentario" 
+                                rows="4" 
+                                placeholder="Tu Mensaje"
+                                required></textarea>
+                            <div class="invalid-feedback" style="display: none;">Este campo es obligatorio</div>
+                        </div>
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary border-inner w-100 py-3" type="submit">
+                                Enviar Mensaje
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <!-- Contact End -->
+</div>
+<!-- Contact End -->
 
 
      <!-- Footer Start -->
