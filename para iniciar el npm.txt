@@ -1,1 +1,2 @@
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+firebase deploy --only hosting

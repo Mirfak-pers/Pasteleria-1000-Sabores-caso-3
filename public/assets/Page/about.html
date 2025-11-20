@@ -24,55 +24,63 @@
 
 <body>
 <nav class="navbar navbar-expand-lg bg-light navbar-light shadow-sm py-2 px-3 px-lg-4">
-  <div class="container-fluid">
-    <!-- Logo -->
-                          <a href="index.html" class="navbar-brand d-flex align-items-center">
-                          <img src="../image/logo.jpg" alt="Mil Sabores Logo" height="30">
-                      </a>
+    <div class="container-fluid">
+      <!-- Logo -->
+      <a href="/index.html" class="navbar-brand d-flex align-items-center">
+        <img src="/assets/image/logo.jpg" alt="Mil Sabores Logo" height="30">
+      </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <div class="collapse navbar-collapse" id="navbarMain">
-      <!-- Menú principal (izquierda) -->
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a href="../../index.html" class="nav-link">Inicio</a>
-        </li>
-        <li class="nav-item">
-          <a href="/productos.html" class="nav-link">Productos</a>
-        </li>
-        <li class="nav-item">
-          <a href="contact.html" class="nav-link">Contacto</a>
-        </li>
-        <li class="nav-item">
-          <a href="about.html" class="nav-link">Nosotros</a>
-        </li>
-        <li class="nav-item">
-          <a href="blogs.html" class="nav-link">Blog</a>
-        </li>
-      </ul>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <!-- Menú principal (izquierda) -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a href="/index.html" class="nav-link">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a href="/assets/Page/productos.html" class="nav-link">Productos</a>
+          </li>
+          <li class="nav-item">
+            <a href="/assets/Page/contact.html" class="nav-link">Contacto</a>
+          </li>
+          <li class="nav-item">
+            <a href="/assets/Page/about.html" class="nav-link active">Nosotros</a>
+          </li>
+          <li class="nav-item">
+            <a href="/assets/Page/blogs.html" class="nav-link">Blog</a>
+          </li>
+        </ul>
 
-      <!-- Derecha: Carrito + Login + Registro -->
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <!-- Carrito: visible en todos los tamaños -->
-        <li class="nav-item">
-          <a href="carrito.html" class="nav-link">
-            <i class="fas fa-shopping-cart me-1"></i> Carrito
-          </a>
-        </li>        
-          <!-- Login y Registro-->
-        <li class="nav-item">
-          <a href="login.html" class="nav-link">Iniciar sesión</a>
-        </li>
-        <li class="nav-item">
-          <a href="registro.html" class="nav-link">Registro</a>
-        </li>
-      </ul>
+        <!-- Derecha: Buscador + Carrito + Auth -->
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <!-- Buscador -->
+          <li class="nav-item d-flex align-items-center me-3">
+            <input 
+              id="searchInput" 
+              type="text" 
+              class="form-control form-control-sm" 
+              placeholder="Buscar productos..."
+              style="width: 180px;"
+            >
+          </li>
+          
+          <!-- Carrito -->
+          <li class="nav-item">
+            <button class="btn-carrito" onclick="window.location.href='/assets/Page/carrito.html'">
+              <span class="carrito-icon">🛒</span>
+              Total: $<span class="carrito-total">0</span>
+            </button>
+          </li>       
+          
+          <!-- Auth dinámico (manejado por authState.js) -->
+          <li class="nav-item auth-buttons d-flex align-items-center"></li>
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
 
 
@@ -190,7 +198,25 @@
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-primary border-inner py-3 fs-4 back-to-top"><i class="bi bi-arrow-up"></i></a>
+<!-- Firebase v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/authState.js"></script>
+<script type="module" src="../js/common.js"></script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+  const carritoTotal = document.querySelector('.carrito-total');
+  
+  if (carritoTotal) {
+    const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+    carritoTotal.textContent = total.toLocaleString('es-CL');
+  }
+});
+</script>
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -201,7 +227,7 @@
     <script src="../lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="../js/main.js"></script>
+
 </body>
 
 </html>

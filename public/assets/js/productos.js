@@ -1,5 +1,5 @@
 // assets/js/productos.js
-// CORRECCIÓN: Rutas absolutas para detalle de producto
+// CORRECCIÓN: Rutas absolutas para detalle de producto + BUSCADOR FUNCIONAL
 
 document.addEventListener("DOMContentLoaded", async function () {
   const productsContainer = document.getElementById('lista-productos');
@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   // Variables globales
   let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
   let productosGlobal = [];
+  let productosFiltrados = []; // Para mantener el estado de filtros
 
   // Esperar Firebase
   const db = await esperarFirebase();
@@ -77,8 +78,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         ...doc.data()
       }));
 
+      productosFiltrados = [...productosGlobal]; // Inicializar filtrados
+
       console.log(`${productosGlobal.length} productos cargados`);
-      mostrarProductos(productosGlobal);
+      mostrarProductos(productosFiltrados);
       actualizarCarritoUI();
 
     } catch (error) {
@@ -96,6 +99,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (productos.length === 0) {
       productsContainer.innerHTML = `
         <div class="col-12 text-center py-5">
+          <i class="fas fa-search fa-3x text-muted mb-3"></i>
           <p class="text-muted">No se encontraron productos</p>
         </div>
       `;
@@ -233,18 +237,21 @@ document.addEventListener("DOMContentLoaded", async function () {
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
       }
+
+      .search-highlight {
+        background-color: #fff3cd;
+        padding: 2px 4px;
+        border-radius: 3px;
+      }
     `;
     document.head.appendChild(style);
   }
 
   /**
    * Redirigir al detalle del producto - CORREGIDO CON RUTAS ABSOLUTAS
-   * Funciona tanto en local como en Firebase Hosting
    */
   function irADetalle(productId) {
-    // SIEMPRE usar ruta absoluta desde la raíz
     const detalleUrl = `/assets/Page/detalleProducto.html?id=${productId}`;
-    
     console.log('Navegando a:', detalleUrl);
     window.location.href = detalleUrl;
   }
@@ -264,11 +271,9 @@ document.addEventListener("DOMContentLoaded", async function () {
       return;
     }
 
-    // Determinar precio (usar nuevoPrecio si existe)
     const precio = producto.nuevoPrecio || producto.precio;
     const esOferta = producto.nuevoPrecio && producto.nuevoPrecio < producto.precio;
 
-    // Verificar si ya existe en el carrito
     const productoExistente = carrito.find(item => item.id === productId);
     
     if (productoExistente) {
@@ -292,9 +297,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     localStorage.setItem('carrito', JSON.stringify(carrito));
-    
     await actualizarStockFirebase(productId, 1);
-    
     actualizarCarritoUI();
     
     const ahorro = esOferta ? producto.precio - precio : 0;
@@ -345,16 +348,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             
             if (stockAnterior !== productoActualizado.stock) {
               console.log(`Stock actualizado en tiempo real: ${productoActualizado.nombre}`);
-              
-              const filtroActivo = document.querySelector('.filter-btn.active');
-              const categoria = filtroActivo ? filtroActivo.getAttribute('data-category') : 'all';
-              
-              if (categoria === 'all') {
-                mostrarProductos(productosGlobal);
-              } else {
-                const productosFiltrados = productosGlobal.filter(p => p.categoria === categoria);
-                mostrarProductos(productosFiltrados);
-              }
+              aplicarFiltrosActuales();
             }
           }
         }
@@ -373,6 +367,71 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (contadorItems) {
       const totalItems = carrito.reduce((sum, p) => sum + p.cantidad, 0);
       contadorItems.textContent = totalItems > 0 ? `(${totalItems})` : '';
+    }
+  }
+
+  /**
+   * NUEVA FUNCIÓN: Buscar productos
+   */
+  function buscarProductos(termino) {
+    if (!termino || termino.trim() === '') {
+      aplicarFiltrosActuales();
+      return;
+    }
+
+    const terminoLower = termino.toLowerCase().trim();
+    
+    // Buscar en nombre, categoría y descripción (si existe)
+    const resultados = productosFiltrados.filter(producto => {
+      const nombre = (producto.nombre || '').toLowerCase();
+      const categoria = (producto.categoria || '').toLowerCase();
+      const descripcion = (producto.descripcion || '').toLowerCase();
+      
+      return nombre.includes(terminoLower) || 
+             categoria.includes(terminoLower) || 
+             descripcion.includes(terminoLower);
+    });
+
+    mostrarProductos(resultados);
+    
+    // Mostrar mensaje si no hay resultados
+    if (resultados.length === 0) {
+      productsContainer.innerHTML = `
+        <div class="col-12 text-center py-5">
+          <i class="fas fa-search fa-3x text-muted mb-3"></i>
+          <h5 class="text-muted">No se encontraron resultados</h5>
+          <p class="text-muted">No hay productos que coincidan con "${termino}"</p>
+          <button class="btn btn-primary mt-3" onclick="location.reload()">
+            <i class="fas fa-redo me-2"></i>Ver todos los productos
+          </button>
+        </div>
+      `;
+    } else {
+      console.log(`${resultados.length} productos encontrados para: "${termino}"`);
+    }
+  }
+
+  /**
+   * NUEVA FUNCIÓN: Aplicar filtros actuales (categoría + búsqueda)
+   */
+  function aplicarFiltrosActuales() {
+    const filtroActivo = document.querySelector('.filter-btn.active');
+    const categoria = filtroActivo ? filtroActivo.getAttribute('data-category') : 'all';
+    const searchInput = document.getElementById('searchInput');
+    const terminoBusqueda = searchInput ? searchInput.value : '';
+    
+    // Primero aplicar filtro de categoría
+    if (categoria === 'all') {
+      productosFiltrados = [...productosGlobal];
+    } else {
+      productosFiltrados = productosGlobal.filter(p => p.categoria === categoria);
+    }
+    
+    // Luego aplicar búsqueda si existe
+    if (terminoBusqueda && terminoBusqueda.trim() !== '') {
+      buscarProductos(terminoBusqueda);
+    } else {
+      mostrarProductos(productosFiltrados);
     }
   }
 
@@ -409,6 +468,50 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Filtros de categorías
     configurarFiltros();
+    
+    // NUEVO: Configurar buscador
+    configurarBuscador();
+  }
+
+  /**
+   * NUEVA FUNCIÓN: Configurar el buscador
+   */
+  function configurarBuscador() {
+    const searchInput = document.getElementById('searchInput');
+    
+    if (!searchInput) {
+      console.warn('No se encontró el input de búsqueda');
+      return;
+    }
+
+    let timeoutId;
+    
+    // Búsqueda en tiempo real con debounce
+    searchInput.addEventListener('input', function(e) {
+      clearTimeout(timeoutId);
+      
+      timeoutId = setTimeout(() => {
+        const termino = e.target.value;
+        buscarProductos(termino);
+      }, 300); // Esperar 300ms después de que el usuario deje de escribir
+    });
+
+    // Búsqueda al presionar Enter
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        clearTimeout(timeoutId);
+        buscarProductos(e.target.value);
+      }
+    });
+
+    // Limpiar búsqueda al borrar todo el texto
+    searchInput.addEventListener('change', function(e) {
+      if (e.target.value.trim() === '') {
+        aplicarFiltrosActuales();
+      }
+    });
+
+    console.log('Buscador configurado correctamente');
   }
 
   function configurarFiltros() {
@@ -422,11 +525,18 @@ document.addEventListener("DOMContentLoaded", async function () {
         const category = this.getAttribute('data-category');
         
         if (category === 'all') {
-          mostrarProductos(productosGlobal);
+          productosFiltrados = [...productosGlobal];
         } else {
-          const productosFiltrados = productosGlobal.filter(p => p.categoria === category);
-          mostrarProductos(productosFiltrados);
+          productosFiltrados = productosGlobal.filter(p => p.categoria === category);
         }
+        
+        // Limpiar búsqueda al cambiar de categoría
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+          searchInput.value = '';
+        }
+        
+        mostrarProductos(productosFiltrados);
       });
     });
   }

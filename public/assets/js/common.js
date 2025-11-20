@@ -1,4 +1,3 @@
-// js/common.js
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 function updateCart() {
@@ -19,6 +18,8 @@ function addToCart(productName, price) {
   updateCart();
 }
 
-// --- Exportar las funciones ---
+// --- Exportar para otros módulos ---
 export { updateCart, addToCart };
-// Si tienes otras funciones que necesitas en otros archivos, también debes exportarlas aquí
+
+
+

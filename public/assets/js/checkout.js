@@ -9,6 +9,49 @@ projectId: "tiendapasteleriamilsabor-a7ac6",
 // Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+// Detectar usuario logueado
+firebase.auth().onAuthStateChanged(function(user) {
+    const authButtons = document.querySelector(".auth-buttons");
+
+    if (user) {
+        // Si el usuario está logueado, ocultar botones de login/registro
+        if (authButtons) authButtons.style.display = "none";
+
+        // Mostrar nombre o correo
+        const headerTop = document.querySelector(".header-top");
+
+        let userBox = document.createElement("div");
+        userBox.classList.add("user-session-box");
+        userBox.innerHTML = `
+            <span class="user-email">👤 ${user.email}</span>
+            <button id="cerrarSesion" class="btn-logout">Cerrar Sesión</button>
+        `;
+
+        headerTop.appendChild(userBox);
+
+        // Autocompletar correo del checkout
+        const inputCorreo = document.getElementById("correo");
+        if (inputCorreo) {
+            inputCorreo.value = user.email;
+            inputCorreo.readOnly = true;
+        }
+
+        // Botón cerrar sesión
+        document.getElementById("cerrarSesion").addEventListener("click", function() {
+            firebase.auth().signOut().then(() => {
+                window.location.reload();
+            });
+        });
+
+    } else {
+        // Usuario NO logueado → forzar login antes de pagar
+        document.getElementById("btnPagarAhora").addEventListener("click", function(e) {
+            e.preventDefault();
+            alert("Debes iniciar sesión para completar la compra.");
+            window.location.href = "login.html";
+        });
+    }
+});
 
 // Variables globales
 let carrito = JSON.parse(localStorage.getItem('carrito')) || [];

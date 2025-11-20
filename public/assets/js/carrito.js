@@ -478,13 +478,15 @@ function irAlCheckout() {
         mostrarNotificacion('Agrega productos al carrito antes de continuar', 'error');
         return;
     }
-    
-    // Aquí puedes agregar la lógica para ir al checkout
+
     mostrarNotificacion('Redirigiendo al checkout...', 'success');
-    
-    // Descomentar cuando tengas la página de checkout
-    // window.location.href = 'checkout.html';
+
+    // Redirige al checkout
+    setTimeout(() => {
+        window.location.href = 'checkout.html';
+    }, 500);
 }
+
 
 /**
  * Muestra una notificación temporal

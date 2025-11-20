@@ -505,3 +505,61 @@ h3 {
         justify-content: center;
     }
 }
+/* --- Ajuste del contenedor derecho --- */
+.navbar .navbar-nav.ms-auto {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* separa los elementos */
+}
+
+/* --- Buscador --- */
+#searchInput {
+  width: 200px !important;
+  border-radius: 6px;
+}
+
+/* --- Carrito --- */
+.btn-carrito {
+  background: #343a40;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-carrito:hover {
+  background: #212529;
+}
+
+/* --- Usuario logeado (email) --- */
+.nav-user-email {
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* --- Cerrar sesión --- */
+.btn-logout {
+  background: #c62828;
+  color: white;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 9px;
+  border: none;
+  font-weight: bold;
+}
+
+.btn-logout:hover {
+  background: #b71c1c;
+}
+
+/* Asegurar alineación vertical */
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
