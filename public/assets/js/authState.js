@@ -19,8 +19,8 @@ firebase.auth().onAuthStateChanged(user => {
 
     } else {
         contenedorAuth.innerHTML = `
-            <a href="assets/Page/login.html" class="btn btn-primary btn-sm me-2">Iniciar Sesión</a>
-            <a href="assets/Page/registro.html" class="btn btn-secondary btn-sm">Crear Cuenta</a>
+            <a href="/assets/Page/login.html" class="btn btn-primary btn-sm me-2">Iniciar Sesión</a>
+            <a href="/assets/Page/registro.html" class="btn btn-secondary btn-sm">Crear Cuenta</a>
         `;
     }
 });

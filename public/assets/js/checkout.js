@@ -1,57 +1,4 @@
-// Configuración de Firebase
-const firebaseConfig = {
-apiKey: "AIzaSyC01DeLX515dsD29to5rHeqaWC8RV98KNg",
-authDomain: "tiendapasteleriamilsabor-a7ac6.firebaseapp.com",
-databaseURL: "https://tiendapasteleriamilsabor-a7ac6-default-rtdb.firebaseio.com",
-projectId: "tiendapasteleriamilsabor-a7ac6",
-};
-
-// Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-// Detectar usuario logueado
-firebase.auth().onAuthStateChanged(function(user) {
-    const authButtons = document.querySelector(".auth-buttons");
-
-    if (user) {
-        // Si el usuario está logueado, ocultar botones de login/registro
-        if (authButtons) authButtons.style.display = "none";
-
-        // Mostrar nombre o correo
-        const headerTop = document.querySelector(".header-top");
-
-        let userBox = document.createElement("div");
-        userBox.classList.add("user-session-box");
-        userBox.innerHTML = `
-            <span class="user-email">👤 ${user.email}</span>
-            <button id="cerrarSesion" class="btn-logout">Cerrar Sesión</button>
-        `;
-
-        headerTop.appendChild(userBox);
-
-        // Autocompletar correo del checkout
-        const inputCorreo = document.getElementById("correo");
-        if (inputCorreo) {
-            inputCorreo.value = user.email;
-            inputCorreo.readOnly = true;
-        }
-
-        // Botón cerrar sesión
-        document.getElementById("cerrarSesion").addEventListener("click", function() {
-            firebase.auth().signOut().then(() => {
-                window.location.reload();
-            });
-        });
-
-    } else {
-        // Usuario NO logueado → forzar login antes de pagar
-        document.getElementById("btnPagarAhora").addEventListener("click", function(e) {
-            e.preventDefault();
-            alert("Debes iniciar sesión para completar la compra.");
-            window.location.href = "login.html";
-        });
-    }
-});
+// Configuración de Firebase ya está en config.js
 
 // Variables globales
 let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -78,9 +25,12 @@ const regionesComunas = {
 
 // Inicializar checkout cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Iniciando checkout...');
+    console.log('Carrito cargado:', carrito);
+    
     inicializarCheckout();
     configurarEventosCheckout();
-    cargarRegiones(); // Cargar las regiones al iniciar
+    cargarRegiones();
 });
 
 /**
@@ -88,6 +38,10 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function cargarRegiones() {
     const selectRegion = document.getElementById('region');
+    if (!selectRegion) {
+        console.error('No se encontró el select de región');
+        return;
+    }
     
     // Ordenar regiones alfabéticamente
     const regionesOrdenadas = Object.keys(regionesComunas).sort();
@@ -137,33 +91,57 @@ function inicializarCheckout() {
 function renderizarProductosCheckout() {
     const tbody = document.getElementById('tablaCheckoutBody');
     
+    if (!tbody) {
+        console.error('No se encontró el tbody con id "tablaCheckoutBody"');
+        return;
+    }
+    
+    console.log('Renderizando productos. Total en carrito:', carrito.length);
+    
     if (carrito.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="5" class="carrito-vacio">
-                    <div class="icono">🛒</div>
+                <td colspan="5" style="text-align: center; padding: 40px;">
+                    <div style="font-size: 48px; margin-bottom: 20px;">🛒</div>
                     <h3>No hay productos en el carrito</h3>
-                    <a href="carrito.html" class="btn-ir-catalogo">Volver al Carrito</a>
+                    <p style="margin: 20px 0;">Agrega productos desde la página de productos</p>
+                    <a href="productos.html" class="btn btn-primary">Ver Productos</a>
                 </td>
             </tr>
         `;
+        
+        // Deshabilitar botón de pago
+        const btnPagar = document.getElementById('btnPagarAhora');
+        if (btnPagar) {
+            btnPagar.disabled = true;
+            btnPagar.style.opacity = '0.5';
+            btnPagar.style.cursor = 'not-allowed';
+        }
         return;
     }
 
-    tbody.innerHTML = carrito.map(producto => `
-        <tr>
-            <td>
-                <img src="${producto.imagen}" 
-                     alt="${producto.nombre}" 
-                     class="imagen-tabla"
-                     onerror="this.src='https://via.placeholder.com/100x100/cccccc/969696?text=Imagen'">
-            </td>
-            <td>${producto.nombre}</td>
-            <td>$${producto.precio?.toLocaleString('es-CL')}</td>
-            <td>${producto.cantidad || 1}</td>
-            <td>$${((producto.precio || 0) * (producto.cantidad || 1)).toLocaleString('es-CL')}</td>
-        </tr>
-    `).join('');
+    tbody.innerHTML = carrito.map(producto => {
+        const precio = producto.precio || 0;
+        const cantidad = producto.cantidad || 1;
+        const subtotal = precio * cantidad;
+        
+        return `
+            <tr>
+                <td>
+                    <img src="${producto.imagen || 'https://via.placeholder.com/100x100/cccccc/969696?text=Sin+Imagen'}" 
+                         alt="${producto.nombre || 'Producto'}" 
+                         style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;"
+                         onerror="this.src='https://via.placeholder.com/100x100/cccccc/969696?text=Sin+Imagen'">
+                </td>
+                <td>${producto.nombre || 'Producto sin nombre'}</td>
+                <td>$${precio.toLocaleString('es-CL')}</td>
+                <td>${cantidad}</td>
+                <td><strong>$${subtotal.toLocaleString('es-CL')}</strong></td>
+            </tr>
+        `;
+    }).join('');
+    
+    console.log('Productos renderizados correctamente');
 }
 
 /**
@@ -174,8 +152,13 @@ function actualizarTotales() {
         return sum + ((producto.precio || 0) * (producto.cantidad || 1));
     }, 0);
     
-    document.getElementById('totalPagar').textContent = total.toLocaleString('es-CL');
-    document.getElementById('montoPagar').textContent = total.toLocaleString('es-CL');
+    console.log('Total calculado:', total);
+    
+    // Actualizar el monto en el botón de pagar
+    const montoPagar = document.getElementById('montoPagar');
+    if (montoPagar) {
+        montoPagar.textContent = total.toLocaleString('es-CL');
+    }
 }
 
 /**
@@ -186,13 +169,18 @@ function actualizarCarritoHeader() {
         return sum + ((producto.precio || 0) * (producto.cantidad || 1));
     }, 0);
     
-    document.querySelector('.carrito-total').textContent = total.toLocaleString('es-CL');
+    const carritoTotal = document.querySelector('.carrito-total');
+    if (carritoTotal) {
+        carritoTotal.textContent = total.toLocaleString('es-CL');
+    }
 }
 
 /**
  * Procesa el pago y guarda la compra en Firestore
  */
 async function procesarPago() {
+    console.log('Procesando pago...');
+    
     // Validar que hay productos en el carrito
     if (carrito.length === 0) {
         alert('No hay productos en el carrito');
@@ -201,11 +189,25 @@ async function procesarPago() {
 
     // Validar formularios
     if (!validarFormularios()) {
-        alert('Por favor completa todos los campos obligatorios');
+        alert('Por favor completa todos los campos obligatorios marcados con *');
+        return;
+    }
+
+    // Validar que el usuario esté autenticado
+    const user = firebase.auth().currentUser;
+    if (!user) {
+        alert('Debes iniciar sesión para completar la compra');
+        window.location.href = 'login.html';
         return;
     }
 
     try {
+        // Deshabilitar botón mientras procesa
+        const btnPagar = document.getElementById('btnPagarAhora');
+        const textoOriginal = btnPagar.innerHTML;
+        btnPagar.disabled = true;
+        btnPagar.innerHTML = 'Procesando...';
+
         // Obtener datos del formulario
         const datosCliente = obtenerDatosCliente();
         const datosDireccion = obtenerDatosDireccion();
@@ -213,26 +215,41 @@ async function procesarPago() {
 
         // Crear objeto de compra
         const compra = {
-            fecha: new Date(),
+            fecha: firebase.firestore.FieldValue.serverTimestamp(),
+            fechaLocal: new Date().toISOString(),
+            userId: user.uid,
+            userEmail: user.email,
             cliente: datosCliente,
             direccion: datosDireccion,
-            productos: [...carrito], // Copia del carrito
+            productos: carrito.map(p => ({
+                nombre: p.nombre,
+                precio: p.precio,
+                cantidad: p.cantidad,
+                imagen: p.imagen
+            })),
             total: total,
             estado: 'pendiente',
             numeroOrden: generarNumeroOrden()
         };
 
+        console.log('Guardando compra en Firestore:', compra);
+
         // Guardar en Firestore
         const docRef = await db.collection('compras').add(compra);
         
-        // Simular procesamiento de pago (50% de éxito)
-        const pagoExitoso = Math.random() > 0.5;
+        console.log('Compra guardada con ID:', docRef.id);
+        
+        // Simular procesamiento de pago (70% de éxito para testing)
+        const pagoExitoso = Math.random() > 0.3;
         
         if (pagoExitoso) {
             // Actualizar estado en Firestore
             await db.collection('compras').doc(docRef.id).update({
-                estado: 'completada'
+                estado: 'completada',
+                fechaPago: firebase.firestore.FieldValue.serverTimestamp()
             });
+            
+            console.log('Pago exitoso');
             
             // Limpiar carrito y redirigir a éxito
             localStorage.removeItem('carrito');
@@ -240,24 +257,34 @@ async function procesarPago() {
                 ...compra,
                 id: docRef.id
             }));
-            window.location.href = `compraexitosa.html?orden=${compra.numeroOrden}`;
+            
+            window.location.href = `compraExitosa.html?orden=${compra.numeroOrden}`;
         } else {
             // Actualizar estado en Firestore
             await db.collection('compras').doc(docRef.id).update({
-                estado: 'error_pago'
+                estado: 'error_pago',
+                fechaError: firebase.firestore.FieldValue.serverTimestamp()
             });
+            
+            console.log('Error en el pago');
             
             // Redirigir a error
             localStorage.setItem('ultimaCompra', JSON.stringify({
                 ...compra,
                 id: docRef.id
             }));
+            
             window.location.href = `errorPago.html?orden=${compra.numeroOrden}`;
         }
 
     } catch (error) {
         console.error('Error procesando la compra:', error);
-        alert('Error al procesar la compra. Intenta nuevamente.');
+        alert('Error al procesar la compra: ' + error.message);
+        
+        // Rehabilitar botón
+        const btnPagar = document.getElementById('btnPagarAhora');
+        btnPagar.disabled = false;
+        btnPagar.innerHTML = textoOriginal;
     }
 }
 
@@ -268,7 +295,20 @@ function validarFormularios() {
     const formCliente = document.getElementById('formCliente');
     const formDireccion = document.getElementById('formDireccion');
     
-    return formCliente.checkValidity() && formDireccion.checkValidity();
+    const clienteValido = formCliente.checkValidity();
+    const direccionValida = formDireccion.checkValidity();
+    
+    if (!clienteValido) {
+        formCliente.reportValidity();
+        return false;
+    }
+    
+    if (!direccionValida) {
+        formDireccion.reportValidity();
+        return false;
+    }
+    
+    return true;
 }
 
 /**
@@ -276,9 +316,9 @@ function validarFormularios() {
  */
 function obtenerDatosCliente() {
     return {
-        nombre: document.getElementById('nombre').value,
-        apellidos: document.getElementById('apellidos').value,
-        correo: document.getElementById('correo').value
+        nombre: document.getElementById('nombre').value.trim(),
+        apellidos: document.getElementById('apellidos').value.trim(),
+        correo: document.getElementById('correo').value.trim()
     };
 }
 
@@ -287,11 +327,11 @@ function obtenerDatosCliente() {
  */
 function obtenerDatosDireccion() {
     return {
-        calle: document.getElementById('calle').value,
-        departamento: document.getElementById('departamento').value || '',
+        calle: document.getElementById('calle').value.trim(),
+        departamento: document.getElementById('departamento').value.trim() || 'N/A',
         region: document.getElementById('region').value,
         comuna: document.getElementById('comuna').value,
-        indicaciones: document.getElementById('indicaciones').value || ''
+        indicaciones: document.getElementById('indicaciones').value.trim() || 'Sin indicaciones'
     };
 }
 
@@ -299,34 +339,46 @@ function obtenerDatosDireccion() {
  * Genera un número de orden único
  */
 function generarNumeroOrden() {
-    const timestamp = new Date().getTime();
-    const random = Math.floor(Math.random() * 1000);
-    return `ORDEN${timestamp}${random}`;
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return `ORD-${timestamp}-${random}`;
 }
 
 /**
  * Configura los eventos del checkout
  */
 function configurarEventosCheckout() {
-    document.getElementById('btnPagarAhora').addEventListener('click', procesarPago);
+    const btnPagar = document.getElementById('btnPagarAhora');
+    if (btnPagar) {
+        btnPagar.addEventListener('click', procesarPago);
+    }
     
     // Evento para cargar comunas cuando se selecciona una región
-    document.getElementById('region').addEventListener('change', function() {
-        if (this.value) {
-            cargarComunas(this.value);
-        } else {
-            // Si no hay región seleccionada, deshabilitar comuna
-            const selectComuna = document.getElementById('comuna');
-            selectComuna.innerHTML = '<option value="">Primero selecciona una región</option>';
-            selectComuna.disabled = true;
-        }
-    });
+    const selectRegion = document.getElementById('region');
+    if (selectRegion) {
+        selectRegion.addEventListener('change', function() {
+            if (this.value) {
+                cargarComunas(this.value);
+            } else {
+                // Si no hay región seleccionada, deshabilitar comuna
+                const selectComuna = document.getElementById('comuna');
+                selectComuna.innerHTML = '<option value="">Primero selecciona una región</option>';
+                selectComuna.disabled = true;
+            }
+        });
+    }
     
     // Validación en tiempo real
     const inputs = document.querySelectorAll('input[required], select[required]');
     inputs.forEach(input => {
         input.addEventListener('blur', function() {
             validarCampo(this);
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.style.borderColor = '';
+            }
         });
     });
 }
@@ -337,7 +389,9 @@ function configurarEventosCheckout() {
 function validarCampo(campo) {
     if (!campo.value.trim()) {
         campo.style.borderColor = '#dc3545';
+        return false;
     } else {
         campo.style.borderColor = '#28a745';
+        return true;
     }
 }
