@@ -1,4 +1,4 @@
-// checkout.js - Adaptado al HTML proporcionado
+// checkout.js - Versión corregida y completa
 console.log('checkout.js cargado');
 
 // Variables globales
@@ -24,14 +24,26 @@ const regionesComunas = {
     "Magallanes": ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos", "Antártica", "Porvenir", "Primavera", "Timaukel", "Natales", "Torres del Paine"]
 };
 
-// Esperar a que el DOM esté completamente cargado
+// Esperar a que Firebase esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM cargado - Iniciando checkout...');
+    console.log('DOM cargado - Esperando Firebase...');
     console.log('Carrito desde localStorage:', carrito);
     console.log('Total de productos en carrito:', carrito.length);
     
-    // Inicializar todas las funciones
-    inicializarCheckout();
+    // Verificar que Firebase esté disponible
+    if (typeof firebase === 'undefined' || typeof auth === 'undefined' || typeof db === 'undefined') {
+        console.error('❌ Firebase no está disponible. Verifica que config.js esté cargado.');
+        alert('Error: Sistema no disponible. Por favor recarga la página.');
+        return;
+    }
+    
+    // Esperar a que Firebase Auth esté listo
+    auth.onAuthStateChanged(function(user) {
+        console.log('🔐 Estado de autenticación:', user ? `Autenticado como ${user.email}` : 'No autenticado');
+        
+        // Inicializar checkout (funciona con o sin usuario)
+        inicializarCheckout();
+    });
 });
 
 /**
@@ -50,7 +62,115 @@ function inicializarCheckout() {
     // 4. Configurar eventos
     configurarEventosCheckout();
     
+    // 5. Autocompletar datos del usuario
+    autocompletarDatosUsuario();
+    
     console.log('Checkout inicializado correctamente');
+}
+
+/**
+ * Autocompleta los datos del usuario autenticado
+ */
+async function autocompletarDatosUsuario() {
+    try {
+        const user = auth.currentUser;
+        
+        if (!user) {
+            console.log('⚠️ Usuario no autenticado');
+            return;
+        }
+        
+        console.log('🔍 Buscando datos del usuario:', user.uid);
+        
+        // Obtener datos del usuario desde Firestore
+        const docUsuario = await db.collection('usuarios').doc(user.uid).get();
+        
+        if (docUsuario.exists) {
+            const datosUsuario = docUsuario.data();
+            console.log('✅ Datos del usuario encontrados:', datosUsuario);
+            
+            // Autocompletar campos de información personal
+            const campoNombre = document.getElementById('nombre');
+            const campoApellidos = document.getElementById('apellidos');
+            const campoCorreo = document.getElementById('correo');
+            
+            if (campoNombre && datosUsuario.nombre) {
+                campoNombre.value = datosUsuario.nombre;
+            }
+            
+            if (campoApellidos && datosUsuario.apellidos) {
+                campoApellidos.value = datosUsuario.apellidos;
+            }
+            
+            if (campoCorreo) {
+                campoCorreo.value = user.email;
+                campoCorreo.readOnly = true;
+                campoCorreo.style.backgroundColor = '#f0f0f0';
+            }
+            
+            // Autocompletar dirección si existe
+            if (datosUsuario.direccion) {
+                const dir = datosUsuario.direccion;
+                
+                if (dir.calle) {
+                    const campoCalle = document.getElementById('calle');
+                    if (campoCalle) campoCalle.value = dir.calle;
+                }
+                
+                if (dir.departamento) {
+                    const campoDepartamento = document.getElementById('departamento');
+                    if (campoDepartamento) campoDepartamento.value = dir.departamento;
+                }
+                
+                if (dir.region) {
+                    const selectRegion = document.getElementById('region');
+                    if (selectRegion) {
+                        selectRegion.value = dir.region;
+                        cargarComunas(dir.region);
+                        
+                        setTimeout(() => {
+                            if (dir.comuna) {
+                                const selectComuna = document.getElementById('comuna');
+                                if (selectComuna) selectComuna.value = dir.comuna;
+                            }
+                        }, 100);
+                    }
+                }
+                
+                if (dir.indicaciones) {
+                    const campoIndicaciones = document.getElementById('indicaciones');
+                    if (campoIndicaciones) campoIndicaciones.value = dir.indicaciones;
+                }
+                
+                console.log('✅ Dirección autocompletada');
+            }
+            
+            console.log('✅ Datos del usuario autocompletados');
+            
+        } else {
+            console.log('ℹ️ No hay datos guardados del usuario, solo autocompletar email');
+            
+            const campoCorreo = document.getElementById('correo');
+            if (campoCorreo) {
+                campoCorreo.value = user.email;
+                campoCorreo.readOnly = true;
+                campoCorreo.style.backgroundColor = '#f0f0f0';
+            }
+        }
+        
+    } catch (error) {
+        console.error('❌ Error al autocompletar datos del usuario:', error);
+        
+        const user = auth.currentUser;
+        if (user) {
+            const campoCorreo = document.getElementById('correo');
+            if (campoCorreo) {
+                campoCorreo.value = user.email;
+                campoCorreo.readOnly = true;
+                campoCorreo.style.backgroundColor = '#f0f0f0';
+            }
+        }
+    }
 }
 
 /**
@@ -80,12 +200,10 @@ function renderizarProductosCheckout() {
             </tr>
         `;
         
-        // Deshabilitar botón de pago
         deshabilitarBotonPago();
         return;
     }
 
-    // Generar HTML para cada producto
     tbody.innerHTML = carrito.map((producto, index) => {
         const precio = parseFloat(producto.precio) || 0;
         const cantidad = parseInt(producto.cantidad) || 1;
@@ -129,20 +247,23 @@ function actualizarTotales() {
     
     console.log('💰 Total calculado: $' + total.toLocaleString('es-CL'));
     
-    // Actualizar el monto en el botón de pagar
     const montoPagar = document.getElementById('montoPagar');
+    const montoPagar2 = document.getElementById('montoPagar2');
+    
     if (montoPagar) {
         montoPagar.textContent = total.toLocaleString('es-CL');
-        console.log('✅ Total actualizado en el botón');
-    } else {
-        console.warn('⚠️ No se encontró el elemento "montoPagar"');
     }
     
-    // Actualizar total en el header (si existe)
+    if (montoPagar2) {
+        montoPagar2.textContent = total.toLocaleString('es-CL');
+    }
+    
     const carritoTotal = document.querySelector('.carrito-total');
     if (carritoTotal) {
         carritoTotal.textContent = total.toLocaleString('es-CL');
     }
+    
+    console.log('✅ Totales actualizados en la interfaz');
 }
 
 /**
@@ -169,10 +290,8 @@ function cargarRegiones() {
         return;
     }
     
-    // Limpiar opciones existentes (excepto la primera)
     selectRegion.innerHTML = '<option value="">Selecciona una región</option>';
     
-    // Ordenar regiones alfabéticamente
     const regionesOrdenadas = Object.keys(regionesComunas).sort();
     
     regionesOrdenadas.forEach(region => {
@@ -197,10 +316,8 @@ function cargarComunas(region) {
     
     const comunas = regionesComunas[region] || [];
     
-    // Limpiar select de comunas
     selectComuna.innerHTML = '<option value="">Selecciona una comuna</option>';
     
-    // Ordenar comunas alfabéticamente y agregarlas
     comunas.sort().forEach(comuna => {
         const option = document.createElement('option');
         option.value = comuna;
@@ -208,7 +325,6 @@ function cargarComunas(region) {
         selectComuna.appendChild(option);
     });
     
-    // Habilitar el select de comunas
     selectComuna.disabled = false;
     
     console.log(`✅ ${comunas.length} comunas cargadas para ${region}`);
@@ -218,7 +334,6 @@ function cargarComunas(region) {
  * Configura todos los eventos del checkout
  */
 function configurarEventosCheckout() {
-    // Evento del botón de pagar
     const btnPagar = document.getElementById('btnPagarAhora');
     if (btnPagar) {
         btnPagar.addEventListener('click', procesarPago);
@@ -227,7 +342,6 @@ function configurarEventosCheckout() {
         console.error('❌ No se encontró el botón "btnPagarAhora"');
     }
     
-    // Evento para cambio de región
     const selectRegion = document.getElementById('region');
     if (selectRegion) {
         selectRegion.addEventListener('change', function() {
@@ -242,7 +356,6 @@ function configurarEventosCheckout() {
         console.log('✅ Evento change configurado en select de región');
     }
     
-    // Validación en tiempo real de campos requeridos
     const camposRequeridos = document.querySelectorAll('input[required], select[required]');
     camposRequeridos.forEach(campo => {
         campo.addEventListener('blur', function() {
@@ -344,23 +457,14 @@ function generarNumeroOrden() {
 async function procesarPago() {
     console.log('🔄 Iniciando proceso de pago...');
     
-    // 1. Validar carrito
     if (carrito.length === 0) {
         alert('❌ No hay productos en el carrito');
         return;
     }
     
-    // 2. Verificar autenticación de Firebase
-    if (typeof firebase === 'undefined' || !firebase.auth) {
-        console.error('❌ Firebase no está disponible');
-        alert('Error: Sistema de autenticación no disponible');
-        return;
-    }
-    
-    const user = firebase.auth().currentUser;
+    const user = auth.currentUser;
     if (!user) {
         alert('⚠️ Debes iniciar sesión para completar la compra');
-        // Guardar URL actual para volver después del login
         localStorage.setItem('returnUrl', window.location.href);
         window.location.href = 'login.html';
         return;
@@ -368,13 +472,11 @@ async function procesarPago() {
     
     console.log('✅ Usuario autenticado:', user.email);
     
-    // 3. Validar formularios
     if (!validarFormularios()) {
         alert('⚠️ Por favor completa todos los campos obligatorios marcados con *');
         return;
     }
     
-    // 4. Deshabilitar botón y mostrar estado
     const btnPagar = document.getElementById('btnPagarAhora');
     const textoOriginal = btnPagar.innerHTML;
     btnPagar.disabled = true;
@@ -382,21 +484,19 @@ async function procesarPago() {
     btnPagar.style.opacity = '0.7';
     
     try {
-        // 5. Recopilar datos
         const datosCliente = obtenerDatosCliente();
         const datosDireccion = obtenerDatosDireccion();
         const total = carrito.reduce((sum, p) => sum + ((p.precio || 0) * (p.cantidad || 1)), 0);
         const numeroOrden = generarNumeroOrden();
         
-        // 6. Crear objeto de compra
         const compra = {
             fecha: firebase.firestore.FieldValue.serverTimestamp(),
             fechaLocal: new Date().toISOString(),
             userId: user.uid,
-            userEmail: user.email, // Email del usuario autenticado
+            userEmail: user.email,
             cliente: {
                 ...datosCliente,
-                correo: user.email // Asegurar que use el email de Firebase Auth
+                correo: user.email
             },
             direccion: datosDireccion,
             productos: carrito.map(p => ({
@@ -412,15 +512,12 @@ async function procesarPago() {
         
         console.log('📦 Datos de compra:', compra);
         
-        // 7. Guardar en Firestore
         const docRef = await db.collection('compras').add(compra);
         console.log('✅ Compra guardada en Firestore con ID:', docRef.id);
         
-        // 8. Simular procesamiento de pago (70% éxito)
         const pagoExitoso = Math.random() > 0.3;
         
         if (pagoExitoso) {
-            // Pago exitoso
             await db.collection('compras').doc(docRef.id).update({
                 estado: 'completada',
                 fechaPago: firebase.firestore.FieldValue.serverTimestamp()
@@ -428,7 +525,6 @@ async function procesarPago() {
             
             console.log('✅ Pago completado exitosamente');
             
-            // Actualizar puntos del usuario
             const puntosGanados = Math.floor(total / 1000);
             if (puntosGanados > 0) {
                 try {
@@ -442,18 +538,15 @@ async function procesarPago() {
                 }
             }
             
-            // Limpiar carrito
             localStorage.removeItem('carrito');
             localStorage.setItem('ultimaCompra', JSON.stringify({
                 ...compra,
                 id: docRef.id
             }));
             
-            // Redirigir a página de éxito
             window.location.href = `compraExitosa.html?orden=${numeroOrden}`;
             
         } else {
-            // Pago fallido
             await db.collection('compras').doc(docRef.id).update({
                 estado: 'error_pago',
                 fechaError: firebase.firestore.FieldValue.serverTimestamp()
@@ -466,7 +559,6 @@ async function procesarPago() {
                 id: docRef.id
             }));
             
-            // Redirigir a página de error
             window.location.href = `errorPago.html?orden=${numeroOrden}`;
         }
         
@@ -474,7 +566,6 @@ async function procesarPago() {
         console.error('❌ Error procesando la compra:', error);
         alert('Error al procesar la compra: ' + error.message);
         
-        // Rehabilitar botón
         btnPagar.disabled = false;
         btnPagar.innerHTML = textoOriginal;
         btnPagar.style.opacity = '1';
