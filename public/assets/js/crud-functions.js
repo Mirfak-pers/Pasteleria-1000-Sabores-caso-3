@@ -2,35 +2,70 @@ class CRUDFunctions {
     constructor() {
         this.db = null;
         this.inicializarFirebase();
-        this.cargarDatosPerfil();
-        this.ocultarModalesAlInicio();
         
-        // Exponer funciones necesarias globalmente para el CrudManager y el HTML
-        window.verDetallePedido = (id) => console.log('Ver detalle de pedido:', id); // Placeholder
-        window.cambiarEstadoPedido = (id) => this.cambiarEstadoPedido(id);
+        // Formateador de moneda (CLP)
+        this.formatoCLP = new Intl.NumberFormat('es-CL', {
+            style: 'currency',
+            currency: 'CLP'
+        });
+
+        // ============================================================
+        // EXPOSICIÓN GLOBAL DE FUNCIONES (Para que el HTML las vea)
+        // ============================================================
+        
+        // Cargas de datos
+        window.cargarProductos = () => this.cargarProductos();
+        window.cargarOrdenes = () => this.cargarPedidos(); // Mapea 'ordenes' a 'pedidos'
+        window.cargarUsuarios = () => this.cargarUsuarios();
+        window.cargarCategorias = () => this.cargarCategorias();
+        window.generarReporte = () => alert("Funcionalidad de reportes en desarrollo");
+
+        // Acciones CRUD
+        window.guardarProducto = (e) => this.guardarProducto(e);
+        window.guardarUsuario = (e) => this.guardarUsuario(e);
+        window.guardarCategoria = (e) => this.guardarCategoria(e);
+        
         window.editarProducto = (id) => this.cargarDatosProducto(id);
-        window.guardarProducto = (data) => this.guardarProducto(data);
         window.eliminarProducto = (id) => this.eliminarProducto(id);
-        window.verProductosCategoria = (nombre) => this.verProductosCategoria(nombre);
-        window.editarCategoriaGlobal = (nombre) => this.editarCategoriaGlobal(nombre);
-        window.crearCategoria = () => this.crearCategoria();
+        
+        window.verDetallePedido = (id) => alert('Detalle pedido ID: ' + id);
+        window.cambiarEstadoOrden = (id, val) => this.cambiarEstadoPedido(id, val); // Mapea HTML a JS
+        
         window.editarUsuario = (id) => this.cargarDatosUsuario(id);
-        window.cambiarEstadoUsuario = (id, estado) => this.cambiarEstadoUsuario(id, estado);
-        window.cambiarRolUsuario = (id) => this.cambiarRolUsuario(id);
         window.eliminarUsuario = (id) => this.eliminarUsuario(id);
+        
+        window.editarCategoria = (id) => alert("Editar categoría: " + id);
+        window.eliminarCategoria = (id) => alert("Eliminar categoría no disponible en modo automático");
+        
+        // Navegación (SPA simple)
+        window.navegarA = (seccion) => {
+            document.querySelectorAll('main section').forEach(s => s.style.display = 'none');
+            const target = document.getElementById(seccion);
+            if(target) {
+                target.style.display = 'block';
+                if(seccion === 'dashboard') this.cargarResumenes();
+                if(seccion === 'productos') this.cargarProductos();
+                if(seccion === 'ordenes') this.cargarPedidos();
+                if(seccion === 'usuarios') this.cargarUsuarios();
+                if(seccion === 'categorias') this.cargarCategorias();
+            }
+        };
+
+        // Cargar dashboard al inicio
+        this.cargarResumenes();
     }
 
     inicializarFirebase() {
         try {
-            // Nota: Estos datos deben ser reemplazados por los reales de tu proyecto.
+            // TUS CREDENCIALES REALES
             const firebaseConfig = {
-                apiKey: "AIzaSyBBT7jka7a-7v3vY19BlSajamiedLrBTN0",
-                authDomain: "tiendanombretienda.firebaseapp.com",
-                projectId: "tiendanombretienda",
-                storageBucket: "tiendanombretienda.appspot.com",
-                messagingSenderId: "408928911689",
-                appId: "1:408928911689:web:d8b313c7e15fc528661a98",
-                measurementId: "G-Y1DW47VEWZ"
+                apiKey: "AIzaSyC01DeLX515dsD29to5rHeqaWC8RV98KNg",
+                authDomain: "tiendapasteleriamilsabor-a7ac6.firebaseapp.com",
+                databaseURL: "https://tiendapasteleriamilsabor-a7ac6-default-rtdb.firebaseio.com",
+                projectId: "tiendapasteleriamilsabor-a7ac6",
+                storageBucket: "tiendapasteleriamilsabor-a7ac6.appspot.com",
+                messagingSenderId: "408928911689", // Dato inferido del anterior, puede variar
+                appId: "1:408928911689:web:d8b313c7e15fc528661a98" // Dato inferido
             };
 
             if (typeof firebase !== 'undefined' && !firebase.apps.length) {
@@ -38,509 +73,374 @@ class CRUDFunctions {
             }
             
             this.db = firebase.firestore();
-            console.log('Firebase listo para CRUD');
+            console.log('Firebase conectado correctamente a: tiendapasteleriamilsabor-a7ac6');
         } catch (error) {
-            console.error('Error inicializando Firebase para CRUD:', error);
+            console.error('Error fatal inicializando Firebase:', error);
         }
     }
 
-    cargarDatosPerfil() {
-        // Esta función necesita ser implementada si debe cargar datos de perfil
-    }
-
-    ocultarModalesAlInicio() {
-        const modales = ['modalProducto', 'modalCategoria', 'modalUsuario'];
-        modales.forEach(modalId => {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.style.display = 'none';
-            }
-        });
-    }
-
-    cerrarModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.style.display = 'none';
-            // Opcionalmente limpiar formularios
-        }
-    }
-
-    // ==================== MANEJO DE ESTADO DE CARGA Y ERRORES ====================
-
-    mostrarLoading(targetId) {
-        const target = document.getElementById(targetId);
-        if (target) {
-            const colspan = target.parentElement.querySelector('thead tr th')?.length || 5;
-            target.innerHTML = `<tr><td colspan="${colspan}" class="loading-data"><span class="loading-dots"><span>.</span><span>.</span><span>.</span></span> Cargando datos...</td></tr>`;
-        }
-    }
-
-    mostrarError(targetId, mensaje) {
-        const target = document.getElementById(targetId);
-        if (target) {
-            const colspan = target.parentElement.querySelector('thead tr th')?.length || 5;
-            target.innerHTML = `<tr><td colspan="${colspan}" class="error-data">${mensaje}</td></tr>`;
-        }
-    }
-    
-    // Funciones de Resumen (Mantienen la lógica original de 'compras')
-    mostrarCargaResumen() { /* ... código ... */ }
-    ocultarCargaResumen() { /* ... código ... */ }
-    mostrarErrorResumen(mensaje) { /* ... código ... */ }
-
-    // ==================== DASHBOARD Y RESUMENES ====================
+    // ==================== DASHBOARD ====================
 
     async cargarResumenes() {
         try {
-            console.log('Cargando resumenes del dashboard...');
-            this.mostrarCargaResumen();
-            
-            const [comprasData, productosData, usuariosData] = await Promise.all([
-                this.obtenerDatosCompras(),
-                this.obtenerDatosProductos(), 
-                this.obtenerDatosUsuarios()
-            ]);
-            
-            this.actualizarResumenes(comprasData, productosData, usuariosData);
-            this.ocultarCargaResumen();
-            
+            // Contar productos
+            const snapProd = await this.db.collection("producto").get();
+            const totalProd = snapProd.size;
+            const stockTotal = snapProd.docs.reduce((acc, doc) => acc + (parseInt(doc.data().stock) || 0), 0);
+
+            // Contar usuarios
+            const snapUser = await this.db.collection("usuario").get();
+            const totalUser = snapUser.size;
+
+            // Contar pedidos (compras)
+            const snapCompras = await this.db.collection("compras").get();
+            const totalCompras = snapCompras.size;
+
+            // Actualizar DOM
+            if(document.getElementById('totalProductos')) document.getElementById('totalProductos').innerText = totalProd;
+            if(document.getElementById('inventarioTotal')) document.getElementById('inventarioTotal').innerText = stockTotal;
+            if(document.getElementById('totalUsuarios')) document.getElementById('totalUsuarios').innerText = totalUser;
+            if(document.getElementById('totalCompras')) document.getElementById('totalCompras').innerText = totalCompras;
+
         } catch (error) {
-            console.error('Error cargando resumenes:', error);
-            this.mostrarErrorResumen(error.message);
+            console.error("Error cargando dashboard:", error);
         }
     }
 
-    async obtenerDatosCompras() {
-        try {
-            // Colección de Firebase para Pedidos/Órdenes
-            const snapshot = await this.db.collection("compras") 
-                .orderBy("fecha", "desc")
-                .limit(100)
-                .get();
-                
-            const compras = snapshot.docs.map(doc => ({
-                ...doc.data(),
-                fecha: doc.data().fecha?.toDate?.() || doc.data().fecha
-            }));
-            
-            const totalCompras = compras.length;
-            const ingresosTotales = compras.reduce((sum, compra) => sum + (compra.total || 0), 0);
-            const proyeccion = this.calcularProyeccion(compras);
-            
-            return { totalCompras, ingresosTotales, proyeccion };
-        } catch (error) {
-            throw new Error(`Compras: ${error.message}`);
-        }
-    }
-    
-    // ... (obtenerDatosProductos, obtenerDatosUsuarios, actualizarResumenes, calcularProyeccion, obtenerComprasUltimoMes, obtenerComprasMesAnterior, contarUsuariosEsteMes - Sin cambios)
-    
-    async obtenerDatosProductos() {
-        try {
-            const snapshot = await this.db.collection("producto").get();
-            const productos = snapshot.docs.map(doc => doc.data());
-            
-            const totalProductos = productos.length;
-            const productosActivos = productos.filter(p => p.activo !== false).length;
-            const inventarioTotal = productos.reduce((sum, p) => sum + (p.stock || 0), 0);
-            const bajoStock = productos.filter(p => (p.stock || 0) < 10).length;
-            
-            return { totalProductos, productosActivos, inventarioTotal, bajoStock };
-        } catch (error) {
-            throw new Error(`Productos: ${error.message}`);
-        }
-    }
-    
-    async obtenerDatosUsuarios() {
-        try {
-            const snapshot = await this.db.collection("usuario").get();
-            const usuarios = snapshot.docs.map(doc => ({
-                ...doc.data(),
-                createdAt: doc.data().createdAt?.toDate?.() || doc.data().createdAt
-            }));
-            
-            const totalUsuarios = usuarios.length;
-            const nuevosUsuariosMes = this.contarUsuariosEsteMes(usuarios);
-            const usuariosActivos = usuarios.filter(u => u.activo !== false).length;
-            
-            return { totalUsuarios, nuevosUsuariosMes, usuariosActivos };
-        } catch (error) {
-            throw new Error(`Usuarios: ${error.message}`);
-        }
-    }
-
-    actualizarResumenes(comprasData, productosData, usuariosData) {
-        if (document.getElementById('totalCompras')) {
-            document.getElementById('totalCompras').textContent = comprasData.totalCompras;
-        }
-        if (document.getElementById('proyeccionCompras')) {
-            document.getElementById('proyeccionCompras').textContent = comprasData.proyeccion;
-        }
-        
-        if (document.getElementById('totalProductos')) {
-            document.getElementById('totalProductos').textContent = productosData.totalProductos;
-        }
-        if (document.getElementById('inventarioTotal')) {
-            document.getElementById('inventarioTotal').textContent = productosData.inventarioTotal;
-        }
-        
-        if (document.getElementById('totalUsuarios')) {
-            document.getElementById('totalUsuarios').textContent = usuariosData.totalUsuarios;
-        }
-        if (document.getElementById('nuevosUsuariosMes')) {
-            document.getElementById('nuevosUsuariosMes').textContent = usuariosData.nuevosUsuariosMes;
-        }
-        
-        console.log('Resumenes actualizados correctamente');
-    }
-
-    calcularProyeccion(compras) {
-        if (compras.length === 0) return 0;
-        
-        const ultimoMes = this.obtenerComprasUltimoMes(compras);
-        const mesAnterior = this.obtenerComprasMesAnterior(compras);
-        
-        if (mesAnterior.length === 0) return 100;
-        
-        const crecimiento = ((ultimoMes.length - mesAnterior.length) / mesAnterior.length) * 100;
-        return Math.max(0, Math.round(crecimiento));
-    }
-
-    obtenerComprasUltimoMes(compras) {
-        const ahora = new Date();
-        const primerDiaMes = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
-        return compras.filter(compra => {
-            const fechaCompra = compra.fecha?.toDate ? compra.fecha.toDate() : new Date(compra.fecha);
-            return fechaCompra >= primerDiaMes;
-        });
-    }
-
-    obtenerComprasMesAnterior(compras) {
-        const ahora = new Date();
-        const primerDiaMesAnterior = new Date(ahora.getFullYear(), ahora.getMonth() - 1, 1);
-        const ultimoDiaMesAnterior = new Date(ahora.getFullYear(), ahora.getMonth(), 0);
-        
-        return compras.filter(compra => {
-            const fechaCompra = compra.fecha?.toDate ? compra.fecha.toDate() : new Date(compra.fecha);
-            return fechaCompra >= primerDiaMesAnterior && fechaCompra <= ultimoDiaMesAnterior;
-        });
-    }
-
-    contarUsuariosEsteMes(usuarios) {
-        const ahora = new Date();
-        const primerDiaMes = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
-        
-        return usuarios.filter(usuario => {
-            const fechaCreacion = usuario.createdAt?.toDate ? usuario.createdAt.toDate() : new Date(usuario.createdAt);
-            return fechaCreacion >= primerDiaMes;
-        }).length;
-    }
-
-
-    // ==================== PEDIDOS (ANTES ÓRDENES) ====================
-
-    async getPedidos() {
-        // Función utilizada por CrudManager.js para cargar la tabla
-        try {
-            const snapshot = await this.db.collection("compras") // Colección "compras"
-                .orderBy("fecha", "desc")
-                .get();
-                
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                fecha: doc.data().fecha?.toDate?.() || doc.data().fecha
-            }));
-        } catch (error) {
-            console.error('Error obteniendo pedidos:', error);
-            throw error;
-        }
-    }
-
-    async cargarPedidos() { // <--- CAMBIO: de cargarOrdenes
-        try {
-            this.mostrarLoading('pedidos-tbody'); // <--- CAMBIO: de ordenes-tbody
-            const pedidos = await this.getPedidos();
-            this.mostrarPedidos(pedidos); // <--- CAMBIO: de mostrarOrdenes
-        } catch (error) {
-            console.error('Error cargando pedidos:', error);
-            this.mostrarError('pedidos-tbody', 'Error al cargar pedidos'); // <--- CAMBIO: de ordenes-tbody
-        }
-    }
-
-    mostrarPedidos(pedidos) { // <--- CAMBIO: de mostrarOrdenes
-        const tbody = document.getElementById('pedidos-tbody'); // <--- CAMBIO: de ordenes-tbody
-        if (!tbody) return;
-
-        if (pedidos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="no-data">No hay pedidos disponibles</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = pedidos.map(pedido => `
-            <tr>
-                <td>${pedido.id.substring(0, 8)}...</td>
-                <td>${pedido.clienteNombre || pedido.usuarioNombre || pedido.nombre || 'N/A'}</td>
-                <td>$${pedido.total || pedido.precio || 0}</td>
-                <td>
-                    <span class="badge ${this.getEstadoClass(pedido.estado)}">
-                        ${pedido.estado || 'Pendiente'}
-                    </span>
-                </td>
-                <td>${this.formatFecha(pedido.fecha)}</td>
-                <td class="acciones">
-                    <button class="btn btn-sm btn-info" onclick="verDetallePedido('${pedido.id}')">
-                        <i class="bi bi-eye"></i>
-                    </button>
-                    <button class="btn btn-sm btn-warning" onclick="cambiarEstadoPedido('${pedido.id}')">
-                        <i class="bi bi-arrow-repeat"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    async cambiarEstadoPedido(pedidoId) { // <--- CAMBIO: de cambiarEstadoOrden
-        const nuevoEstado = prompt('Ingrese el nuevo estado (pendiente/procesando/completado/cancelado):');
-        if (!nuevoEstado) return;
-
-        try {
-            await this.db.collection("compras").doc(pedidoId).update({ // Colección "compras"
-                estado: nuevoEstado,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            alert('Estado actualizado correctamente');
-            this.cargarPedidos(); // <--- CAMBIO: de cargarOrdenes
-        } catch (error) {
-            console.error('Error actualizando pedido:', error);
-            alert('Error al actualizar el estado');
-        }
-    }
-
-    // ==================== REPORTES ====================
-    
-    async getReporteVentas(fechaInicio, fechaFin) {
-        try {
-            const snapshot = await this.db.collection("compras")
-                .where("fecha", ">=", fechaInicio)
-                .where("fecha", "<=", fechaFin)
-                .orderBy("fecha", "desc")
-                .get();
-                
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                fecha: doc.data().fecha?.toDate?.() || doc.data().fecha
-            }));
-        } catch (error) {
-            console.error('Error obteniendo reporte de ventas:', error);
-            throw error;
-        }
-    }
-
-    async getProductosMasVendidos() {
-        // Implementación dummy o simplificada
-        return [
-            { nombre: 'Producto A', cantidadVendida: 50 },
-            { nombre: 'Producto B', cantidadVendida: 45 },
-            { nombre: 'Producto C', cantidadVendida: 30 }
-        ];
-    }
-    
     // ==================== PRODUCTOS ====================
-    
-    async getProductos() {
-        try {
-            const snapshot = await this.db.collection("producto").get();
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-        } catch (error) {
-            console.error('Error obteniendo productos:', error);
-            throw error;
-        }
-    }
 
     async cargarProductos() {
-        // ... (código existente)
-    }
+        const tbody = document.getElementById('productos-tbody');
+        if(!tbody) return;
+        
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center">Cargando productos...</td></tr>';
 
-    mostrarProductos(productos) {
-        // ... (código existente)
-    }
-
-    async cargarDatosProducto(productoId) {
-        // ... (código existente)
-    }
-
-    async guardarProducto(productoData) {
-        // ... (código existente)
-    }
-
-    async eliminarProducto(productoId) {
-        // ... (código existente)
-    }
-
-    // ==================== CATEGORÍAS ====================
-
-    async getCategorias() {
-        // Función utilizada por CrudManager.js
         try {
-            const productosSnapshot = await this.db.collection("producto").get();
-            return this.extraerCategoriasDeProductosSnapshot(productosSnapshot);
+            // NOTA: Usamos "producto" (singular) según tu código base
+            const snapshot = await this.db.collection("producto").get();
+            
+            if (snapshot.empty) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay productos registrados.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const precio = this.formatoCLP.format(data.precio || 0);
+                const activo = data.activo !== false; // Asumimos true si no existe
+                
+                html += `
+                    <tr>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                ${data.imagen ? `<img src="${data.imagen}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">` : '<i class="bi bi-image"></i>'}
+                                <strong>${data.nombre}</strong>
+                            </div>
+                        </td>
+                        <td>${precio}</td>
+                        <td>${data.stock || 0} un.</td>
+                        <td>${data.categoria || 'General'}</td>
+                        <td>
+                            <span style="color: ${activo ? 'green' : 'red'}; font-weight:bold;">
+                                ${activo ? 'Activo' : 'Inactivo'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="editarProducto('${doc.id}')"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger" onclick="eliminarProducto('${doc.id}')"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+
         } catch (error) {
-            console.error('Error obteniendo categorías:', error);
-            throw error;
+            console.error("Error productos:", error);
+            tbody.innerHTML = `<tr><td colspan="6" class="error">Error: ${error.message}</td></tr>`;
         }
     }
-    
-    async cargarCategorias() {
-        // ... (código existente)
-    }
 
-    extraerCategoriasDeProductosSnapshot(productosSnapshot) {
-        // ... (código existente)
-        const categoriasMap = new Map();
-        
-        productosSnapshot.docs.forEach(doc => {
-            const producto = doc.data();
-            if (producto.categoria && producto.categoria.trim() !== '') {
-                const categoriaNombre = producto.categoria.trim();
-                
-                if (!categoriasMap.has(categoriaNombre)) {
-                    categoriasMap.set(categoriaNombre, {
-                        id: categoriaNombre,
-                        nombre: categoriaNombre,
-                        descripcion: 'Categoria extraida de productos',
-                        productosCount: 0,
-                        esExtraida: true
-                    });
-                }
-                
-                const categoria = categoriasMap.get(categoriaNombre);
-                categoria.productosCount++;
+    async guardarProducto(e) {
+        e.preventDefault();
+        const id = document.getElementById('productoId').value;
+        const nombre = document.getElementById('productoNombre').value;
+        const precio = parseFloat(document.getElementById('productoPrecio').value);
+        const stock = parseInt(document.getElementById('productoStock').value);
+        const categoria = document.getElementById('productoCategoria').value;
+        const imagen = document.getElementById('productoImagen').value;
+
+        try {
+            const data = { nombre, precio, stock, categoria, imagen, activo: true };
+            
+            if(id) {
+                await this.db.collection("producto").doc(id).update(data);
+                alert("Producto actualizado");
+            } else {
+                await this.db.collection("producto").add(data);
+                alert("Producto creado");
             }
-        });
-
-        const categorias = Array.from(categoriasMap.values());
-        console.log('Categorias extraidas de productos:', categorias);
-        return categorias;
+            
+            document.getElementById('modalProducto').style.display = 'none';
+            this.cargarProductos();
+            
+        } catch (error) {
+            alert("Error al guardar: " + error.message);
+        }
     }
 
-    mostrarCategorias(categorias) {
-        // ... (código existente)
+    async cargarDatosProducto(id) {
+        try {
+            const doc = await this.db.collection("producto").doc(id).get();
+            if(doc.exists) {
+                const data = doc.data();
+                document.getElementById('productoId').value = doc.id;
+                document.getElementById('productoNombre').value = data.nombre;
+                document.getElementById('productoPrecio').value = data.precio;
+                document.getElementById('productoStock').value = data.stock;
+                document.getElementById('productoCategoria').value = data.categoria;
+                document.getElementById('productoImagen').value = data.imagen || '';
+                
+                document.getElementById('modalProductoTitulo').innerText = "Editar Producto";
+                document.getElementById('modalProducto').style.display = 'block';
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    async crearCategoria() {
-        // ... (código existente)
+    async eliminarProducto(id) {
+        if(confirm("¿Estás seguro de eliminar este producto?")) {
+            await this.db.collection("producto").doc(id).delete();
+            this.cargarProductos();
+        }
     }
 
-    async asignarCategoriaAProductos(nombreCategoria) {
-        // ... (código existente)
+    // ==================== PEDIDOS (COMPRAS) ====================
+
+    async cargarPedidos() {
+        // En el HTML el ID es ordenes-tbody, pero lógica interna es pedidos
+        const tbody = document.getElementById('ordenes-tbody');
+        const filtro = document.getElementById('filtroEstado') ? document.getElementById('filtroEstado').value : '';
+        
+        if(!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center">Cargando pedidos...</td></tr>';
+
+        try {
+            let query = this.db.collection("compras").orderBy("fecha", "desc");
+            
+            if(filtro) {
+                query = query.where("estado", "==", filtro);
+            }
+
+            const snapshot = await query.get();
+
+            if (snapshot.empty) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No se encontraron pedidos.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const total = this.formatoCLP.format(data.total || 0);
+                
+                // Formateo de fecha seguro
+                let fecha = "N/A";
+                if(data.fecha && data.fecha.toDate) {
+                    fecha = data.fecha.toDate().toLocaleDateString() + ' ' + data.fecha.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                } else if (data.fecha) {
+                     fecha = new Date(data.fecha).toLocaleDateString();
+                }
+
+                // Colores de estado
+                let badgeClass = 'secondary';
+                if(data.estado === 'completado') badgeClass = 'success';
+                if(data.estado === 'pendiente') badgeClass = 'warning';
+                if(data.estado === 'horneando') badgeClass = 'info';
+
+                // Selección de estado
+                const selectEstado = `
+                    <select onchange="cambiarEstadoOrden('${doc.id}', this.value)" style="font-size:0.8rem; padding:2px;">
+                        <option value="" disabled selected>Cambiar...</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="horneando">Horneando</option>
+                        <option value="listo_retiro">Listo Retiro</option>
+                        <option value="completado">Completado</option>
+                    </select>
+                `;
+
+                html += `
+                    <tr>
+                        <td><small>${doc.id.slice(0,8)}...</small></td>
+                        <td>${data.clienteNombre || 'Cliente Web'}</td>
+                        <td><strong>${total}</strong></td>
+                        <td><span class="badge bg-${badgeClass}" style="padding:5px; border-radius:4px; color:black; border:1px solid #ccc;">${data.estado || 'pendiente'}</span></td>
+                        <td>${fecha}</td>
+                        <td>
+                             <button class="btn btn-sm btn-light" onclick="verDetallePedido('${doc.id}')"><i class="bi bi-eye"></i></button>
+                             ${selectEstado}
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+
+        } catch (error) {
+            console.error("Error pedidos:", error);
+            tbody.innerHTML = `<tr><td colspan="6" class="error">Error (compras): ${error.message}</td></tr>`;
+        }
     }
 
-    async editarCategoriaGlobal(nombreCategoria) {
-        // ... (código existente)
+    async cambiarEstadoPedido(id, nuevoEstado) {
+        try {
+            await this.db.collection("compras").doc(id).update({ estado: nuevoEstado });
+            this.cargarPedidos(); // Recargar tabla
+            alert(`Pedido actualizado a: ${nuevoEstado}`);
+        } catch (error) {
+            alert("Error al actualizar estado");
+        }
     }
-
-    async cambiarNombreCategoria(nombreActual) {
-        // ... (código existente)
-    }
-
-    async verProductosCategoria(nombreCategoria) {
-        // ... (código existente)
-    }
-
-    async eliminarCategoriaGlobal(nombreCategoria) {
-        // ... (código existente)
-    }
-
 
     // ==================== USUARIOS ====================
 
-    async getUsuarios() {
-         try {
+    async cargarUsuarios() {
+        const tbody = document.getElementById('usuarios-tbody');
+        if(!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center">Cargando usuarios...</td></tr>';
+
+        try {
             const snapshot = await this.db.collection("usuario").get();
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                createdAt: doc.data().createdAt?.toDate?.() || doc.data().createdAt,
-                updatedAt: doc.data().updatedAt?.toDate?.() || doc.data().updatedAt
-            }));
+            
+            let html = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                html += `
+                    <tr>
+                        <td>${data.run || 'N/A'}</td>
+                        <td>${data.nombre}</td>
+                        <td>${data.email}</td>
+                        <td>${data.telefono || '-'}</td>
+                        <td><small>${(data.direccion || '').substring(0,15)}...</small></td>
+                        <td>${data.rol || 'cliente'}</td>
+                        <td>${data.activo ? '✅' : '❌'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="editarUsuario('${doc.id}')"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger" onclick="eliminarUsuario('${doc.id}')"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+
         } catch (error) {
-            console.error('Error obteniendo usuarios:', error);
-            throw error;
+            tbody.innerHTML = `<tr><td colspan="8" class="error">Error: ${error.message}</td></tr>`;
+        }
+    }
+
+    async guardarUsuario(e) {
+        e.preventDefault();
+        // Lógica simplificada de guardado
+        const nombre = document.getElementById('usuarioNombre').value;
+        const email = document.getElementById('usuarioEmail').value;
+        const rol = document.getElementById('usuarioRol').value;
+        const run = document.getElementById('usuarioRun').value;
+        
+        try {
+            await this.db.collection("usuario").add({
+                nombre, email, rol, run, 
+                activo: true, 
+                createdAt: new Date()
+            });
+            alert("Usuario creado");
+            document.getElementById('modalUsuario').style.display = 'none';
+            this.cargarUsuarios();
+        } catch(err) {
+            alert("Error: " + err.message);
         }
     }
     
-    async cargarUsuarios() {
-        // ... (código existente)
-    }
-
-    mostrarUsuarios(usuarios) {
-        // ... (código existente)
-    }
-
-    async cargarDatosUsuario(usuarioId) {
-        // ... (código existente)
-    }
-
-    async guardarUsuario(usuarioData) {
-        // ... (código existente)
-    }
-
-    async cambiarEstadoUsuario(usuarioId, estadoActual) {
-        // ... (código existente)
-    }
-
-    async cambiarRolUsuario(usuarioId) {
-        // ... (código existente)
-    }
-
-    async eliminarUsuario(usuarioId) {
-        // ... (código existente)
-    }
-
-    // ==================== UTILIDADES ====================
-
-    formatFecha(timestamp) {
-        if (!timestamp) return 'N/A';
-        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-        return date.toLocaleDateString();
-    }
-
-    getEstadoClass(estado) {
-        if (!estado) return 'pendiente';
-        switch (estado.toLowerCase()) {
-            case 'completado':
-                return 'completado';
-            case 'procesando':
-                return 'procesando';
-            case 'cancelado':
-                return 'cancelado';
-            default:
-                return 'pendiente';
+    async eliminarUsuario(id) {
+        if(confirm("¿Eliminar usuario?")) {
+            await this.db.collection("usuario").doc(id).delete();
+            this.cargarUsuarios();
         }
     }
 
-    getRolClass(rol) {
-        if (!rol) return 'cliente';
-        switch (rol.toLowerCase()) {
-            case 'administrador':
-                return 'administrador';
-            case 'staff':
-                return 'staff';
-            default:
-                return 'cliente';
+    // ==================== CATEGORÍAS (Extracción Automática) ====================
+
+    async cargarCategorias() {
+        const tbody = document.getElementById('categorias-tbody');
+        if(!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center">Analizando productos...</td></tr>';
+
+        try {
+            // Extraer categorías únicas basadas en los productos existentes
+            const snapshot = await this.db.collection("producto").get();
+            const conteo = {};
+
+            snapshot.forEach(doc => {
+                const cat = doc.data().categoria || "Sin Categoría";
+                conteo[cat] = (conteo[cat] || 0) + 1;
+            });
+
+            let html = '';
+            Object.keys(conteo).forEach(catNombre => {
+                html += `
+                    <tr>
+                        <td><strong>${catNombre}</strong></td>
+                        <td>Categoría generada automáticamente</td>
+                        <td>Activa</td>
+                        <td>${conteo[catNombre]} productos</td>
+                        <td>
+                            <button class="btn btn-sm btn-secondary" disabled>Auto</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            if(Object.keys(conteo).length === 0) {
+                html = '<tr><td colspan="5" class="text-center">No hay categorías detectadas</td></tr>';
+            }
+            
+            tbody.innerHTML = html;
+
+        } catch (error) {
+            tbody.innerHTML = `<tr><td colspan="5" class="error">Error: ${error.message}</td></tr>`;
         }
     }
 }
 
-
-// Exponer la instancia de CRUDFunctions como crudManager en el objeto window
+// Inicialización
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM cargado - CRUDFunctions listo');
     window.crudManager = new CRUDFunctions();
 });
+
+// Helpers para Modales (Fuera de la clase para acceso simple desde HTML onclick)
+function mostrarModalProducto() {
+    document.getElementById('formProducto').reset();
+    document.getElementById('productoId').value = "";
+    document.getElementById('modalProductoTitulo').innerText = "Nuevo Producto";
+    document.getElementById('modalProducto').style.display = 'block';
+}
+
+function mostrarModalUsuario() {
+    document.getElementById('formUsuario').reset();
+    document.getElementById('modalUsuario').style.display = 'block';
+}
+
+function crearCategoria() {
+    document.getElementById('formCategoria').reset();
+    document.getElementById('modalCategoria').style.display = 'block';
+}
+
+function cerrarModal(id) {
+    document.getElementById(id).style.display = 'none';
+}
+
+// Cerrar modales al hacer click fuera
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = "none";
+    }
+}

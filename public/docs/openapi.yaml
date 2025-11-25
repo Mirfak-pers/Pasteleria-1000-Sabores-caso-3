@@ -1,0 +1,543 @@
+openapi: 3.0.0
+info:
+  title: API Panel de Administración - Pastelería 1000 Sabores
+  description: Documentación de servicios Firebase Firestore para el sistema de gestión de la pastelería.
+  version: 1.0.0
+  contact:
+    name: Soporte Pastelería
+    email: contacto@pasteleria1000sabores.com
+
+servers:
+  - url: https://firestore.googleapis.com/v1
+    description: Firebase Firestore API
+
+tags:
+  - name: Dashboard
+    description: Métricas de ventas y producción
+  - name: Productos
+    description: Gestión del catálogo de pasteles y dulces
+  - name: Órdenes
+    description: Gestión de pedidos de clientes
+  - name: Usuarios
+    description: Gestión de clientes y administradores
+  - name: Categorías
+    description: Gestión de tipos de productos (Tortas, Galletas, etc.)
+
+paths:
+  /api/dashboard/estadisticas:
+    get:
+      tags:
+        - Dashboard
+      summary: Obtener estadísticas generales
+      description: Servicio Firebase - DashboardService.getEstadisticasCompletas()
+      responses:
+        '200':
+          description: Estadísticas obtenidas correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EstadisticasDashboard'
+              example:
+                totalCompras: 45
+                proyeccionCompras: 60
+                totalProductos: 32
+                inventarioTotal: 150
+                totalUsuarios: 120
+                nuevosUsuariosMes: 15
+
+  /api/productos:
+    get:
+      tags:
+        - Productos
+      summary: Obtener catálogo de pastelería
+      description: Servicio Firebase - CrudService.getProductos()
+      responses:
+        '200':
+          description: Lista de productos obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Producto'
+              example:
+                - id: "prod_torta_01"
+                  nombre: "Torta Tres Leches"
+                  precio: 18500
+                  stock: 8
+                  categoria: "Tortas Tradicionales"
+                  imagen: "https://ejemplo.com/tres-leches.jpg"
+                  activo: true
+                - id: "prod_galleta_02"
+                  nombre: "Caja Galletas Finas (12u)"
+                  precio: 6500
+                  stock: 20
+                  categoria: "Galletas"
+                  imagen: "https://ejemplo.com/galletas-finas.jpg"
+                  activo: true
+                - id: "prod_kuchen_03"
+                  nombre: "Kuchen de Nuez"
+                  precio: 12000
+                  stock: 5
+                  categoria: "Kuchen y Tartas"
+                  activo: true
+
+    post:
+      tags:
+        - Productos
+      summary: Crear un nuevo producto
+      description: Servicio Firebase - CrudService.createProducto()
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoInput'
+            example:
+              nombre: "Torta Selva Negra"
+              precio: 22000
+              stock: 4
+              categoria: "Tortas Premium"
+              imagen: "https://ejemplo.com/selva-negra.jpg"
+      responses:
+        '201':
+          description: Producto creado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+              example:
+                id: "nuevoIdGeneradoFirestore_pastel1"
+
+  /api/productos/{id}:
+    get:
+      tags:
+        - Productos
+      summary: Obtener producto por ID
+      description: Servicio Firebase - CrudService.getProductoById()
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "prod_torta_01"
+      responses:
+        '200':
+          description: Producto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+              example:
+                id: "prod_torta_01"
+                nombre: "Torta Tres Leches"
+                precio: 18500
+                stock: 8
+                categoria: "Tortas Tradicionales"
+                imagen: "https://ejemplo.com/tres-leches.jpg"
+                activo: true
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              example:
+                error: "Producto no encontrado"
+                message: "El producto con ID prod_torta_01 no existe"
+
+    put:
+      tags:
+        - Productos
+      summary: Actualizar producto existente
+      description: Servicio Firebase - CrudService.updateProducto()
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "prod_torta_01"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoInput'
+            example:
+              nombre: "Torta Tres Leches (Grande)"
+              precio: 20000
+              stock: 10
+              categoria: "Tortas Tradicionales"
+      responses:
+        '200':
+          description: Producto actualizado correctamente
+          content:
+            application/json:
+              example:
+                success: true
+                message: "Producto actualizado correctamente"
+        '404':
+          description: Producto no encontrado
+
+    delete:
+      tags:
+        - Productos
+      summary: Eliminar producto del catálogo
+      description: Servicio Firebase - CrudService.deleteProducto()
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "prod_torta_01"
+      responses:
+        '200':
+          description: Producto eliminado correctamente
+          content:
+            application/json:
+              example:
+                success: true
+                message: "Producto eliminado correctamente"
+        '404':
+          description: Producto no encontrado
+
+  /api/ordenes:
+    get:
+      tags:
+        - Órdenes
+      summary: Obtener lista de pedidos
+      description: Servicio Firebase - CrudService.getOrdenes()
+      responses:
+        '200':
+          description: Lista de órdenes obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Orden'
+              example:
+                - id: "orden_001"
+                  clienteNombre: "Juan Pérez"
+                  total: 25000
+                  estado: "completado"
+                  fecha: "2024-05-15T10:30:00Z"
+                  productos:
+                    - id: "prod_torta_01"
+                      nombre: "Torta Tres Leches"
+                      cantidad: 1
+                      precio: 18500
+                    - id: "prod_galleta_02"
+                      nombre: "Caja Galletas Finas"
+                      cantidad: 1
+                      precio: 6500
+                - id: "orden_002"
+                  clienteNombre: "María García"
+                  total: 44000
+                  estado: "procesando"
+                  fecha: "2024-05-14T15:45:00Z"
+                  productos:
+                    - id: "prod_selva_05"
+                      nombre: "Torta Selva Negra"
+                      cantidad: 2
+                      precio: 22000
+
+  /api/ordenes/{id}:
+    get:
+      tags:
+        - Órdenes
+      summary: Obtener orden por ID
+      description: Servicio Firebase - CrudService.getOrdenById()
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "orden_001"
+      responses:
+        '200':
+          description: Orden encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Orden'
+              example:
+                id: "orden_001"
+                clienteNombre: "Juan Pérez"
+                total: 25000
+                estado: "completado"
+                fecha: "2024-05-15T10:30:00Z"
+                productos:
+                  - id: "prod_torta_01"
+                    nombre: "Torta Tres Leches"
+                    cantidad: 1
+                    precio: 18500
+                  - id: "prod_galleta_02"
+                    nombre: "Caja Galletas Finas"
+                    cantidad: 1
+                    precio: 6500
+        '404':
+          description: Orden no encontrada
+
+  /api/ordenes/{id}/estado:
+    put:
+      tags:
+        - Órdenes
+      summary: Actualizar estado de orden
+      description: Servicio Firebase - CrudService.updateOrdenEstado()
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "orden_001"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                estado:
+                  type: string
+                  enum: [pendiente, horneando, listo_retiro, completado, cancelado]
+            example:
+              estado: "listo_retiro"
+      responses:
+        '200':
+          description: Estado actualizado correctamente
+          content:
+            application/json:
+              example:
+                success: true
+                message: "Estado actualizado a listo_retiro"
+        '404':
+          description: Orden no encontrada
+
+  /api/usuarios:
+    get:
+      tags:
+        - Usuarios
+      summary: Obtener lista de usuarios
+      description: Servicio Firebase - CrudService.getUsuarios()
+      responses:
+        '200':
+          description: Lista de usuarios obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+              example:
+                - id: "user_admin"
+                  nombre: "Dueña Pastelería"
+                  email: "admin@pasteleria.com"
+                  rol: "admin"
+                  activo: true
+                  telefono: "+56911112222"
+                  direccion: "Calle Principal 1000"
+                - id: "user_cli_01"
+                  nombre: "Carlos Ruiz"
+                  email: "carlos@gmail.com"
+                  rol: "cliente"
+                  activo: true
+                  telefono: "+56987654321"
+
+  /api/usuarios/{id}:
+    get:
+      tags:
+        - Usuarios
+      summary: Obtener usuario por ID
+      description: Servicio Firebase - CrudService.getUsuarioById()
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "user_cli_01"
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+              example:
+                id: "user_cli_01"
+                nombre: "Carlos Ruiz"
+                email: "carlos@gmail.com"
+                rol: "cliente"
+                activo: true
+                telefono: "+56987654321"
+                direccion: "Av. Los Alerces 456"
+                createdAt: "2024-01-01T00:00:00Z"
+        '404':
+          description: Usuario no encontrado
+
+  /api/categorias:
+    get:
+      tags:
+        - Categorías
+      summary: Obtener lista de categorías
+      description: Servicio Firebase - CrudService.getCategorias()
+      responses:
+        '200':
+          description: Lista de categorías obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Categoria'
+              example:
+                - id: "cat_tortas"
+                  nombre: "Tortas Tradicionales"
+                  descripcion: "Tortas clásicas como Tres Leches, Selva Negra, etc."
+                  productosCount: 12
+                  activa: true
+                - id: "cat_sin_azucar"
+                  nombre: "Línea Sin Azúcar"
+                  descripcion: "Productos aptos para diabéticos"
+                  productosCount: 5
+                  activa: true
+                - id: "cat_postres"
+                  nombre: "Postres Individuales"
+                  descripcion: "Mousse, tartaletas y pie de limón"
+                  productosCount: 8
+                  activa: true
+
+components:
+  schemas:
+    EstadisticasDashboard:
+      type: object
+      properties:
+        totalCompras:
+          type: integer
+          example: 45
+        proyeccionCompras:
+          type: integer
+          example: 60
+        totalProductos:
+          type: integer
+          example: 32
+        inventarioTotal:
+          type: integer
+          example: 150
+        totalUsuarios:
+          type: integer
+          example: 120
+        nuevosUsuariosMes:
+          type: integer
+          example: 15
+
+    Producto:
+      type: object
+      properties:
+        id:
+          type: string
+        nombre:
+          type: string
+          example: "Torta de Hoja Manjar"
+        precio:
+          type: number
+          example: 24500
+        stock:
+          type: integer
+          example: 5
+        categoria:
+          type: string
+          example: "Tortas"
+        imagen:
+          type: string
+        activo:
+          type: boolean
+          example: true
+
+    ProductoInput:
+      type: object
+      required:
+        - nombre
+        - precio
+        - stock
+      properties:
+        nombre:
+          type: string
+        precio:
+          type: number
+        stock:
+          type: integer
+        categoria:
+          type: string
+        imagen:
+          type: string
+
+    Orden:
+      type: object
+      properties:
+        id:
+          type: string
+        clienteNombre:
+          type: string
+        total:
+          type: number
+        estado:
+          type: string
+        fecha:
+          type: string
+          format: date-time
+        productos:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              nombre:
+                type: string
+              cantidad:
+                type: integer
+              precio:
+                type: number
+
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: string
+        nombre:
+          type: string
+        email:
+          type: string
+        rol:
+          type: string
+        activo:
+          type: boolean
+        telefono:
+          type: string
+        direccion:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Categoria:
+      type: object
+      properties:
+        id:
+          type: string
+        nombre:
+          type: string
+        descripcion:
+          type: string
+        productosCount:
+          type: integer
+        activa:
+          type: boolean
