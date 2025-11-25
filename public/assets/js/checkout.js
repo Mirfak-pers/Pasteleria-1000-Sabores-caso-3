@@ -1,4 +1,5 @@
-// Configuración de Firebase ya está en config.js
+// checkout.js - Adaptado al HTML proporcionado
+console.log('checkout.js cargado');
 
 // Variables globales
 let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -23,25 +24,153 @@ const regionesComunas = {
     "Magallanes": ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos", "Antártica", "Porvenir", "Primavera", "Timaukel", "Natales", "Torres del Paine"]
 };
 
-// Inicializar checkout cuando el DOM esté listo
+// Esperar a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Iniciando checkout...');
-    console.log('Carrito cargado:', carrito);
+    console.log('DOM cargado - Iniciando checkout...');
+    console.log('Carrito desde localStorage:', carrito);
+    console.log('Total de productos en carrito:', carrito.length);
     
+    // Inicializar todas las funciones
     inicializarCheckout();
-    configurarEventosCheckout();
-    cargarRegiones();
 });
 
 /**
- * Carga las regiones en el select correspondiente
+ * Función principal de inicialización
+ */
+function inicializarCheckout() {
+    // 1. Cargar regiones
+    cargarRegiones();
+    
+    // 2. Renderizar productos
+    renderizarProductosCheckout();
+    
+    // 3. Actualizar totales
+    actualizarTotales();
+    
+    // 4. Configurar eventos
+    configurarEventosCheckout();
+    
+    console.log('Checkout inicializado correctamente');
+}
+
+/**
+ * Renderiza los productos en la tabla del checkout
+ */
+function renderizarProductosCheckout() {
+    const tbody = document.getElementById('tablaCheckoutBody');
+    
+    if (!tbody) {
+        console.error('❌ No se encontró el elemento con ID "tablaCheckoutBody"');
+        return;
+    }
+    
+    console.log(`📦 Renderizando ${carrito.length} productos...`);
+    
+    if (carrito.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 60px 20px;">
+                    <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;">🛒</div>
+                    <h3 style="color: #666; margin-bottom: 10px;">Tu carrito está vacío</h3>
+                    <p style="color: #999; margin-bottom: 30px;">Agrega productos desde nuestra tienda</p>
+                    <a href="/assets/Page/productos.html" class="btn btn-primary" style="padding: 12px 30px;">
+                        Ver Productos
+                    </a>
+                </td>
+            </tr>
+        `;
+        
+        // Deshabilitar botón de pago
+        deshabilitarBotonPago();
+        return;
+    }
+
+    // Generar HTML para cada producto
+    tbody.innerHTML = carrito.map((producto, index) => {
+        const precio = parseFloat(producto.precio) || 0;
+        const cantidad = parseInt(producto.cantidad) || 1;
+        const subtotal = precio * cantidad;
+        
+        console.log(`Producto ${index + 1}:`, {
+            nombre: producto.nombre,
+            precio,
+            cantidad,
+            subtotal
+        });
+        
+        return `
+            <tr>
+                <td>
+                    <img src="${producto.imagen || '/assets/image/placeholder.jpg'}" 
+                         alt="${producto.nombre || 'Producto'}" 
+                         style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #eee;"
+                         onerror="this.src='https://via.placeholder.com/80x80/f0f0f0/999999?text=Sin+Imagen'">
+                </td>
+                <td style="font-weight: 500;">${producto.nombre || 'Producto sin nombre'}</td>
+                <td style="color: #e91e63; font-weight: 600;">$${precio.toLocaleString('es-CL')}</td>
+                <td style="text-align: center; font-weight: 500;">${cantidad}</td>
+                <td style="color: #333; font-weight: 700; font-size: 1.1em;">$${subtotal.toLocaleString('es-CL')}</td>
+            </tr>
+        `;
+    }).join('');
+    
+    console.log('✅ Productos renderizados correctamente');
+}
+
+/**
+ * Actualiza los totales en la interfaz
+ */
+function actualizarTotales() {
+    const total = carrito.reduce((sum, producto) => {
+        const precio = parseFloat(producto.precio) || 0;
+        const cantidad = parseInt(producto.cantidad) || 1;
+        return sum + (precio * cantidad);
+    }, 0);
+    
+    console.log('💰 Total calculado: $' + total.toLocaleString('es-CL'));
+    
+    // Actualizar el monto en el botón de pagar
+    const montoPagar = document.getElementById('montoPagar');
+    if (montoPagar) {
+        montoPagar.textContent = total.toLocaleString('es-CL');
+        console.log('✅ Total actualizado en el botón');
+    } else {
+        console.warn('⚠️ No se encontró el elemento "montoPagar"');
+    }
+    
+    // Actualizar total en el header (si existe)
+    const carritoTotal = document.querySelector('.carrito-total');
+    if (carritoTotal) {
+        carritoTotal.textContent = total.toLocaleString('es-CL');
+    }
+}
+
+/**
+ * Deshabilita el botón de pago cuando el carrito está vacío
+ */
+function deshabilitarBotonPago() {
+    const btnPagar = document.getElementById('btnPagarAhora');
+    if (btnPagar) {
+        btnPagar.disabled = true;
+        btnPagar.style.opacity = '0.5';
+        btnPagar.style.cursor = 'not-allowed';
+        btnPagar.innerHTML = 'Carrito vacío';
+        console.log('🔒 Botón de pago deshabilitado');
+    }
+}
+
+/**
+ * Carga las regiones en el select
  */
 function cargarRegiones() {
     const selectRegion = document.getElementById('region');
     if (!selectRegion) {
-        console.error('No se encontró el select de región');
+        console.error('❌ No se encontró el select de región');
         return;
     }
+    
+    // Limpiar opciones existentes (excepto la primera)
+    selectRegion.innerHTML = '<option value="">Selecciona una región</option>';
     
     // Ordenar regiones alfabéticamente
     const regionesOrdenadas = Object.keys(regionesComunas).sort();
@@ -52,6 +181,8 @@ function cargarRegiones() {
         option.textContent = region;
         selectRegion.appendChild(option);
     });
+    
+    console.log(`✅ ${regionesOrdenadas.length} regiones cargadas`);
 }
 
 /**
@@ -59,12 +190,17 @@ function cargarRegiones() {
  */
 function cargarComunas(region) {
     const selectComuna = document.getElementById('comuna');
+    if (!selectComuna) {
+        console.error('❌ No se encontró el select de comuna');
+        return;
+    }
+    
     const comunas = regionesComunas[region] || [];
     
     // Limpiar select de comunas
     selectComuna.innerHTML = '<option value="">Selecciona una comuna</option>';
     
-    // Ordenar comunas alfabéticamente
+    // Ordenar comunas alfabéticamente y agregarlas
     comunas.sort().forEach(comuna => {
         const option = document.createElement('option');
         option.value = comuna;
@@ -74,245 +210,103 @@ function cargarComunas(region) {
     
     // Habilitar el select de comunas
     selectComuna.disabled = false;
+    
+    console.log(`✅ ${comunas.length} comunas cargadas para ${region}`);
 }
 
 /**
- * Inicializa la interfaz del checkout
+ * Configura todos los eventos del checkout
  */
-function inicializarCheckout() {
-    actualizarCarritoHeader();
-    renderizarProductosCheckout();
-    actualizarTotales();
+function configurarEventosCheckout() {
+    // Evento del botón de pagar
+    const btnPagar = document.getElementById('btnPagarAhora');
+    if (btnPagar) {
+        btnPagar.addEventListener('click', procesarPago);
+        console.log('✅ Evento click configurado en botón de pago');
+    } else {
+        console.error('❌ No se encontró el botón "btnPagarAhora"');
+    }
+    
+    // Evento para cambio de región
+    const selectRegion = document.getElementById('region');
+    if (selectRegion) {
+        selectRegion.addEventListener('change', function() {
+            if (this.value) {
+                cargarComunas(this.value);
+            } else {
+                const selectComuna = document.getElementById('comuna');
+                selectComuna.innerHTML = '<option value="">Primero selecciona una región</option>';
+                selectComuna.disabled = true;
+            }
+        });
+        console.log('✅ Evento change configurado en select de región');
+    }
+    
+    // Validación en tiempo real de campos requeridos
+    const camposRequeridos = document.querySelectorAll('input[required], select[required]');
+    camposRequeridos.forEach(campo => {
+        campo.addEventListener('blur', function() {
+            validarCampo(this);
+        });
+        
+        campo.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.style.borderColor = '';
+            }
+        });
+    });
+    
+    console.log(`✅ Validación configurada en ${camposRequeridos.length} campos`);
 }
 
 /**
- * Renderiza los productos en la tabla del checkout
+ * Valida un campo individual
  */
-function renderizarProductosCheckout() {
-    const tbody = document.getElementById('tablaCheckoutBody');
-    
-    if (!tbody) {
-        console.error('No se encontró el tbody con id "tablaCheckoutBody"');
-        return;
-    }
-    
-    console.log('Renderizando productos. Total en carrito:', carrito.length);
-    
-    if (carrito.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5" style="text-align: center; padding: 40px;">
-                    <div style="font-size: 48px; margin-bottom: 20px;">🛒</div>
-                    <h3>No hay productos en el carrito</h3>
-                    <p style="margin: 20px 0;">Agrega productos desde la página de productos</p>
-                    <a href="productos.html" class="btn btn-primary">Ver Productos</a>
-                </td>
-            </tr>
-        `;
-        
-        // Deshabilitar botón de pago
-        const btnPagar = document.getElementById('btnPagarAhora');
-        if (btnPagar) {
-            btnPagar.disabled = true;
-            btnPagar.style.opacity = '0.5';
-            btnPagar.style.cursor = 'not-allowed';
-        }
-        return;
-    }
-
-    tbody.innerHTML = carrito.map(producto => {
-        const precio = producto.precio || 0;
-        const cantidad = producto.cantidad || 1;
-        const subtotal = precio * cantidad;
-        
-        return `
-            <tr>
-                <td>
-                    <img src="${producto.imagen || 'https://via.placeholder.com/100x100/cccccc/969696?text=Sin+Imagen'}" 
-                         alt="${producto.nombre || 'Producto'}" 
-                         style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;"
-                         onerror="this.src='https://via.placeholder.com/100x100/cccccc/969696?text=Sin+Imagen'">
-                </td>
-                <td>${producto.nombre || 'Producto sin nombre'}</td>
-                <td>$${precio.toLocaleString('es-CL')}</td>
-                <td>${cantidad}</td>
-                <td><strong>$${subtotal.toLocaleString('es-CL')}</strong></td>
-            </tr>
-        `;
-    }).join('');
-    
-    console.log('Productos renderizados correctamente');
-}
-
-/**
- * Actualiza los totales en la interfaz
- */
-function actualizarTotales() {
-    const total = carrito.reduce((sum, producto) => {
-        return sum + ((producto.precio || 0) * (producto.cantidad || 1));
-    }, 0);
-    
-    console.log('Total calculado:', total);
-    
-    // Actualizar el monto en el botón de pagar
-    const montoPagar = document.getElementById('montoPagar');
-    if (montoPagar) {
-        montoPagar.textContent = total.toLocaleString('es-CL');
+function validarCampo(campo) {
+    if (!campo.value.trim()) {
+        campo.style.borderColor = '#dc3545';
+        campo.style.borderWidth = '2px';
+        return false;
+    } else {
+        campo.style.borderColor = '#28a745';
+        campo.style.borderWidth = '2px';
+        return true;
     }
 }
 
 /**
- * Actualiza el header del carrito
- */
-function actualizarCarritoHeader() {
-    const total = carrito.reduce((sum, producto) => {
-        return sum + ((producto.precio || 0) * (producto.cantidad || 1));
-    }, 0);
-    
-    const carritoTotal = document.querySelector('.carrito-total');
-    if (carritoTotal) {
-        carritoTotal.textContent = total.toLocaleString('es-CL');
-    }
-}
-
-/**
- * Procesa el pago y guarda la compra en Firestore
- */
-async function procesarPago() {
-    console.log('Procesando pago...');
-    
-    // Validar que hay productos en el carrito
-    if (carrito.length === 0) {
-        alert('No hay productos en el carrito');
-        return;
-    }
-
-    // Validar formularios
-    if (!validarFormularios()) {
-        alert('Por favor completa todos los campos obligatorios marcados con *');
-        return;
-    }
-
-    // Validar que el usuario esté autenticado
-    const user = firebase.auth().currentUser;
-    if (!user) {
-        alert('Debes iniciar sesión para completar la compra');
-        window.location.href = 'login.html';
-        return;
-    }
-
-    try {
-        // Deshabilitar botón mientras procesa
-        const btnPagar = document.getElementById('btnPagarAhora');
-        const textoOriginal = btnPagar.innerHTML;
-        btnPagar.disabled = true;
-        btnPagar.innerHTML = 'Procesando...';
-
-        // Obtener datos del formulario
-        const datosCliente = obtenerDatosCliente();
-        const datosDireccion = obtenerDatosDireccion();
-        const total = carrito.reduce((sum, producto) => sum + ((producto.precio || 0) * (producto.cantidad || 1)), 0);
-
-        // Crear objeto de compra
-        const compra = {
-            fecha: firebase.firestore.FieldValue.serverTimestamp(),
-            fechaLocal: new Date().toISOString(),
-            userId: user.uid,
-            userEmail: user.email,
-            cliente: datosCliente,
-            direccion: datosDireccion,
-            productos: carrito.map(p => ({
-                nombre: p.nombre,
-                precio: p.precio,
-                cantidad: p.cantidad,
-                imagen: p.imagen
-            })),
-            total: total,
-            estado: 'pendiente',
-            numeroOrden: generarNumeroOrden()
-        };
-
-        console.log('Guardando compra en Firestore:', compra);
-
-        // Guardar en Firestore
-        const docRef = await db.collection('compras').add(compra);
-        
-        console.log('Compra guardada con ID:', docRef.id);
-        
-        // Simular procesamiento de pago (70% de éxito para testing)
-        const pagoExitoso = Math.random() > 0.3;
-        
-        if (pagoExitoso) {
-            // Actualizar estado en Firestore
-            await db.collection('compras').doc(docRef.id).update({
-                estado: 'completada',
-                fechaPago: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            
-            console.log('Pago exitoso');
-            
-            // Limpiar carrito y redirigir a éxito
-            localStorage.removeItem('carrito');
-            localStorage.setItem('ultimaCompra', JSON.stringify({
-                ...compra,
-                id: docRef.id
-            }));
-            
-            window.location.href = `compraExitosa.html?orden=${compra.numeroOrden}`;
-        } else {
-            // Actualizar estado en Firestore
-            await db.collection('compras').doc(docRef.id).update({
-                estado: 'error_pago',
-                fechaError: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            
-            console.log('Error en el pago');
-            
-            // Redirigir a error
-            localStorage.setItem('ultimaCompra', JSON.stringify({
-                ...compra,
-                id: docRef.id
-            }));
-            
-            window.location.href = `errorPago.html?orden=${compra.numeroOrden}`;
-        }
-
-    } catch (error) {
-        console.error('Error procesando la compra:', error);
-        alert('Error al procesar la compra: ' + error.message);
-        
-        // Rehabilitar botón
-        const btnPagar = document.getElementById('btnPagarAhora');
-        btnPagar.disabled = false;
-        btnPagar.innerHTML = textoOriginal;
-    }
-}
-
-/**
- * Valida los formularios de cliente y dirección
+ * Valida todos los formularios
  */
 function validarFormularios() {
     const formCliente = document.getElementById('formCliente');
     const formDireccion = document.getElementById('formDireccion');
+    
+    if (!formCliente || !formDireccion) {
+        console.error('❌ No se encontraron los formularios');
+        return false;
+    }
     
     const clienteValido = formCliente.checkValidity();
     const direccionValida = formDireccion.checkValidity();
     
     if (!clienteValido) {
         formCliente.reportValidity();
+        console.log('❌ Formulario de cliente inválido');
         return false;
     }
     
     if (!direccionValida) {
         formDireccion.reportValidity();
+        console.log('❌ Formulario de dirección inválido');
         return false;
     }
     
+    console.log('✅ Formularios válidos');
     return true;
 }
 
 /**
- * Obtiene los datos del cliente del formulario
+ * Obtiene los datos del cliente
  */
 function obtenerDatosCliente() {
     return {
@@ -323,7 +317,7 @@ function obtenerDatosCliente() {
 }
 
 /**
- * Obtiene los datos de dirección del formulario
+ * Obtiene los datos de dirección
  */
 function obtenerDatosDireccion() {
     return {
@@ -331,7 +325,7 @@ function obtenerDatosDireccion() {
         departamento: document.getElementById('departamento').value.trim() || 'N/A',
         region: document.getElementById('region').value,
         comuna: document.getElementById('comuna').value,
-        indicaciones: document.getElementById('indicaciones').value.trim() || 'Sin indicaciones'
+        indicaciones: document.getElementById('indicaciones').value.trim() || 'Sin indicaciones adicionales'
     };
 }
 
@@ -345,53 +339,146 @@ function generarNumeroOrden() {
 }
 
 /**
- * Configura los eventos del checkout
+ * Procesa el pago y guarda la compra en Firestore
  */
-function configurarEventosCheckout() {
+async function procesarPago() {
+    console.log('🔄 Iniciando proceso de pago...');
+    
+    // 1. Validar carrito
+    if (carrito.length === 0) {
+        alert('❌ No hay productos en el carrito');
+        return;
+    }
+    
+    // 2. Verificar autenticación de Firebase
+    if (typeof firebase === 'undefined' || !firebase.auth) {
+        console.error('❌ Firebase no está disponible');
+        alert('Error: Sistema de autenticación no disponible');
+        return;
+    }
+    
+    const user = firebase.auth().currentUser;
+    if (!user) {
+        alert('⚠️ Debes iniciar sesión para completar la compra');
+        // Guardar URL actual para volver después del login
+        localStorage.setItem('returnUrl', window.location.href);
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    console.log('✅ Usuario autenticado:', user.email);
+    
+    // 3. Validar formularios
+    if (!validarFormularios()) {
+        alert('⚠️ Por favor completa todos los campos obligatorios marcados con *');
+        return;
+    }
+    
+    // 4. Deshabilitar botón y mostrar estado
     const btnPagar = document.getElementById('btnPagarAhora');
-    if (btnPagar) {
-        btnPagar.addEventListener('click', procesarPago);
-    }
+    const textoOriginal = btnPagar.innerHTML;
+    btnPagar.disabled = true;
+    btnPagar.innerHTML = '⏳ Procesando pago...';
+    btnPagar.style.opacity = '0.7';
     
-    // Evento para cargar comunas cuando se selecciona una región
-    const selectRegion = document.getElementById('region');
-    if (selectRegion) {
-        selectRegion.addEventListener('change', function() {
-            if (this.value) {
-                cargarComunas(this.value);
-            } else {
-                // Si no hay región seleccionada, deshabilitar comuna
-                const selectComuna = document.getElementById('comuna');
-                selectComuna.innerHTML = '<option value="">Primero selecciona una región</option>';
-                selectComuna.disabled = true;
-            }
-        });
-    }
-    
-    // Validación en tiempo real
-    const inputs = document.querySelectorAll('input[required], select[required]');
-    inputs.forEach(input => {
-        input.addEventListener('blur', function() {
-            validarCampo(this);
-        });
+    try {
+        // 5. Recopilar datos
+        const datosCliente = obtenerDatosCliente();
+        const datosDireccion = obtenerDatosDireccion();
+        const total = carrito.reduce((sum, p) => sum + ((p.precio || 0) * (p.cantidad || 1)), 0);
+        const numeroOrden = generarNumeroOrden();
         
-        input.addEventListener('input', function() {
-            if (this.value.trim()) {
-                this.style.borderColor = '';
+        // 6. Crear objeto de compra
+        const compra = {
+            fecha: firebase.firestore.FieldValue.serverTimestamp(),
+            fechaLocal: new Date().toISOString(),
+            userId: user.uid,
+            userEmail: user.email, // Email del usuario autenticado
+            cliente: {
+                ...datosCliente,
+                correo: user.email // Asegurar que use el email de Firebase Auth
+            },
+            direccion: datosDireccion,
+            productos: carrito.map(p => ({
+                nombre: p.nombre,
+                precio: p.precio,
+                cantidad: p.cantidad,
+                imagen: p.imagen
+            })),
+            total: total,
+            estado: 'pendiente',
+            numeroOrden: numeroOrden
+        };
+        
+        console.log('📦 Datos de compra:', compra);
+        
+        // 7. Guardar en Firestore
+        const docRef = await db.collection('compras').add(compra);
+        console.log('✅ Compra guardada en Firestore con ID:', docRef.id);
+        
+        // 8. Simular procesamiento de pago (70% éxito)
+        const pagoExitoso = Math.random() > 0.3;
+        
+        if (pagoExitoso) {
+            // Pago exitoso
+            await db.collection('compras').doc(docRef.id).update({
+                estado: 'completada',
+                fechaPago: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            console.log('✅ Pago completado exitosamente');
+            
+            // Actualizar puntos del usuario
+            const puntosGanados = Math.floor(total / 1000);
+            if (puntosGanados > 0) {
+                try {
+                    await db.collection('usuarios').doc(user.uid).update({
+                        puntos: firebase.firestore.FieldValue.increment(puntosGanados),
+                        ultimaCompra: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    console.log(`✅ ${puntosGanados} puntos agregados al usuario`);
+                } catch (error) {
+                    console.warn('⚠️ No se pudieron actualizar los puntos:', error);
+                }
             }
-        });
-    });
+            
+            // Limpiar carrito
+            localStorage.removeItem('carrito');
+            localStorage.setItem('ultimaCompra', JSON.stringify({
+                ...compra,
+                id: docRef.id
+            }));
+            
+            // Redirigir a página de éxito
+            window.location.href = `compraExitosa.html?orden=${numeroOrden}`;
+            
+        } else {
+            // Pago fallido
+            await db.collection('compras').doc(docRef.id).update({
+                estado: 'error_pago',
+                fechaError: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            console.log('❌ Error en el procesamiento del pago');
+            
+            localStorage.setItem('ultimaCompra', JSON.stringify({
+                ...compra,
+                id: docRef.id
+            }));
+            
+            // Redirigir a página de error
+            window.location.href = `errorPago.html?orden=${numeroOrden}`;
+        }
+        
+    } catch (error) {
+        console.error('❌ Error procesando la compra:', error);
+        alert('Error al procesar la compra: ' + error.message);
+        
+        // Rehabilitar botón
+        btnPagar.disabled = false;
+        btnPagar.innerHTML = textoOriginal;
+        btnPagar.style.opacity = '1';
+    }
 }
 
-/**
- * Valida un campo individual
- */
-function validarCampo(campo) {
-    if (!campo.value.trim()) {
-        campo.style.borderColor = '#dc3545';
-        return false;
-    } else {
-        campo.style.borderColor = '#28a745';
-        return true;
-    }
-}
+console.log('✅ checkout.js completamente cargado y listo');

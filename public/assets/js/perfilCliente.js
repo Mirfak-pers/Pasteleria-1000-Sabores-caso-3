@@ -1,281 +1,331 @@
-// perfilCliente.js
-// Perfil de Cliente - Pastelería 1000 Sabores
-// NOTA: Este archivo usa auth y db del config.js global
+// perfilCliente.js - Versión mejorada siguiendo estructura de perfilAdmin.js
+// Pastelería 1000 Sabores
+
+console.log('perfilCliente.js cargado');
 
 // ==========================================
 // VARIABLES GLOBALES
 // ==========================================
 let usuarioActual = null;
 let clienteData = {};
+let comprasCache = [];
+let contactosCache = [];
+
+// ==========================================
+// INICIALIZACIÓN
+// ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Inicializando perfil de cliente...');
+    
+    // Verificar que Firebase esté disponible
+    if (typeof firebase === 'undefined') {
+        console.error('❌ Firebase no está cargado');
+        mostrarError('Error al cargar el sistema de autenticación');
+        return;
+    }
+    
+    // Escuchar cambios de autenticación
+    inicializarAutenticacion();
+    
+    // Configurar eventos de la interfaz
+    configurarEventosUI();
+});
 
 // ==========================================
 // AUTENTICACIÓN
 // ==========================================
-auth.onAuthStateChanged((user) => {
-    if (user) {
-        usuarioActual = user;
-        console.log("Usuario autenticado:", user.email);
-        cargarDatosClientePorEmailOUid(user.email, user.uid);
-    } else {
-        console.log("No hay usuario autenticado");
-        mostrarDatosEjemplo();
+function inicializarAutenticacion() {
+    if (!auth) {
+        console.error('❌ auth no está definido');
+        return;
     }
-});
+    
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            console.log('✅ Usuario autenticado:', user.email);
+            usuarioActual = user;
+            cargarPerfilCompleto(user.uid, user.email);
+        } else {
+            console.log('⚠️ No hay usuario autenticado');
+            mostrarVistaInvitado();
+        }
+    });
+}
 
 // ==========================================
-// FUNCIONES PARA CARGAR DATOS DEL CLIENTE
+// CARGA DE DATOS DEL PERFIL
 // ==========================================
-
-async function cargarDatosClientePorEmailOUid(email, userId) {
+async function cargarPerfilCompleto(userId, email) {
     try {
-        console.log('Buscando cliente con email:', email, 'y uid:', userId);
+        console.log('📦 Cargando perfil completo...');
+        mostrarCargando(true);
         
+        // Cargar datos del cliente
+        await cargarDatosCliente(userId, email);
+        
+        // Cargar historial de compras
+        await cargarHistorialCompras(userId, email);
+        
+        // Cargar historial de contacto
+        await cargarHistorialContacto(userId, email);
+        
+        mostrarCargando(false);
+        console.log('✅ Perfil cargado completamente');
+        
+    } catch (error) {
+        console.error('❌ Error al cargar perfil:', error);
+        mostrarError('Error al cargar los datos del perfil');
+        mostrarCargando(false);
+    }
+}
+
+async function cargarDatosCliente(userId, email) {
+    try {
+        console.log('👤 Buscando datos del cliente...');
+        
+        // Intentar buscar por UID primero
         let clienteDoc = await db.collection('usuarios').doc(userId).get();
         
         if (clienteDoc.exists) {
-            console.log('Cliente encontrado por UID en "usuarios"');
-            clienteData = clienteDoc.data();
+            console.log('✅ Cliente encontrado por UID');
+            clienteData = { id: userId, ...clienteDoc.data() };
             actualizarInterfazCliente(clienteData);
-            await cargarHistorialComprasFirebase(userId, email);
-            await cargarHistorialContactoFirebase(userId, email);
             return;
         }
         
-        console.log('No encontrado por UID, buscando por email...');
-        const camposEmail = ['correo', 'email'];
+        // Buscar por email si no se encontró por UID
+        console.log('🔍 Buscando por email...');
+        const clientesSnapshot = await db.collection('usuarios')
+            .where('correo', '==', email)
+            .limit(1)
+            .get();
         
-        for (const campo of camposEmail) {
-            try {
-                const clientesSnapshot = await db.collection('usuarios')
-                    .where(campo, '==', email)
-                    .limit(1)
-                    .get();
-                
-                if (!clientesSnapshot.empty) {
-                    console.log('Cliente encontrado por', campo, 'en usuarios');
-                    const doc = clientesSnapshot.docs[0];
-                    clienteData = doc.data();
-                    clienteData.id = doc.id;
-                    actualizarInterfazCliente(clienteData);
-                    await cargarHistorialComprasFirebase(doc.id, email);
-                    await cargarHistorialContactoFirebase(doc.id, email);
-                    return;
-                }
-            } catch (error) {
-                console.log('Error buscando por', campo, ':', error);
-            }
+        if (!clientesSnapshot.empty) {
+            const doc = clientesSnapshot.docs[0];
+            console.log('✅ Cliente encontrado por email');
+            clienteData = { id: doc.id, ...doc.data() };
+            actualizarInterfazCliente(clienteData);
+            return;
         }
         
-        console.log("Cliente no encontrado, creando nuevo perfil");
-        await crearPerfilClienteNuevo(userId, email);
+        // Si no existe, crear nuevo perfil
+        console.log('📝 Creando nuevo perfil...');
+        await crearNuevoPerfil(userId, email);
         
     } catch (error) {
-        console.error("Error al cargar datos:", error);
-        mostrarError("Error al cargar los datos del perfil");
-        mostrarDatosEjemplo();
+        console.error('❌ Error al cargar datos del cliente:', error);
+        throw error;
     }
 }
 
-async function cargarDatosClienteFirebase(userId) {
-    const user = auth.currentUser;
-    if (user) {
-        await cargarDatosClientePorEmailOUid(user.email, userId);
-    }
-}
-
-function actualizarInterfazCliente(datos) {
-    const nombre = datos.nombre || 'Usuario';
-    document.getElementById('clienteName').textContent = nombre;
-    
-    // Formatear fecha de registro correctamente
-    let fechaRegistro = 'Reciente';
-    
-    if (datos.fechaRegistro && typeof datos.fechaRegistro === 'string') {
-        // Si ya es un string formateado
-        fechaRegistro = datos.fechaRegistro;
-    } else if (datos.fechaCreacion) {
-        // Si es un Timestamp de Firebase
-        try {
-            const fecha = datos.fechaCreacion.toDate();
-            fechaRegistro = fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
-        } catch (error) {
-            console.log('Error al convertir fechaCreacion:', error);
-            fechaRegistro = 'Reciente';
-        }
-    } else if (datos.fechaRegistro && datos.fechaRegistro.toDate) {
-        // Si fechaRegistro es un Timestamp
-        try {
-            const fecha = datos.fechaRegistro.toDate();
-            fechaRegistro = fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
-        } catch (error) {
-            console.log('Error al convertir fechaRegistro:', error);
-            fechaRegistro = 'Reciente';
-        }
-    }
-    
-    document.getElementById('fechaRegistro').textContent = fechaRegistro;
-    
-    const puntos = datos.puntos || 0;
-    document.getElementById('puntos').textContent = puntos;
-    document.getElementById('puntosCard').textContent = puntos;
-    
-    const email = datos.email || datos.correo || '';
-    document.getElementById('displayEmail').textContent = email;
-    
-    document.getElementById('displayTelefono').textContent = datos.telefono || 'No especificado';
-    document.getElementById('displayDireccion').textContent = datos.direccion || 'No especificada';
-    
-    if (nombre && nombre !== 'Usuario') {
-        const iniciales = nombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-        document.getElementById('avatar').textContent = iniciales;
-    }
-    
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-}
-
-async function crearPerfilClienteNuevo(userId, email) {
+async function crearNuevoPerfil(userId, email) {
     const nuevoCliente = {
         nombre: auth.currentUser.displayName || "Nuevo Cliente",
-        correo: email || auth.currentUser.email,
+        correo: email,
+        email: email,
         telefono: "",
-        clave: "",
-        rut: "",
-        fechaNacimiento: null,
         direccion: "",
-        fechaRegistro: new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }),
         puntos: 0,
-        fechaCreacion: firebase.firestore.FieldValue.serverTimestamp()
+        rol: "cliente",
+        activo: true,
+        fechaCreacion: firebase.firestore.FieldValue.serverTimestamp(),
+        fechaRegistro: new Date().toLocaleDateString('es-ES', { 
+            month: 'long', 
+            year: 'numeric' 
+        })
     };
     
     try {
         await db.collection('usuarios').doc(userId).set(nuevoCliente);
-        clienteData = nuevoCliente;
-        actualizarInterfazCliente(nuevoCliente);
-        console.log('Perfil de cliente creado exitosamente en "usuarios"');
+        clienteData = { id: userId, ...nuevoCliente };
+        actualizarInterfazCliente(clienteData);
+        console.log('✅ Perfil creado exitosamente');
     } catch (error) {
-        console.error("Error al crear perfil:", error);
+        console.error('❌ Error al crear perfil:', error);
+        throw error;
     }
 }
 
 // ==========================================
-// FUNCIONES PARA HISTORIAL DE COMPRAS
+// ACTUALIZACIÓN DE INTERFAZ
 // ==========================================
+function actualizarInterfazCliente(datos) {
+    console.log('🎨 Actualizando interfaz con datos:', datos);
+    
+    // Nombre del cliente
+    const nombre = datos.nombre || 'Usuario';
+    const clienteNameEl = document.getElementById('clienteName');
+    if (clienteNameEl) {
+        clienteNameEl.textContent = nombre;
+    }
+    
+    // Fecha de registro
+    let fechaRegistro = 'Reciente';
+    if (datos.fechaRegistro && typeof datos.fechaRegistro === 'string') {
+        fechaRegistro = datos.fechaRegistro;
+    } else if (datos.fechaCreacion && datos.fechaCreacion.toDate) {
+        fechaRegistro = datos.fechaCreacion.toDate().toLocaleDateString('es-ES', { 
+            month: 'long', 
+            year: 'numeric' 
+        });
+    }
+    
+    const fechaRegistroEl = document.getElementById('fechaRegistro');
+    if (fechaRegistroEl) {
+        fechaRegistroEl.textContent = fechaRegistro;
+    }
+    
+    // Puntos
+    const puntos = datos.puntos || 0;
+    const puntosElements = document.querySelectorAll('#puntos, #puntosCard');
+    puntosElements.forEach(el => {
+        if (el) el.textContent = puntos.toLocaleString('es-CL');
+    });
+    
+    // Email
+    const email = datos.email || datos.correo || '';
+    const emailEl = document.getElementById('displayEmail');
+    if (emailEl) {
+        emailEl.textContent = email;
+    }
+    
+    // Teléfono
+    const telefonoEl = document.getElementById('displayTelefono');
+    if (telefonoEl) {
+        telefonoEl.textContent = datos.telefono || 'No especificado';
+    }
+    
+    // Dirección
+    const direccionEl = document.getElementById('displayDireccion');
+    if (direccionEl) {
+        direccionEl.textContent = datos.direccion || 'No especificada';
+    }
+    
+    // Avatar con iniciales
+    if (nombre && nombre !== 'Usuario') {
+        const iniciales = nombre
+            .split(' ')
+            .map(n => n[0])
+            .join('')
+            .substring(0, 2)
+            .toUpperCase();
+        
+        const avatarEl = document.getElementById('avatar');
+        if (avatarEl) {
+            avatarEl.textContent = iniciales;
+        }
+    }
+    
+    // Recrear íconos de Lucide si está disponible
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+    
+    console.log('✅ Interfaz actualizada');
+}
 
-async function cargarHistorialComprasFirebase(userId, email) {
+// ==========================================
+// HISTORIAL DE COMPRAS
+// ==========================================
+async function cargarHistorialCompras(userId, email) {
     try {
-        console.log('Cargando compras para userId:', userId, 'email:', email);
+        console.log('🛒 Cargando historial de compras...');
         
-        let comprasSnapshot;
+        const containerEl = document.getElementById('historialCompras');
+        if (!containerEl) {
+            console.warn('⚠️ Contenedor historialCompras no encontrado');
+            return;
+        }
         
-        // Buscar por cliente.correo (formato nuevo) - SIN orderBy para evitar índice
-        try {
+        containerEl.innerHTML = '<div class="loading">Cargando compras...</div>';
+        
+        // Buscar compras por email del cliente
+        let comprasSnapshot = await db.collection('compras')
+            .where('cliente.correo', '==', email)
+            .limit(50)
+            .get();
+        
+        // Fallback: buscar por userEmail
+        if (comprasSnapshot.empty) {
             comprasSnapshot = await db.collection('compras')
-                .where('cliente.correo', '==', email)
+                .where('userEmail', '==', email)
                 .limit(50)
                 .get();
-            
-            if (!comprasSnapshot.empty) {
-                console.log('Compras encontradas con cliente.correo:', comprasSnapshot.size);
-            }
-        } catch (error) {
-            console.log('Error buscando con cliente.correo:', error.message);
         }
         
-        // Fallback: buscar por correoCliente (formato antiguo)
-        if (comprasSnapshot.empty && email) {
-            console.log('No se encontraron compras con cliente.correo, intentando con correoCliente...');
-            try {
-                comprasSnapshot = await db.collection('compras')
-                    .where('correoCliente', '==', email)
-                    .limit(50)
-                    .get();
-                
-                if (!comprasSnapshot.empty) {
-                    console.log('Compras encontradas con correoCliente:', comprasSnapshot.size);
-                }
-            } catch (error) {
-                console.log('Error buscando con correoCliente:', error.message);
-            }
-        }
-        
-        // Convertir a array y ordenar manualmente por fecha
+        // Procesar compras
         const comprasArray = [];
         
         for (const doc of comprasSnapshot.docs) {
             const compra = doc.data();
             
-            // Obtener productos de la compra
-            let productos = '';
+            // Obtener productos
+            let productosTexto = '';
             let total = 0;
             
             if (compra.productos && Array.isArray(compra.productos)) {
-                productos = compra.productos.map(p => `${p.nombre} (x${p.cantidad})`).join(', ');
-                total = compra.total || 0;
-            } else if (compra.pastelId) {
-                // Formato antiguo con pastelId
-                try {
-                    const pastelDoc = await db.collection('producto').doc(compra.pastelId).get();
-                    if (pastelDoc.exists) {
-                        productos = pastelDoc.data().nombre || 'Producto';
-                    }
-                } catch (error) {
-                    console.log("No se pudo obtener información del pastel");
-                    productos = compra.nombreProducto || 'Producto';
-                }
+                productosTexto = compra.productos
+                    .map(p => `${p.nombre} (x${p.cantidad})`)
+                    .join(', ');
                 total = compra.total || 0;
             } else {
-                productos = compra.nombreProducto || 'Producto';
+                productosTexto = 'Productos no especificados';
                 total = compra.total || 0;
+            }
+            
+            // Obtener fecha
+            let fechaObj = new Date(0);
+            let fechaTexto = 'Sin fecha';
+            
+            if (compra.fecha && compra.fecha.toDate) {
+                fechaObj = compra.fecha.toDate();
+                fechaTexto = formatearFecha(fechaObj);
+            } else if (compra.fechaLocal) {
+                fechaObj = new Date(compra.fechaLocal);
+                fechaTexto = formatearFecha(fechaObj);
             }
             
             comprasArray.push({
                 id: doc.id,
-                fechaObj: compra.fecha ? compra.fecha.toDate() : new Date(0),
-                fecha: compra.fecha ? formatearFecha(compra.fecha.toDate()) : 'Sin fecha',
-                producto: productos,
-                monto: formatearPrecio(total),
-                estado: traducirEstado(compra.estado || 'pendiente'),
+                fechaObj: fechaObj,
+                fecha: fechaTexto,
+                productos: productosTexto,
+                monto: total,
+                estado: compra.estado || 'pendiente',
                 numeroOrden: compra.numeroOrden || doc.id
             });
         }
         
-        // Ordenar manualmente por fecha (más reciente primero)
+        // Ordenar por fecha (más reciente primero)
         comprasArray.sort((a, b) => b.fechaObj - a.fechaObj);
         
-        // Tomar solo las 10 más recientes
-        const compras = comprasArray.slice(0, 10);
+        // Guardar en caché y tomar solo las 10 más recientes
+        comprasCache = comprasArray.slice(0, 10);
         
-        console.log('Compras cargadas:', compras.length);
-        mostrarHistorialCompras(compras);
+        console.log(`✅ ${comprasCache.length} compras cargadas`);
+        mostrarHistorialCompras(comprasCache);
+        
     } catch (error) {
-        console.error("Error al cargar compras:", error);
-        document.getElementById('historialCompras').innerHTML = 
-            '<p style="text-align: center; color: #999;">No hay compras registradas</p>';
+        console.error('❌ Error al cargar compras:', error);
+        const containerEl = document.getElementById('historialCompras');
+        if (containerEl) {
+            containerEl.innerHTML = '<p style="text-align: center; color: #999;">Error al cargar compras</p>';
+        }
     }
 }
 
-function traducirEstado(estado) {
-    const estados = {
-        'pendiente': 'Pendiente',
-        'confirmado': 'Confirmado',
-        'en_preparacion': 'En Preparación',
-        'enviado': 'Enviado',
-        'entregado': 'Entregado',
-        'completado': 'Completado',
-        'cancelado': 'Cancelado',
-        'error_pago': 'Error en Pago'
-    };
-    return estados[estado] || estado;
-}
-
 function mostrarHistorialCompras(compras) {
-    const container = document.getElementById('historialCompras');
-    container.innerHTML = '';
+    const containerEl = document.getElementById('historialCompras');
+    if (!containerEl) return;
+    
+    containerEl.innerHTML = '';
     
     if (compras.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #999;">No hay compras registradas</p>';
+        containerEl.innerHTML = `
+            <p style="text-align: center; color: #999; padding: 20px;">
+                No hay compras registradas
+            </p>
+        `;
         return;
     }
     
@@ -283,51 +333,62 @@ function mostrarHistorialCompras(compras) {
         const card = document.createElement('div');
         card.className = 'card';
         
-        const badgeClass = compra.estado === 'Completado' || compra.estado === 'Entregado' ? 'success' :
-                          compra.estado === 'Cancelado' || compra.estado === 'Error en Pago' ? 'error' :
-                          'warning';
+        // Determinar clase del badge según estado
+        const estadoTraducido = traducirEstado(compra.estado);
+        const badgeClass = 
+            ['Completado', 'Entregado'].includes(estadoTraducido) ? 'success' :
+            ['Cancelado', 'Error en Pago'].includes(estadoTraducido) ? 'error' :
+            'warning';
         
         card.innerHTML = `
             <div class="card-content">
                 <div>
-                    <div class="card-title">${compra.producto}</div>
+                    <div class="card-title">${compra.productos}</div>
                     <div class="card-date">${compra.fecha}</div>
-                    <div class="card-date" style="font-size: 0.75rem; color: #999;">Orden: ${compra.numeroOrden}</div>
+                    <div class="card-date" style="font-size: 0.75rem; color: #999;">
+                        Orden: ${compra.numeroOrden}
+                    </div>
                 </div>
                 <div style="text-align: right;">
-                    <div class="card-price">${compra.monto}</div>
-                    <span class="badge ${badgeClass}">${compra.estado}</span>
+                    <div class="card-price">${formatearPrecio(compra.monto)}</div>
+                    <span class="badge ${badgeClass}">${estadoTraducido}</span>
                 </div>
             </div>
         `;
-        container.appendChild(card);
+        
+        containerEl.appendChild(card);
     });
 }
 
 // ==========================================
-// FUNCIONES PARA HISTORIAL DE CONTACTO
+// HISTORIAL DE CONTACTO
 // ==========================================
-
-async function cargarHistorialContactoFirebase(userId, email) {
+async function cargarHistorialContacto(userId, email) {
     try {
-        console.log('Cargando contactos para userId:', userId, 'email:', email);
+        console.log('💬 Cargando historial de contacto...');
         
-        if (!email) {
-            console.log('No hay email disponible para buscar contactos');
-            document.getElementById('historialContacto').innerHTML = 
-                '<p style="text-align: center; color: #999;">No hay contactos registrados</p>';
+        const containerEl = document.getElementById('historialContacto');
+        if (!containerEl) {
+            console.warn('⚠️ Contenedor historialContacto no encontrado');
             return;
         }
         
-        // Buscar contactos por email - Intentar primero 'contactos' y luego 'contacto'
+        containerEl.innerHTML = '<div class="loading">Cargando contactos...</div>';
+        
+        if (!email) {
+            console.log('⚠️ No hay email disponible');
+            containerEl.innerHTML = '<p style="text-align: center; color: #999;">No hay contactos registrados</p>';
+            return;
+        }
+        
+        // Buscar en colección 'contactos'
         let contactosSnapshot = await db.collection('contactos')
             .where('email', '==', email)
             .limit(50)
             .get();
         
-        // Fallback: si no encuentra en 'contactos', buscar en 'contacto'
+        // Fallback: buscar en 'contacto' (singular)
         if (contactosSnapshot.empty) {
-            console.log('No se encontraron en "contactos", buscando en "contacto"...');
             contactosSnapshot = await db.collection('contacto')
                 .where('email', '==', email)
                 .limit(50)
@@ -335,13 +396,22 @@ async function cargarHistorialContactoFirebase(userId, email) {
         }
         
         const contactosArray = [];
+        
         contactosSnapshot.forEach(doc => {
             const contacto = doc.data();
-            console.log('Procesando contacto:', doc.id, contacto); // Debug
+            
+            let fechaObj = new Date(0);
+            let fechaTexto = 'Sin fecha';
+            
+            if (contacto.fecha && contacto.fecha.toDate) {
+                fechaObj = contacto.fecha.toDate();
+                fechaTexto = formatearFecha(fechaObj);
+            }
+            
             contactosArray.push({
                 id: doc.id,
-                fechaObj: contacto.fecha ? contacto.fecha.toDate() : new Date(0),
-                fecha: contacto.fecha ? formatearFecha(contacto.fecha.toDate()) : 'Sin fecha',
+                fechaObj: fechaObj,
+                fecha: fechaTexto,
                 tipo: contacto.tipo || 'Consulta',
                 mensaje: contacto.message || contacto.mensaje || 'Sin mensaje',
                 nombre: contacto.nombre || 'Usuario',
@@ -349,29 +419,36 @@ async function cargarHistorialContactoFirebase(userId, email) {
             });
         });
         
-        console.log('Total contactos procesados:', contactosArray.length); // Debug
-        
-        // Ordenar por fecha (más reciente primero)
+        // Ordenar por fecha
         contactosArray.sort((a, b) => b.fechaObj - a.fechaObj);
         
-        // Tomar solo los 10 más recientes
-        const contactos = contactosArray.slice(0, 10);
+        // Guardar en caché y tomar solo los 10 más recientes
+        contactosCache = contactosArray.slice(0, 10);
         
-        console.log('Contactos cargados:', contactos.length);
-        mostrarHistorialContacto(contactos);
+        console.log(`✅ ${contactosCache.length} contactos cargados`);
+        mostrarHistorialContacto(contactosCache);
+        
     } catch (error) {
-        console.error("Error al cargar contactos:", error);
-        document.getElementById('historialContacto').innerHTML = 
-            '<p style="text-align: center; color: #999;">No hay contactos registrados</p>';
+        console.error('❌ Error al cargar contactos:', error);
+        const containerEl = document.getElementById('historialContacto');
+        if (containerEl) {
+            containerEl.innerHTML = '<p style="text-align: center; color: #999;">Error al cargar contactos</p>';
+        }
     }
 }
 
 function mostrarHistorialContacto(contactos) {
-    const container = document.getElementById('historialContacto');
-    container.innerHTML = '';
+    const containerEl = document.getElementById('historialContacto');
+    if (!containerEl) return;
+    
+    containerEl.innerHTML = '';
     
     if (contactos.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #999;">No hay contactos registrados</p>';
+        containerEl.innerHTML = `
+            <p style="text-align: center; color: #999; padding: 20px;">
+                No hay contactos registrados
+            </p>
+        `;
         return;
     }
     
@@ -379,35 +456,47 @@ function mostrarHistorialContacto(contactos) {
         const card = document.createElement('div');
         card.className = 'contact-card';
         
-        const badgeClass = contacto.tipo === 'Consulta' ? 'blue' : 
-                          contacto.tipo === 'Reclamo' ? 'red' : 'yellow';
+        const badgeClass = 
+            contacto.tipo === 'Consulta' ? 'blue' : 
+            contacto.tipo === 'Reclamo' ? 'red' : 'yellow';
         
         card.innerHTML = `
             <div class="contact-header">
                 <span class="badge ${badgeClass}">${contacto.tipo}</span>
                 <span class="card-date">${contacto.fecha}</span>
             </div>
-            <div class="card-title" style="margin-bottom: 0.5rem;">${contacto.mensaje}</div>
-            <div class="card-date">Estado: <strong>${contacto.respuesta}</strong></div>
+            <div class="card-title" style="margin-bottom: 0.5rem;">
+                ${contacto.mensaje}
+            </div>
+            <div class="card-date">
+                Estado: <strong>${contacto.respuesta}</strong>
+            </div>
         `;
-        container.appendChild(card);
+        
+        containerEl.appendChild(card);
     });
 }
 
 // ==========================================
-// FUNCIONES PARA EDITAR PERFIL
+// EDICIÓN DE PERFIL
 // ==========================================
-
 function toggleEdit() {
     const infoView = document.getElementById('infoView');
     const editView = document.getElementById('editView');
     const btnEditar = document.getElementById('btnEditar');
     
+    if (!infoView || !editView || !btnEditar) {
+        console.error('❌ Elementos de edición no encontrados');
+        return;
+    }
+    
     if (infoView.classList.contains('hidden')) {
+        // Volver a vista normal
         infoView.classList.remove('hidden');
         editView.classList.add('hidden');
         btnEditar.innerHTML = '<i data-lucide="edit-2"></i> Editar';
     } else {
+        // Mostrar formulario de edición
         document.getElementById('inputNombre').value = clienteData.nombre || '';
         document.getElementById('inputEmail').value = clienteData.email || clienteData.correo || '';
         document.getElementById('inputTelefono').value = clienteData.telefono || '';
@@ -423,45 +512,82 @@ function toggleEdit() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const editForm = document.getElementById('editForm');
-    if (editForm) {
-        editForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            if (!usuarioActual) {
-                alert('❌ Debes iniciar sesión para editar tu perfil');
-                return;
-            }
-            
-            const datosActualizados = {
-                nombre: document.getElementById('inputNombre').value,
-                correo: document.getElementById('inputEmail').value,
-                telefono: document.getElementById('inputTelefono').value,
-                direccion: document.getElementById('inputDireccion').value
-            };
-            
-            try {
-                await db.collection('usuarios').doc(usuarioActual.uid).update({
-                    ...datosActualizados,
-                    fechaActualizacion: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                clienteData = { ...clienteData, ...datosActualizados };
-                actualizarInterfazCliente(clienteData);
-                toggleEdit();
-                alert('✅ ¡Datos actualizados correctamente!');
-            } catch (error) {
-                console.error("Error al guardar:", error);
-                alert('❌ Error al guardar los cambios');
-            }
-        });
+async function guardarCambiosPerfil(event) {
+    event.preventDefault();
+    
+    if (!usuarioActual) {
+        alert('❌ Debes iniciar sesión para editar tu perfil');
+        return;
     }
-});
+    
+    const datosActualizados = {
+        nombre: document.getElementById('inputNombre').value.trim(),
+        correo: document.getElementById('inputEmail').value.trim(),
+        email: document.getElementById('inputEmail').value.trim(),
+        telefono: document.getElementById('inputTelefono').value.trim(),
+        direccion: document.getElementById('inputDireccion').value.trim()
+    };
+    
+    try {
+        mostrarCargando(true);
+        
+        await db.collection('usuarios').doc(usuarioActual.uid).update({
+            ...datosActualizados,
+            fechaActualizacion: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        clienteData = { ...clienteData, ...datosActualizados };
+        actualizarInterfazCliente(clienteData);
+        toggleEdit();
+        
+        mostrarCargando(false);
+        alert('✅ Datos actualizados correctamente');
+        
+        console.log('✅ Perfil actualizado');
+    } catch (error) {
+        console.error('❌ Error al guardar:', error);
+        mostrarCargando(false);
+        alert('❌ Error al guardar los cambios: ' + error.message);
+    }
+}
 
 // ==========================================
-// FUNCIONES DE UTILIDAD
+// CONFIGURACIÓN DE EVENTOS
 // ==========================================
+function configurarEventosUI() {
+    // Formulario de edición
+    const editForm = document.getElementById('editForm');
+    if (editForm) {
+        editForm.addEventListener('submit', guardarCambiosPerfil);
+    }
+    
+    // Botón de editar
+    const btnEditar = document.getElementById('btnEditar');
+    if (btnEditar) {
+        btnEditar.addEventListener('click', toggleEdit);
+    }
+    
+    console.log('✅ Eventos de UI configurados');
+}
+
+// ==========================================
+// FUNCIONES AUXILIARES
+// ==========================================
+function traducirEstado(estado) {
+    const estados = {
+        'pendiente': 'Pendiente',
+        'completada': 'Completado',
+        'completado': 'Completado',
+        'confirmado': 'Confirmado',
+        'en_preparacion': 'En Preparación',
+        'procesando': 'Procesando',
+        'enviado': 'Enviado',
+        'entregado': 'Entregado',
+        'cancelado': 'Cancelado',
+        'error_pago': 'Error en Pago'
+    };
+    return estados[estado] || estado;
+}
 
 function formatearFecha(fecha) {
     const opciones = { day: 'numeric', month: 'short', year: 'numeric' };
@@ -471,34 +597,68 @@ function formatearFecha(fecha) {
 function formatearPrecio(precio) {
     return new Intl.NumberFormat('es-CL', {
         style: 'currency',
-        currency: 'CLP'
+        currency: 'CLP',
+        minimumFractionDigits: 0
     }).format(precio);
 }
 
 function mostrarError(mensaje) {
-    console.error(mensaje);
+    console.error('❌', mensaje);
+    // Aquí podrías mostrar un toast o notificación visual
 }
 
-function mostrarDatosEjemplo() {
+function mostrarCargando(mostrar) {
+    // Implementar lógica de loading spinner si es necesario
+    if (mostrar) {
+        console.log('⏳ Cargando...');
+    } else {
+        console.log('✅ Carga completada');
+    }
+}
+
+function mostrarVistaInvitado() {
+    console.log('👤 Mostrando vista de invitado');
+    
     const datosEjemplo = {
         nombre: "Usuario Invitado",
         correo: "invitado@ejemplo.com",
+        email: "invitado@ejemplo.com",
         telefono: "No disponible",
         direccion: "No disponible",
         fechaRegistro: "Reciente",
         puntos: 0
     };
+    
     actualizarInterfazCliente(datosEjemplo);
-    document.getElementById('historialCompras').innerHTML = 
-        '<p style="text-align: center; color: #999;">Inicia sesión para ver tu historial</p>';
-    document.getElementById('historialContacto').innerHTML = 
-        '<p style="text-align: center; color: #999;">Inicia sesión para ver tus contactos</p>';
+    
+    const historialCompras = document.getElementById('historialCompras');
+    if (historialCompras) {
+        historialCompras.innerHTML = `
+            <p style="text-align: center; color: #999; padding: 20px;">
+                <i data-lucide="lock" style="margin-bottom: 10px;"></i><br>
+                Inicia sesión para ver tu historial de compras
+            </p>
+        `;
+    }
+    
+    const historialContacto = document.getElementById('historialContacto');
+    if (historialContacto) {
+        historialContacto.innerHTML = `
+            <p style="text-align: center; color: #999; padding: 20px;">
+                <i data-lucide="lock" style="margin-bottom: 10px;"></i><br>
+                Inicia sesión para ver tus contactos
+            </p>
+        `;
+    }
+    
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 }
 
 // ==========================================
-// FUNCIONES ADICIONALES
+// FUNCIONES PARA CREAR COMPRA/CONTACTO
 // ==========================================
-
 async function crearCompra(compraData) {
     if (!usuarioActual) {
         alert("❌ Debes iniciar sesión para realizar una compra");
@@ -506,14 +666,12 @@ async function crearCompra(compraData) {
     }
     
     try {
-        // Obtener datos completos del cliente
         const clienteInfo = {
             nombre: clienteData.nombre || usuarioActual.displayName || "Cliente",
             apellidos: clienteData.apellidos || "",
             correo: usuarioActual.email
         };
         
-        // Estructura de la nueva compra siguiendo el formato del ejemplo
         const nuevaCompra = {
             cliente: clienteInfo,
             direccion: compraData.direccion || {
@@ -525,30 +683,30 @@ async function crearCompra(compraData) {
             },
             estado: compraData.estado || 'pendiente',
             fecha: firebase.firestore.FieldValue.serverTimestamp(),
-            numeroOrden: `ORDEN${Date.now()}${Math.floor(Math.random() * 1000)}`,
+            numeroOrden: `ORD-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
             productos: compraData.productos || [],
-            total: compraData.total || 0
+            total: compraData.total || 0,
+            userId: usuarioActual.uid,
+            userEmail: usuarioActual.email
         };
         
         const compraRef = await db.collection('compras').add(nuevaCompra);
-        console.log('Compra creada con ID:', compraRef.id);
+        console.log('✅ Compra creada:', compraRef.id);
         
-        // Actualizar puntos del cliente
+        // Actualizar puntos
         const puntosGanados = Math.floor(compraData.total / 1000);
         if (puntosGanados > 0) {
             await db.collection('usuarios').doc(usuarioActual.uid).update({
                 puntos: firebase.firestore.FieldValue.increment(puntosGanados)
             });
-            
-            await cargarDatosClienteFirebase(usuarioActual.uid);
         }
         
-        // Recargar historial de compras
-        await cargarHistorialComprasFirebase(usuarioActual.uid, usuarioActual.email);
+        // Recargar historial
+        await cargarHistorialCompras(usuarioActual.uid, usuarioActual.email);
         
         return compraRef.id;
     } catch (error) {
-        console.error("Error al crear compra:", error);
+        console.error("❌ Error al crear compra:", error);
         alert("❌ Error al procesar la compra");
         return null;
     }
@@ -561,13 +719,9 @@ async function crearContacto(contactoData) {
     }
     
     try {
-        // Obtener nombre del cliente desde clienteData
-        const nombreCliente = clienteData.nombre || usuarioActual.displayName || "Usuario";
-        
-        // Estructura simple del contacto según el ejemplo
         const nuevoContacto = {
             email: usuarioActual.email,
-            nombre: nombreCliente,
+            nombre: clienteData.nombre || usuarioActual.displayName || "Usuario",
             message: contactoData.mensaje || contactoData.message || "",
             tipo: contactoData.tipo || 'Consulta',
             estado: 'Pendiente',
@@ -575,30 +729,29 @@ async function crearContacto(contactoData) {
             fecha: firebase.firestore.FieldValue.serverTimestamp()
         };
         
-        console.log('Creando contacto:', nuevoContacto);
-        
-        // Guardar en la colección 'contactos' (con 's')
         const contactoRef = await db.collection('contactos').add(nuevoContacto);
-        console.log('Contacto creado con ID:', contactoRef.id);
+        console.log('✅ Contacto creado:', contactoRef.id);
         
-        // Recargar historial de contactos
-        await cargarHistorialContactoFirebase(usuarioActual.uid, usuarioActual.email);
+        // Recargar historial
+        await cargarHistorialContacto(usuarioActual.uid, usuarioActual.email);
         
         alert('✅ Contacto enviado correctamente');
         return contactoRef.id;
     } catch (error) {
-        console.error("Error al crear contacto:", error);
+        console.error("❌ Error al crear contacto:", error);
         alert("❌ Error al enviar el contacto");
         return null;
     }
 }
 
 // ==========================================
-// EXPORTAR FUNCIONES PARA USO GLOBAL
+// EXPORTAR FUNCIONES GLOBALES
 // ==========================================
-window.firebasePerfil = {
+window.perfilCliente = {
     crearCompra,
     crearContacto,
-    cargarDatosClienteFirebase,
-    toggleEdit
+    toggleEdit,
+    cargarPerfilCompleto
 };
+
+console.log('✅ perfilCliente.js completamente cargado');
