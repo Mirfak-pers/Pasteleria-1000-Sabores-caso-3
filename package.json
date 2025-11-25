@@ -11,13 +11,14 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^5.1.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:jasmine": "karma start karma.conf.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -44,7 +45,16 @@
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
     "karma-jasmine": "^5.1.0",
+    "karma-jasmine-html-reporter": "^2.1.0",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-spec-reporter": "^0.0.36",
     "karma-webpack": "^5.0.1",
     "webpack": "^5.102.1"
+  },
+  "overrides": {
+    "nth-check": "^2.1.1",
+    "postcss": "^8.4.31",
+    "webpack-dev-server": "^5.2.1",
+    "svgo": "^3.0.0"
   }
 }
