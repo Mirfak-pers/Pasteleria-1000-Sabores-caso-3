@@ -1,0 +1,1 @@
+npm install --save-dev karma-spec-reporter karma-mocha-reporter karma-jasmine-html-reporter
