@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../services/firebase';
+import { db } from '../../services/firestoreService';
 import { collection, getDocs } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import './Carrito.css';
 
 /**
  * Componente del Carrito de Compras

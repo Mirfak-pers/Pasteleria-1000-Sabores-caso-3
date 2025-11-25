@@ -2,7 +2,6 @@
 import React from 'react';
 import Header from './components/organisms/Header'; // Asumiendo que tienes este componente
 import RouterConfig from './components/routes/RouterConfig'; // Importa tu RouterConfig actualizado
-import 'bootstrap/dist/css/bootstrap.min.css'; // Si usas Bootstrap CSS
 // Opcional: importa un archivo de estilos general si lo tienes
 // import './App.css';
 

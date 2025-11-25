@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../contexts/UserContext";
+import { UserContext } from "../../context/UserContext";
 import DashboardAPI from "../organisms/DashboardAPI";
 
 const PerfilAdmin = () => {
@@ -55,8 +55,6 @@ const PerfilAdmin = () => {
               <meta charset="UTF-8">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
               <title>Panel de Administración</title>
-              <link rel="stylesheet" href="/assets/css/perfilAdmin.css">
-              <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
           </head>
           <body>
               <div id="react-status" style="position: fixed; top: 50px; right: 10px; background: #f59e0b; color: white; padding: 10px; border-radius: 5px; z-index: 10000;">

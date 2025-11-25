@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../../services/firestoreService';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import './checkout.css';
+
 
 /**
  * Componente de Checkout - Procesamiento de compra
