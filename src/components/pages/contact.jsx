@@ -1,16 +1,10 @@
-import React from 'react';
-import MainTemplate from '../templates/MainTemplate';
-import Title from '../atoms/Title';
-
 const Contact = () => {
-  return (
-    <MainTemplate>
-      <div className="contact">
-        <Title text="Contáctanos" level={1} />
-        <p>¿Tienes alguna pregunta? Escríbenos a: info@pasteleria1000sabores.com</p>
+    return (
+      <div>
+        <h1>Contacto</h1>
+        <p>Contáctanos en info@pasteleria.com</p>
       </div>
-    </MainTemplate>
-  );
-};
-
-export default Contact;
+    );
+  };
+  
+  export default Contact;

@@ -1,20 +1,18 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from '../components/pages/Home';
-import Products from '../components/pages/Products';
-import Contact from '../components/pages/Contact';
-import About from '../components/pages/About';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Home from "../pages/Home";       // ✅ Con mayúscula
+import Products from "../pages/Products"; // ✅ Con mayúscula
+import Contact from "../pages/Contact";   // ✅ Con mayúscula
+import About from "../pages/About";       // ✅ Con mayúscula
 
-const AppRoutes = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/productos" element={<Products />} />
-        <Route path="/contacto" element={<Contact />} />
-        <Route path="/nosotros" element={<About />} />
-      </Routes>
-    </BrowserRouter>
-  );
-};
+const RouterConfig = () => (
+  <Router>
+    <Switch>
+      <Route exact path="/" component={Home} />
+      <Route path="/productos" component={Products} />
+      <Route path="/contacto" component={Contact} />
+      <Route path="/nosotros" component={About} />
+    </Switch>
+  </Router>
+);
 
-export default AppRoutes;
+export default RouterConfig;

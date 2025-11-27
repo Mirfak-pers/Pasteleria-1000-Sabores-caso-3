@@ -1,3 +1,4 @@
+//dashboard.js
 class DashboardManager {
     constructor() {
         this.estadisticas = null;

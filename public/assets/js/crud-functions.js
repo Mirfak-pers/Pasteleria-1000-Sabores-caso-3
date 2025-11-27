@@ -1,3 +1,4 @@
+//Crud-functions.js
 class CRUDFunctions {
     constructor() {
         this.db = null;
@@ -57,23 +58,7 @@ class CRUDFunctions {
 
     inicializarFirebase() {
         try {
-            // TUS CREDENCIALES REALES
-            const firebaseConfig = {
-                apiKey: "AIzaSyC01DeLX515dsD29to5rHeqaWC8RV98KNg",
-                authDomain: "tiendapasteleriamilsabor-a7ac6.firebaseapp.com",
-                databaseURL: "https://tiendapasteleriamilsabor-a7ac6-default-rtdb.firebaseio.com",
-                projectId: "tiendapasteleriamilsabor-a7ac6",
-                storageBucket: "tiendapasteleriamilsabor-a7ac6.appspot.com",
-                messagingSenderId: "408928911689", // Dato inferido del anterior, puede variar
-                appId: "1:408928911689:web:d8b313c7e15fc528661a98" // Dato inferido
-            };
-
-            if (typeof firebase !== 'undefined' && !firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
-            
-            this.db = firebase.firestore();
-            console.log('Firebase conectado correctamente a: tiendapasteleriamilsabor-a7ac6');
+        this.db = firebase.firestore(); // ✅ Mantener
         } catch (error) {
             console.error('Error fatal inicializando Firebase:', error);
         }

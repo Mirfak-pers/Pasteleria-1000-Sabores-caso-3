@@ -1,14 +1,7 @@
-// Configuración de Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyC01DeLX515dsD29to5rHeqaWC8RV98KNg",
-    authDomain: "tiendapasteleriamilsabor-a7ac6.firebaseapp.com",
-    databaseURL: "https://tiendapasteleriamilsabor-a7ac6-default-rtdb.firebaseio.com",
-    projectId: "tiendapasteleriamilsabor-a7ac6",
-};
-
-// Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+//carrito.js
+// (Eliminar la inicialización)
+const db = firebase.firestore(); // Esto ya debería estar disponible globalmente
+// ...
 
 // Variables globales
 let carrito = JSON.parse(localStorage.getItem('carrito')) || [];

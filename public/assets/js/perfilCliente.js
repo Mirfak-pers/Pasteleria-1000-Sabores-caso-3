@@ -1,4 +1,4 @@
-// perfilCliente.js - Versión mejorada siguiendo estructura de perfilAdmin.js
+// perfilCliente.js - Versión completa y corregida
 // Pastelería 1000 Sabores
 
 console.log('perfilCliente.js cargado');
@@ -129,15 +129,14 @@ async function crearNuevoPerfil(userId, email) {
         rol: "cliente",
         activo: true,
         fechaCreacion: firebase.firestore.FieldValue.serverTimestamp(),
-        fechaRegistro: new Date().toLocaleDateString('es-ES', { 
-            month: 'long', 
-            year: 'numeric' 
-        })
+        fechaRegistro: firebase.firestore.FieldValue.serverTimestamp()
     };
     
     try {
         await db.collection('usuarios').doc(userId).set(nuevoCliente);
-        clienteData = { id: userId, ...nuevoCliente };
+        // Recargar el documento para obtener los timestamps procesados
+        const docActualizado = await db.collection('usuarios').doc(userId).get();
+        clienteData = { id: userId, ...docActualizado.data() };
         actualizarInterfazCliente(clienteData);
         console.log('✅ Perfil creado exitosamente');
     } catch (error) {
@@ -159,15 +158,72 @@ function actualizarInterfazCliente(datos) {
         clienteNameEl.textContent = nombre;
     }
     
-    // Fecha de registro
+    // Fecha de registro - Manejo de Timestamp de Firebase
     let fechaRegistro = 'Reciente';
-    if (datos.fechaRegistro && typeof datos.fechaRegistro === 'string') {
-        fechaRegistro = datos.fechaRegistro;
-    } else if (datos.fechaCreacion && datos.fechaCreacion.toDate) {
-        fechaRegistro = datos.fechaCreacion.toDate().toLocaleDateString('es-ES', { 
-            month: 'long', 
-            year: 'numeric' 
-        });
+    
+    // Prioridad 1: fechaRegistro como Timestamp
+    if (datos.fechaRegistro) {
+        try {
+            // Si es un Timestamp de Firebase con método toDate()
+            if (typeof datos.fechaRegistro.toDate === 'function') {
+                fechaRegistro = datos.fechaRegistro.toDate().toLocaleDateString('es-ES', { 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            } 
+            // Si es un objeto con seconds (Timestamp serializado)
+            else if (datos.fechaRegistro.seconds) {
+                const fecha = new Date(datos.fechaRegistro.seconds * 1000);
+                fechaRegistro = fecha.toLocaleDateString('es-ES', { 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            }
+            // Si ya es un string en formato correcto
+            else if (typeof datos.fechaRegistro === 'string') {
+                fechaRegistro = datos.fechaRegistro;
+            }
+        } catch (error) {
+            console.log('⚠️ Error al formatear fechaRegistro:', error);
+        }
+    } 
+    // Prioridad 2: fechaCreacion como Timestamp
+    else if (datos.fechaCreacion) {
+        try {
+            if (typeof datos.fechaCreacion.toDate === 'function') {
+                fechaRegistro = datos.fechaCreacion.toDate().toLocaleDateString('es-ES', { 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            } else if (datos.fechaCreacion.seconds) {
+                const fecha = new Date(datos.fechaCreacion.seconds * 1000);
+                fechaRegistro = fecha.toLocaleDateString('es-ES', { 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            }
+        } catch (error) {
+            console.log('⚠️ Error al formatear fechaCreacion:', error);
+        }
+    }
+    // Prioridad 3: createdAt como alternativa
+    else if (datos.createdAt) {
+        try {
+            if (typeof datos.createdAt.toDate === 'function') {
+                fechaRegistro = datos.createdAt.toDate().toLocaleDateString('es-ES', { 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            } else if (datos.createdAt.seconds) {
+                const fecha = new Date(datos.createdAt.seconds * 1000);
+                fechaRegistro = fecha.toLocaleDateString('es-ES', { 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            }
+        } catch (error) {
+            console.log('⚠️ Error al formatear createdAt:', error);
+        }
     }
     
     const fechaRegistroEl = document.getElementById('fechaRegistro');
@@ -463,7 +519,19 @@ function mostrarHistorialContacto(contactos) {
         card.innerHTML = `
             <div class="contact-header">
                 <span class="badge ${badgeClass}">${contacto.tipo}</span>
-                <span class="card-date">${contacto.fecha}</span>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="card-date">${contacto.fecha}</span>
+                    <button 
+                        class="btn-delete-contact" 
+                        onclick="eliminarContacto('${contacto.id}')"
+                        title="Eliminar consulta"
+                        style="background: none; border: none; color: #dc3545; cursor: pointer; padding: 4px 8px; font-size: 1.1rem; transition: all 0.3s ease;"
+                        onmouseover="this.style.transform='scale(1.2)'"
+                        onmouseout="this.style.transform='scale(1)'"
+                    >
+                        🗑️
+                    </button>
+                </div>
             </div>
             <div class="card-title" style="margin-bottom: 0.5rem;">
                 ${contacto.mensaje}
@@ -475,6 +543,54 @@ function mostrarHistorialContacto(contactos) {
         
         containerEl.appendChild(card);
     });
+}
+
+// ==========================================
+// ELIMINAR CONTACTO
+// ==========================================
+async function eliminarContacto(contactoId) {
+    if (!usuarioActual) {
+        alert('❌ Debes iniciar sesión para eliminar consultas');
+        return;
+    }
+    
+    const confirmacion = confirm('¿Estás seguro de que deseas eliminar esta consulta? Esta acción no se puede deshacer.');
+    
+    if (!confirmacion) {
+        return;
+    }
+    
+    try {
+        console.log('🗑️ Eliminando contacto:', contactoId);
+        mostrarCargando(true);
+        
+        // Intentar eliminar de la colección 'contactos'
+        await db.collection('contactos').doc(contactoId).delete();
+        
+        console.log('✅ Contacto eliminado exitosamente');
+        
+        // Recargar historial de contactos
+        await cargarHistorialContacto(usuarioActual.uid, usuarioActual.email);
+        
+        mostrarCargando(false);
+        alert('✅ Consulta eliminada correctamente');
+        
+    } catch (error) {
+        console.error('❌ Error al eliminar contacto:', error);
+        
+        // Si falla, intentar con la colección 'contacto' (singular)
+        try {
+            await db.collection('contacto').doc(contactoId).delete();
+            console.log('✅ Contacto eliminado de colección alternativa');
+            await cargarHistorialContacto(usuarioActual.uid, usuarioActual.email);
+            mostrarCargando(false);
+            alert('✅ Consulta eliminada correctamente');
+        } catch (errorAlt) {
+            console.error('❌ Error al eliminar de colección alternativa:', errorAlt);
+            mostrarCargando(false);
+            alert('❌ Error al eliminar la consulta. Por favor, intenta nuevamente.');
+        }
+    }
 }
 
 // ==========================================
@@ -491,12 +607,12 @@ function toggleEdit() {
     }
     
     if (infoView.classList.contains('hidden')) {
-        // Volver a vista normal
+        // Volver a vista normal (cancelar edición)
         infoView.classList.remove('hidden');
         editView.classList.add('hidden');
         btnEditar.innerHTML = '<i data-lucide="edit-2"></i> Editar';
     } else {
-        // Mostrar formulario de edición
+        // Mostrar formulario de edición con datos actuales
         document.getElementById('inputNombre').value = clienteData.nombre || '';
         document.getElementById('inputEmail').value = clienteData.email || clienteData.correo || '';
         document.getElementById('inputTelefono').value = clienteData.telefono || '';
@@ -520,23 +636,38 @@ async function guardarCambiosPerfil(event) {
         return;
     }
     
+    // Solo obtener los campos editables
     const datosActualizados = {
         nombre: document.getElementById('inputNombre').value.trim(),
-        correo: document.getElementById('inputEmail').value.trim(),
-        email: document.getElementById('inputEmail').value.trim(),
         telefono: document.getElementById('inputTelefono').value.trim(),
         direccion: document.getElementById('inputDireccion').value.trim()
     };
     
+    // Validar que al menos el nombre no esté vacío
+    if (!datosActualizados.nombre) {
+        alert('❌ El nombre no puede estar vacío');
+        return;
+    }
+    
     try {
         mostrarCargando(true);
         
+        // Actualizar solo los campos editables
         await db.collection('usuarios').doc(usuarioActual.uid).update({
-            ...datosActualizados,
+            nombre: datosActualizados.nombre,
+            telefono: datosActualizados.telefono,
+            direccion: datosActualizados.direccion,
             fechaActualizacion: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        clienteData = { ...clienteData, ...datosActualizados };
+        // Actualizar clienteData local
+        clienteData = { 
+            ...clienteData, 
+            nombre: datosActualizados.nombre,
+            telefono: datosActualizados.telefono,
+            direccion: datosActualizados.direccion
+        };
+        
         actualizarInterfazCliente(clienteData);
         toggleEdit();
         
@@ -559,12 +690,6 @@ function configurarEventosUI() {
     const editForm = document.getElementById('editForm');
     if (editForm) {
         editForm.addEventListener('submit', guardarCambiosPerfil);
-    }
-    
-    // Botón de editar
-    const btnEditar = document.getElementById('btnEditar');
-    if (btnEditar) {
-        btnEditar.addEventListener('click', toggleEdit);
     }
     
     console.log('✅ Eventos de UI configurados');
@@ -604,11 +729,9 @@ function formatearPrecio(precio) {
 
 function mostrarError(mensaje) {
     console.error('❌', mensaje);
-    // Aquí podrías mostrar un toast o notificación visual
 }
 
 function mostrarCargando(mostrar) {
-    // Implementar lógica de loading spinner si es necesario
     if (mostrar) {
         console.log('⏳ Cargando...');
     } else {
@@ -753,5 +876,8 @@ window.perfilCliente = {
     toggleEdit,
     cargarPerfilCompleto
 };
+
+// Hacer la función eliminarContacto global para que funcione desde el onclick
+window.eliminarContacto = eliminarContacto;
 
 console.log('✅ perfilCliente.js completamente cargado');

@@ -1,10 +1,10 @@
-import AppRoutes from './routes/RouterConfig';
-import { GlobalProvider } from './context/GlobalContext';
+import RouterConfig from './components/routes/RouterConfig';
+import { GlobalProvider } from './context/GlobalContext'; // ✅ Cambiado a GlobalContext
 
 function App() {
   return (
-    <GlobalProvider>
-      <AppRoutes />
+    <GlobalProvider> {/* ✅ Cambiado a GlobalProvider */}
+      <RouterConfig />
     </GlobalProvider>
   );
 }

@@ -1,3 +1,4 @@
+//compraExsitosa.js
 // Inicializar página de éxito cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
     inicializarPaginaExito();

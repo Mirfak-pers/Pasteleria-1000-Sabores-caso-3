@@ -1,3 +1,4 @@
+//errorPago.js
 // Inicializar página de error cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
     inicializarPaginaError();

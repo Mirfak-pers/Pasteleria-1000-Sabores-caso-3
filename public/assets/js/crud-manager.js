@@ -1,3 +1,4 @@
+//crud-manager.js
 class CrudManager {
     constructor() {
         this.currentModule = null;
