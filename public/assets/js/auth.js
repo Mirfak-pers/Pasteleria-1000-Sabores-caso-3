@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 // Redirigir a panel de administrador
                 setTimeout(() => {
-                    const adminUrl = window.location.origin + '/assets/Page/admin-home.html';
+                    const adminUrl = window.location.origin + '/assets/Page/perfilAdmin.html';
                     console.log('Redirigiendo a:', adminUrl);
                     window.location.href = adminUrl;
                 }, 1000);
