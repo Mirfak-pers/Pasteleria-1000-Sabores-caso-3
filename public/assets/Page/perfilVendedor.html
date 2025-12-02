@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Vendedor | Pastelería 1000 Sabores</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../../css/style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Estilos específicos para el Vendedor (Híbrido) */
+        body {
+            background-color: #f4f6f9;
+        }
+        .navbar-vendedor {
+            background: linear-gradient(90deg, #d35400, #e67e22); /* Naranja quemado para diferenciar del Admin */
+            color: white;
+        }
+        .status-badge-select {
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .card-counter {
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+        .card-counter:hover {
+            transform: translateY(-5px);
+        }
+        /* Ocultar acciones destructivas si heredas CSS del admin */
+        .btn-delete, .btn-edit {
+            display: none !important; 
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-vendedor shadow-sm">
+        <div class="container-fluid px-5">
+            <a class="navbar-brand text-white fw-bold" href="#">
+                <i class="fas fa-cookie-bite"></i> 1000 Sabores <span class="badge bg-light text-dark ms-2" style="font-size: 0.6em;">VENDEDOR</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item me-3">
+                        <span class="nav-link text-white">Hola, Turno Tarde</span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../../../index.html" class="btn btn-sm btn-outline-light rounded-pill px-4" onclick="cerrarSesion()">
+                            <i class="fas fa-sign-out-alt"></i> Salir
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card card-counter shadow-sm border-start border-warning border-5 p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-0">Pedidos Pendientes</p>
+                            <h2 class="fw-bold" id="counter-pending">0</h2>
+                        </div>
+                        <i class="fas fa-clock fa-2x text-warning opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-counter shadow-sm border-start border-primary border-5 p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-0">En Preparación</p>
+                            <h2 class="fw-bold" id="counter-prep">0</h2>
+                        </div>
+                        <i class="fas fa-fire fa-2x text-primary opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-counter shadow-sm border-start border-success border-5 p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-0">Listos para Retiro</p>
+                            <h2 class="fw-bold" id="counter-ready">0</h2>
+                        </div>
+                        <i class="fas fa-check-circle fa-2x text-success opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white">
+                <ul class="nav nav-tabs card-header-tabs" id="vendedorTabs" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active text-dark fw-bold" id="pedidos-tab" data-bs-toggle="tab" data-bs-target="#pedidos" type="button">
+                            <i class="fas fa-list"></i> Control de Pedidos
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link text-dark" id="inventario-tab" data-bs-toggle="tab" data-bs-target="#inventario" type="button">
+                            <i class="fas fa-boxes"></i> Ver Stock (Solo Lectura)
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="tab-content" id="vendedorTabsContent">
+                    
+                    <div class="tab-pane fade show active" id="pedidos">
+                        <div class="alert alert-info py-2"><small><i class="fas fa-info-circle"></i> Puedes cambiar el estado del pedido, pero no puedes eliminar registros.</small></div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Cliente</th>
+                                        <th>Productos</th>
+                                        <th>Total</th>
+                                        <th>Estado (Acción)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-pedidos-body">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="inventario">
+                        <div class="row" id="grid-inventario">
+                            </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // DATOS SIMULADOS (Si tienes un archivo .json o localStorage, reemplaza esto)
+        // Intentamos leer de localStorage primero, si no, usamos datos por defecto
+        
+        let dbPedidos = JSON.parse(localStorage.getItem('pedidos')) || [
+            { id: 1001, cliente: "Maria Silva", prod: "Torta Selva Negra", total: 18000, estado: "pendiente" },
+            { id: 1002, cliente: "Jose Luis", prod: "6 Cupcakes", total: 9000, estado: "preparacion" },
+            { id: 1003, cliente: "Ana Torres", prod: "Kuchen de Nuez", total: 12500, estado: "listo" }
+        ];
+
+        let dbProductos = JSON.parse(localStorage.getItem('productos')) || [
+            { nombre: "Torta Chocolate", precio: 15000, stock: 4, img: "torta_choco.jpg" },
+            { nombre: "Pie de Limón", precio: 10000, stock: 0, img: "pie.jpg" }, // Stock 0 para prueba
+            { nombre: "Donas (docena)", precio: 6000, stock: 12, img: "donas.jpg" }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarPedidos();
+            cargarInventario();
+            actualizarContadores();
+        });
+
+        // --- LÓGICA PEDIDOS ---
+        function cargarPedidos() {
+            const tbody = document.getElementById('tabla-pedidos-body');
+            tbody.innerHTML = '';
+
+            dbPedidos.forEach((p, index) => {
+                // Selector de estado
+                let selectorHTML = `
+                    <select class="form-select form-select-sm fw-bold ${getColorSelect(p.estado)}" 
+                            onchange="cambiarEstado(${index}, this)">
+                        <option value="pendiente" ${p.estado === 'pendiente' ? 'selected' : ''}>🟡 Pendiente</option>
+                        <option value="preparacion" ${p.estado === 'preparacion' ? 'selected' : ''}>🔵 En Horno/Prep</option>
+                        <option value="listo" ${p.estado === 'listo' ? 'selected' : ''}>🟢 Listo para Retiro</option>
+                        <option value="entregado" ${p.estado === 'entregado' ? 'selected' : ''}>🏁 Entregado</option>
+                    </select>
+                `;
+
+                let fila = `
+                    <tr>
+                        <td><strong>#${p.id}</strong></td>
+                        <td>${p.cliente}</td>
+                        <td>${p.prod}</td>
+                        <td>$${p.total}</td>
+                        <td style="width: 200px;">${selectorHTML}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += fila;
+            });
+        }
+
+        function cambiarEstado(index, selectElem) {
+            const nuevoEstado = selectElem.value;
+            dbPedidos[index].estado = nuevoEstado;
+            
+            // Actualizar estilo del select visualmente al instante
+            selectElem.className = `form-select form-select-sm fw-bold ${getColorSelect(nuevoEstado)}`;
+
+            // Guardar cambios
+            localStorage.setItem('pedidos', JSON.stringify(dbPedidos));
+            actualizarContadores();
+        }
+
+        function getColorSelect(estado) {
+            if(estado === 'pendiente') return 'text-warning border-warning';
+            if(estado === 'preparacion') return 'text-primary border-primary';
+            if(estado === 'listo') return 'text-success border-success';
+            return 'text-secondary border-secondary';
+        }
+
+        // --- LÓGICA INVENTARIO (Solo Lectura) ---
+        function cargarInventario() {
+            const grid = document.getElementById('grid-inventario');
+            grid.innerHTML = '';
+
+            dbProductos.forEach(prod => {
+                let badgeStock = prod.stock > 0 
+                    ? `<span class="badge bg-success">Disponible: ${prod.stock}</span>` 
+                    : `<span class="badge bg-danger">AGOTADO</span>`;
+
+                let card = `
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <div class="bg-light rounded mb-2 d-flex align-items-center justify-content-center" style="height:100px;">
+                                    <i class="fas fa-birthday-cake fa-3x text-secondary opacity-25"></i>
+                                </div>
+                                <h6 class="card-title fw-bold">${prod.nombre}</h6>
+                                <p class="text-muted mb-2">$${prod.precio}</p>
+                                ${badgeStock}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+
+        // --- CONTADORES ---
+        function actualizarContadores() {
+            document.getElementById('counter-pending').innerText = dbPedidos.filter(p => p.estado === 'pendiente').length;
+            document.getElementById('counter-prep').innerText = dbPedidos.filter(p => p.estado === 'preparacion').length;
+            document.getElementById('counter-ready').innerText = dbPedidos.filter(p => p.estado === 'listo').length;
+        }
+
+        function cerrarSesion() {
+            // Limpia sesión y redirige
+            window.location.href = "../../../index.html"; // Sube 3 niveles: Page > Assets > Public > Root
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script src="../../js/perfilVendedor.js"></script
+</body>
+</html>
