@@ -17,8 +17,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:jasmine": "karma start karma.conf.js",
+    "test": "karma start karma.conf.js",
+    "test:watch": "karma start karma.conf.js --auto-watch=true --single-run=false",
+    "test:ci": "karma start karma.conf.js --browsers=ChromeHeadless --single-run=true",
+
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
