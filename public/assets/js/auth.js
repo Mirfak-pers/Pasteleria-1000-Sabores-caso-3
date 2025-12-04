@@ -71,45 +71,59 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log('Email:', user.email);
 
             // DETECTAR SI ES ADMINISTRADOR
-            const esAdmin = correo.toLowerCase() === 'admin@duoc.cl';
-            
-            if (esAdmin) {
-                console.log('🔑 Usuario ADMIN detectado');
-                mostrarMensaje('¡Bienvenido Administrador! Redirigiendo al panel...', 'success');
-                
-                // Verificar/crear perfil de admin
-                const adminDoc = await db.collection('usuarios').doc(user.uid).get();
-                
-                if (!adminDoc.exists) {
-                    console.log('Creando perfil de administrador...');
-                    await db.collection('usuarios').doc(user.uid).set({
-                        nombre: 'Administrador',
-                        correo: user.email,
-                        rol: 'admin',
-                        telefono: "",
-                        rut: "",
-                        fechaCreacion: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    console.log('✅ Perfil de admin creado');
-                } else {
-                    // Actualizar rol si no lo tiene
-                    const adminData = adminDoc.data();
-                    if (adminData.rol !== 'admin') {
-                        await db.collection('usuarios').doc(user.uid).update({
-                            rol: 'admin'
-                        });
-                        console.log('✅ Rol de admin actualizado');
-                    }
-                }
-                
-                // Redirigir a panel de administrador
-                setTimeout(() => {
-                    const adminUrl = window.location.origin + '/assets/Page/perfilAdmin.html';
-                    console.log('Redirigiendo a:', adminUrl);
-                    window.location.href = adminUrl;
-                }, 1000);
-                return;
-            }
+            const correoLower = correo.toLowerCase();
+
+// Detecta roles por correo
+const esAdmin = correoLower === 'admin@duoc.cl';
+const esVendedor = correoLower === 'vendedor@duoc.cl';
+
+if (esAdmin || esVendedor) {
+
+    const rol = esAdmin ? 'admin' : 'vendedor';
+    console.log(`🔑 Usuario ${rol.toUpperCase()} detectado`);
+
+    mostrarMensaje(`¡Bienvenido ${rol}! Redirigiendo al panel...`, 'success');
+
+    // Verificar/crear perfil
+    const userRef = db.collection('usuarios').doc(user.uid);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+        console.log(`Creando perfil de ${rol}...`);
+        await userRef.set({
+            nombre: rol === 'admin' ? 'Administrador' : 'Vendedor',
+            correo: user.email,
+            rol: rol,
+            telefono: "",
+            rut: "",
+            fechaCreacion: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        console.log(`✅ Perfil de ${rol} creado`);
+    } else {
+        // Actualizar rol si es distinto
+        const data = userDoc.data();
+        if (data.rol !== rol) {
+            await userRef.update({ rol: rol });
+            console.log(`✅ Rol actualizado a: ${rol}`);
+        }
+    }
+
+    // Redirecciones según rol
+    setTimeout(() => {
+        let redirUrl;
+
+        if (rol === 'admin') {
+            redirUrl = window.location.origin + '/assets/Page/perfilAdmin.html';
+        } else if (rol === 'vendedor') {
+            redirUrl = window.location.origin + '/assets/Page/perfilVendedor.html';
+        }
+
+        console.log('Redirigiendo a:', redirUrl);
+        window.location.href = redirUrl;
+    }, 1000);
+
+    return;
+}
 
             // USUARIO NORMAL - continuar con flujo normal
             console.log('👤 Usuario normal detectado');
