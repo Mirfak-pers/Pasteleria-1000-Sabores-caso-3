@@ -7,7 +7,10 @@
     "@testing-library/jest-dom": "^6.9.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "diff": "^8.0.2",
     "firebase": "^12.6.0",
+    "karma-mocha": "^2.0.1",
+    "mocha": "^11.7.5",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^5.3.4",
@@ -20,7 +23,6 @@
     "test": "karma start karma.conf.js",
     "test:watch": "karma start karma.conf.js --auto-watch=true --single-run=false",
     "test:ci": "karma start karma.conf.js --browsers=ChromeHeadless --single-run=true",
-
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
